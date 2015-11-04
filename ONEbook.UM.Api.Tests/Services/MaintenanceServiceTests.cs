@@ -1,0 +1,89 @@
+﻿namespace ONEbook.UM.Api.Tests.Services
+{
+    using System;
+    using System.Security.Cryptography;
+    using System.Text;
+    using ONEbook.UM.Api.Services;
+    using ONEbook.UM.Api.Services.Impl;
+    using NSubstitute;
+    using NUnit.Framework;
+    using Sunplus.UMControllerLibrary;
+
+    [TestFixture]
+    public class MaintenanceServiceTests
+    {
+        private MaintenanceService _maintenanceService;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _maintenanceService = new MaintenanceService();
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        public void IsValidUMSecretToken_TokenIsNullOrEmpty_ThrowArgumentException(string token)
+        {
+            Assert.Throws<ArgumentException>(new TestDelegate(
+                () => _maintenanceService.IsValidUMSecretToken(Arg.Any<Sites>(), token)));
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void IsValidUMSecretToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(int siteId)
+        {
+            string token = "Token";
+
+            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
+                () => _maintenanceService.IsValidUMSecretToken((Sites)siteId, token)));
+        }
+
+        [Test]
+        public void IsValidUMSecretToken_WrongToken_ReturnFalse()
+        {
+            string token = "aaaaa";
+            Sites siteId = Sites.AccountSite;
+
+            var isValid = _maintenanceService.IsValidUMSecretToken(siteId, token);
+
+            Assert.IsFalse(isValid);
+        }
+
+        [Test]
+        public void IsValidUMSecretToken_ValidToken_ReturnTrue()
+        {
+            var siteId = Sites.AccountSite;
+            string token = GenerateToken(siteId);
+
+            var isValid = _maintenanceService.IsValidUMSecretToken(siteId, token);
+
+            Assert.IsTrue(isValid);
+        }
+
+        private string GenerateToken(Sites siteId)
+        {
+            string key = string.Format("{0}_{1}", siteId, DateTime.Now.ToShortDateString());
+
+            return Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(key)));
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        public void GetUMSecretToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(Sites siteId)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
+                () => _maintenanceService.GetUMSecretToken(siteId)));
+        }
+
+        [Test]
+        public void GetUMSecretToken_SiteIdIsGreaterThanZero_ReturnSecretToken()
+        {
+            var siteId = Sites.AccountSite;
+            var expectedToken = GenerateToken(siteId);
+
+            var actualToken = _maintenanceService.GetUMSecretToken(siteId);
+
+            Assert.AreEqual(expectedToken, actualToken);
+        }
+    }
+}
