@@ -3,10 +3,9 @@
     using System;
     using System.Security.Cryptography;
     using System.Text;
-    using ONEbook.UM.Api.Services;
-    using ONEbook.UM.Api.Services.Impl;
     using NSubstitute;
     using NUnit.Framework;
+    using ONEbook.UM.Api.Services.Impl;
     using Sunplus.UMControllerLibrary;
 
     [TestFixture]

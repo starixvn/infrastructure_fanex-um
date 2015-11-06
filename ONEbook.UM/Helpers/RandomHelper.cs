@@ -11,7 +11,7 @@
         {
             if (string.IsNullOrWhiteSpace(sourceUris))
             {
-                throw new ArgumentOutOfRangeException("Uris cannot be null or white space");
+                throw new ArgumentOutOfRangeException("sourceUris", "Uris cannot be null or white space");
             }
 
             var uris = sourceUris.Split(',');

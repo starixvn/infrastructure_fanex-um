@@ -10,6 +10,10 @@
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
+            if (config == null)
+            {
+                throw new ArgumentNullException("config", "Configuration cannot be null.");
+            }
 
             // Web API routes
             config.MapHttpAttributeRoutes();

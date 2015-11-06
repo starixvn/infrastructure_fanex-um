@@ -1,5 +1,6 @@
 ﻿namespace ONEbook.UM.Configurations
 {
+    using System.Collections.Generic;
     using System.Configuration;
 
     public class UMClientConfiguration : ConfigurationSection
@@ -8,6 +9,8 @@
         private const string ServiceUrisName = "ServiceUris";
         private const string EnableCheckUMName = "EnableCheckUM";
         private const string UMAddressName = "UMAddress";
+        private const string IPListName = "IPList";
+        private static IList<string> _allowIPs; 
 
         private static UMClientConfiguration settings
             = ConfigurationManager.GetSection("ONEbook.UM") as UMClientConfiguration;
@@ -17,6 +20,24 @@
             get
             {
                 return settings;
+            }
+        }
+
+        public static IList<string> AllowedIPs
+        {
+            get
+            {
+                if (_allowIPs == null)
+                {
+                    _allowIPs = new List<string>();
+
+                    foreach (IPElement ip in settings.IPList)
+                    {
+                        _allowIPs.Add(ip.Value);
+                    }
+                }
+
+                return _allowIPs;
             }
         }
 
@@ -39,6 +60,18 @@
         {
             get { return (string)this[UMAddressName]; }
             set { this[UMAddressName] = value; }
+        }
+
+        [ConfigurationProperty(IPListName, IsDefaultCollection = false)]
+        [ConfigurationCollection(typeof(IPCollection), AddItemName = "IP")]
+        public IPCollection IPList
+        {
+            get
+            {
+                var ipList = (IPCollection)base[IPListName];
+
+                return ipList;
+            }
         }
     }
 }

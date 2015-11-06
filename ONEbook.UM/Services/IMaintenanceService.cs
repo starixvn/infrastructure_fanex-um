@@ -10,6 +10,6 @@
     {
         bool IsUnderMaintenance(Sites siteId);
 
-        bool IsUnderMaintenanceOnReCheckIn(Sites siteId);
+        bool IsUnderMaintenanceOnRecheckIn(Sites siteId);
     }
 }
