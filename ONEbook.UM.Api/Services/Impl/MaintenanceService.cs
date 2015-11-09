@@ -1,6 +1,8 @@
 ﻿namespace ONEbook.UM.Api.Services.Impl
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
     using Fanex.Common.Helper;
@@ -36,6 +38,19 @@
             Check.Argument.IsNotNegativeOrZero((int)siteId, "siteId");
 
             return GenerateToken(siteId);
+        }
+
+        public IDictionary<Sites, string> GetAllUMSecretToken()
+        {
+            var siteIds = Enum.GetValues(typeof(Sites)).Cast<Sites>();
+            var siteTokens = new Dictionary<Sites, string>();
+
+            foreach (Sites siteId in siteIds)
+            {
+                siteTokens.Add(siteId, GenerateToken(siteId));
+            }
+
+            return siteTokens;
         }
     }
 }

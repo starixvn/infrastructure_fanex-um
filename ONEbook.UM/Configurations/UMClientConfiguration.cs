@@ -9,7 +9,7 @@
         private const string ServiceUrisName = "ServiceUris";
         private const string EnableCheckUMName = "EnableCheckUM";
         private const string UMAddressName = "UMAddress";
-        private const string IPListName = "IPList";
+        private const string AllowedIPListName = "AllowedIPs";
         private static IList<string> _allowIPs; 
 
         private static UMClientConfiguration settings
@@ -62,13 +62,13 @@
             set { this[UMAddressName] = value; }
         }
 
-        [ConfigurationProperty(IPListName, IsDefaultCollection = false)]
-        [ConfigurationCollection(typeof(IPCollection), AddItemName = "IP")]
+        [ConfigurationProperty(AllowedIPListName, IsDefaultCollection = false)]
+        [ConfigurationCollection(typeof(IPCollection), AddItemName = "add")]
         public IPCollection IPList
         {
             get
             {
-                var ipList = (IPCollection)base[IPListName];
+                var ipList = (IPCollection)base[AllowedIPListName];
 
                 return ipList;
             }

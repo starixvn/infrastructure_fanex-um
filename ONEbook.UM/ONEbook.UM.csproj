@@ -90,6 +90,7 @@
     <Compile Include="Configurations\IPElement.cs" />
     <Compile Include="Configurations\UMClientConfiguration.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\IPHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Models\UnderMaintenanceTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

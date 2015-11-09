@@ -2,8 +2,11 @@
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Net;
+    using System.Reflection;
     using System.Web;
     using System.Web.Hosting;
+    using System.Web.SessionState;
     using NSubstitute;
     using NUnit.Framework;
     using ONEbook.UM.Models;
@@ -31,6 +34,8 @@
             _maintenanceService = new MaintenanceService(_underMaintenanceController, _restClient, _allowIPs, _clientIP);
         }
 
+        #region IsUnderMaintenance Test cases
+
         [Test]
         public void IsUnderMaintenance_ExecuteGetDowntime()
         {
@@ -57,9 +62,9 @@
             var siteId = Sites.AccountSite;
             AssumeUMTime(false);
 
-            var actualResult = _maintenanceService.IsUnderMaintenance(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenance(siteId);
 
-            Assert.IsFalse(actualResult);
+            Assert.IsFalse(isUM);
         }
 
         private void FakeHttpContext(string queryString, bool setByPassUMToSession = false)
@@ -68,10 +73,22 @@
 
             HttpContext.Current = new HttpContext(request);
 
-            if (setByPassUMToSession)
-            {
-                HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = true;
-            }
+            var sessionContainer = new HttpSessionStateContainer(
+                                                "id",
+                                               new SessionStateItemCollection(),
+                                               new HttpStaticObjectsCollection(),
+                                               10,
+                                               true,
+                                               HttpCookieMode.AutoDetect,
+                                               SessionStateMode.InProc,
+                                               false);
+            HttpContext.Current.Items["AspSession"] = typeof(HttpSessionState).GetConstructor(
+                                    BindingFlags.NonPublic | BindingFlags.Instance,
+                                    null,
+                                    CallingConventions.Standard,
+                                    new[] { typeof(HttpSessionStateContainer) },
+                                    null)
+                .Invoke(new object[] { sessionContainer });
         }
 
         [Test]
@@ -82,9 +99,9 @@
             FakeHttpContext(queryString);
             AssumeUMTime();
 
-            var actualResult = _maintenanceService.IsUnderMaintenance(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenance(siteId);
 
-            Assert.IsTrue(actualResult);
+            Assert.IsTrue(isUM);
         }
 
         [Test]
@@ -95,13 +112,13 @@
             FakeHttpContext(queryString);
             AssumeUMTime();
 
-            var actualResult = _maintenanceService.IsUnderMaintenance(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenance(siteId);
 
-            Assert.IsTrue(actualResult);
+            Assert.IsTrue(isUM);
         }
 
         [Test]
-        public void IsUnderMaintenance_IPIsAllowedToAccess_ExecuteIsValidUMSecretToken()
+        public void IsUnderMaintenance_IPIsAllowedToAccess_ExecuteRestClient()
         {
             var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
@@ -109,23 +126,9 @@
             AssumeUMTime();
             _allowIPs.Add("10.18.200.209");
 
-            var actualResult = _maintenanceService.IsUnderMaintenance(siteId);
+            _maintenanceService.IsUnderMaintenance(siteId);
 
             _restClient.Received().Execute(Arg.Any<IRestRequest>());
-        }
-
-        [Test]
-        public void IsUnderMaintenance_SecretTokenIsNotValid_ReturnTrue()
-        {
-            var siteId = Sites.AccountSite;
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add("10.18.200.209");
-
-            var actualResult = _maintenanceService.IsUnderMaintenance(siteId);
-
-            Assert.IsTrue(actualResult);
         }
 
         [Test]
@@ -137,9 +140,87 @@
             AssumeUMTime();
             _allowIPs.Add("10.18.200.209");
 
-            var actualResult = _maintenanceService.IsUnderMaintenance(siteId);
+            RestResponse restResponse = new RestResponse();
+            restResponse.StatusCode = HttpStatusCode.OK;
+            restResponse.Content = "true";
 
-            Assert.IsFalse(actualResult);
+            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+
+            var isUM = _maintenanceService.IsUnderMaintenance(siteId);
+
+            Assert.IsFalse(isUM);
         }
+
+        [Test]
+        public void IsUnderMaintenance_SecretTokenIsNotValid_ReturnTrue()
+        {
+            var siteId = Sites.AccountSite;
+            var queryString = "UMToken=UMToken";
+            FakeHttpContext(queryString);
+            AssumeUMTime();
+            _allowIPs.Add("10.18.200.209");
+
+            RestResponse restResponse = new RestResponse();
+            restResponse.StatusCode = HttpStatusCode.OK;
+            restResponse.Content = "false";
+
+            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+
+            var isUM = _maintenanceService.IsUnderMaintenance(siteId);
+
+            Assert.IsTrue(isUM);
+        }
+
+        [Test]
+        public void IsUnderMaintenance_SecretTokenIsValid_ReturnSetByPassUMToSession()
+        {
+            var siteId = Sites.AccountSite;
+            var queryString = "UMToken=UMToken";
+            FakeHttpContext(queryString);
+            AssumeUMTime();
+            _allowIPs.Add("10.18.200.209");
+
+            RestResponse restResponse = new RestResponse();
+            restResponse.StatusCode = HttpStatusCode.OK;
+            restResponse.Content = "true";
+
+            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+
+            _maintenanceService.IsUnderMaintenance(siteId);
+
+            Assert.IsTrue(_maintenanceService.ByPassUM);
+        }
+
+        #endregion IsUnderMaintenance Test cases
+
+        #region IsUnderMaintenanceOnRecheckIn Test Cases
+
+        [Test]
+        public void IsUnderMaintenanceOnRecheckIn_IsNotUMTime_ReturnFalse()
+        {
+            var siteId = Sites.AccountSite;
+            AssumeUMTime(false);
+
+            _maintenanceService.IsUnderMaintenanceOnRecheckIn(siteId);
+
+            _underMaintenanceController.Received().GetUnderMaintenanceTime(
+                Arg.Is<Sites>(actualSiteId => actualSiteId == siteId));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void IsUnderMaintenanceOnRecheckIn_IsUMTime_ReturnByPassUM(bool isByPassUM)
+        {
+            var siteId = Sites.AccountSite;
+            AssumeUMTime();
+
+            HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = isByPassUM;
+
+            var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn(siteId);
+
+            Assert.AreEqual(isByPassUM, !isUM);
+        }
+
+        #endregion IsUnderMaintenanceOnRecheckIn Test Cases
     }
 }

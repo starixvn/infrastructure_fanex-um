@@ -1,6 +1,7 @@
 ﻿namespace ONEbook.UM.Api.Tests.Services
 {
     using System;
+    using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
     using NSubstitute;
@@ -18,6 +19,8 @@
         {
             _maintenanceService = new MaintenanceService();
         }
+
+        #region IsValidUMSecretToken
 
         [TestCase(null)]
         [TestCase("")]
@@ -66,6 +69,10 @@
             return Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(key)));
         }
 
+        #endregion IsValidUMSecretToken
+
+        #region GetUMSecretToken
+
         [TestCase(0)]
         [TestCase(-1)]
         public void GetUMSecretToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(Sites siteId)
@@ -84,5 +91,22 @@
 
             Assert.AreEqual(expectedToken, actualToken);
         }
+
+        #endregion GetUMSecretToken
+
+        #region GetAllUMSecretToken
+
+        [Test]
+        public void GetAllUMSecretToken_ReturnAllSiteSecretToken()
+        {
+            var siteIds = Enum.GetValues(typeof(Sites)).Cast<int>();
+
+            var siteTokens = _maintenanceService.GetAllUMSecretToken();
+
+            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId] == GenerateToken((Sites)siteId));
+            Assert.IsTrue(isAllSiteTokensValid);
+        }
+
+        #endregion GetAllUMSecretToken
     }
 }

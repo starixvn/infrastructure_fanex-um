@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Net;
     using System.Web;
+    using Fanex.UM.Helpers;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using RestSharp;
@@ -13,6 +14,7 @@
     public class MaintenanceService : IMaintenanceService
     {
         private const string TokenName = "UMToken";
+        private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
         private readonly IUMController _underMaintenanceController;
         private readonly IRestClient _restClient;
         private IList<string> _allowedIPs;
@@ -33,6 +35,24 @@
             _restClient = restClient ?? new RestClient(RandomHelper.GetRandomUri(UMClientConfiguration.Settings.ServiceUris));
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
+        }
+
+        public bool ByPassUM
+        {
+            get
+            {
+                if (HttpContext.Current.Session[ByPassUMSessionKey] == null)
+                {
+                    return false;
+                }
+
+                return (bool)HttpContext.Current.Session[ByPassUMSessionKey];
+            }
+
+            private set
+            {
+                HttpContext.Current.Session[ByPassUMSessionKey] = value;
+            }
         }
 
         public bool IsUnderMaintenance(Sites siteId)
@@ -56,6 +76,8 @@
             {
                 return true;
             }
+
+            ByPassUM = true;
 
             return false;
         }
@@ -89,68 +111,21 @@
 
         private bool IsRequestIPAllowToAccess()
         {
-            var clientIP = _clientIP ?? GetClientIp();
+            var clientIP = _clientIP ?? IPHelper.GetClientIPAddress(HttpContext.Current.Request);
 
             return _allowedIPs.Contains(clientIP);
         }
 
-        private string GetClientIp()
-        {
-            var forwardHeader = GetForwardHeader();
-
-            if (!string.IsNullOrEmpty(forwardHeader))
-            {
-                return forwardHeader;
-            }
-
-            return GetInternalAddress();
-        }
-
-        private string GetForwardHeader()
-        {
-            var httpRequest = HttpContext.Current.Request;
-            var forwardHeader = httpRequest.ServerVariables["HTTP_X_FORWARDED_FOR"];
-
-            if (forwardHeader != null)
-            {
-                return forwardHeader.Split(',').First().Trim();
-            }
-
-            return string.Empty;
-        }
-
-        private string GetInternalAddress()
-        {
-            var httpRequest = HttpContext.Current.Request;
-            string userHostAddress = httpRequest.UserHostAddress;
-            var internalIPAddress = GetInternalIPAddress(userHostAddress);
-
-            if (internalIPAddress == null)
-            {
-                var hostName = Dns.GetHostName();
-
-                internalIPAddress = GetInternalIPAddress(hostName);
-            }
-
-            return internalIPAddress != null ? internalIPAddress.ToString() : string.Empty;
-        }
-
-        private IPAddress GetInternalIPAddress(string hostAddress)
-        {
-            foreach (var itemIPA in Dns.GetHostAddresses(hostAddress))
-            {
-                if (itemIPA.AddressFamily.ToString().Equals("InterNetwork", StringComparison.OrdinalIgnoreCase))
-                {
-                    return itemIPA;
-                }
-            }
-
-            return null;
-        }
-
         public bool IsUnderMaintenanceOnRecheckIn(Sites siteId)
         {
-            throw new NotImplementedException();
+            var underMaintenanceTime = _underMaintenanceController.GetUnderMaintenanceTime(siteId);
+
+            if (!underMaintenanceTime.IsUnderMaintenanceTime)
+            {
+                return false;
+            }
+
+            return !ByPassUM;
         }
     }
 }
