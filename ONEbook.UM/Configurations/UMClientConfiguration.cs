@@ -73,5 +73,12 @@
                 return ipList;
             }
         }
+
+        [ConfigurationProperty("SecretKey", IsRequired = false, DefaultValue = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=")]
+        public string SecretKey
+        {
+            get { return (string)this["SecretKey"]; }
+            set { this["SecretKey"] = value; }
+        }
     }
 }

@@ -32,7 +32,7 @@
             string clientIP)
         {
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
-            _restClient = restClient ?? new RestClient(RandomHelper.GetRandomUri(UMClientConfiguration.Settings.ServiceUris));
+            _restClient = restClient ?? GetRestClient();
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
         }
@@ -126,6 +126,14 @@
             }
 
             return !ByPassUM;
+        }
+
+        private IRestClient GetRestClient()
+        {
+            var restClient = new RestClient(RandomHelper.GetRandomUri(UMClientConfiguration.Settings.ServiceUris));
+            restClient.Authenticator = new HmacAuthenticator();
+
+            return restClient;
         }
     }
 }

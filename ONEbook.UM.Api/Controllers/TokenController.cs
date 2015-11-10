@@ -4,6 +4,7 @@
     using System.Net;
     using System.Net.Http;
     using System.Web.Http;
+    using ONEbook.UM.Api.Filters;
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
     using ONEbook.UM.Api.Services.Impl;
@@ -22,7 +23,9 @@
             _maintenanceService = maintenanceService ?? new MaintenanceService();
         }
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", Justification = "Reviewed!"), HttpGet]
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", Justification = "Reviewed!"), 
+        HttpGet,
+        HmacAuthorizationFilter]
         public HttpResponseMessage Validate([FromUri]TokenValidationRequest request)
         {
             if (request == null)
