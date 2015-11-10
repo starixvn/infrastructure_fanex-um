@@ -15,7 +15,7 @@
     {
         private const string TokenName = "UMToken";
         private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
-        private readonly IUMController _underMaintenanceController;
+        private readonly IUMControlAdapter _underMaintenanceControlAdapter;
         private readonly IRestClient _restClient;
         private IList<string> _allowedIPs;
         private string _clientIP;
@@ -26,12 +26,12 @@
         }
 
         public MaintenanceService(
-            IUMController underMaintenanceCotnroller,
+            IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
             IList<string> allowedIPs,
             string clientIP)
         {
-            _underMaintenanceController = underMaintenanceCotnroller ?? new UMController();
+            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
             _restClient = restClient ?? new RestClient(RandomHelper.GetRandomUri(UMClientConfiguration.Settings.ServiceUris));
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
@@ -55,9 +55,9 @@
             }
         }
 
-        public bool IsUnderMaintenance(Sites siteId)
+        public bool IsUnderMaintenanceOnLogin(Sites siteId)
         {
-            var underMaintenanceTime = _underMaintenanceController.GetUnderMaintenanceTime(siteId);
+            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
 
             if (!underMaintenanceTime.IsUnderMaintenanceTime)
             {
@@ -84,7 +84,7 @@
 
         private bool IsUMSecretTokenValid(Sites siteId, string secretToken)
         {
-            var request = new RestRequest("/undermaintenance/isvalidsecrettoken", Method.GET);
+            var request = new RestRequest("/token/validate", Method.GET);
             request.AddObject(new { siteId = siteId, secretToken = secretToken });
 
             IRestResponse response = _restClient.Execute(request);
@@ -118,7 +118,7 @@
 
         public bool IsUnderMaintenanceOnRecheckIn(Sites siteId)
         {
-            var underMaintenanceTime = _underMaintenanceController.GetUnderMaintenanceTime(siteId);
+            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
 
             if (!underMaintenanceTime.IsUnderMaintenanceTime)
             {

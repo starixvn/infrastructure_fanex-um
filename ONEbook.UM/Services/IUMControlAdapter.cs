@@ -3,7 +3,7 @@
     using ONEbook.UM.Models;
     using Sunplus.UMControllerLibrary;
 
-    public interface IUMController
+    public interface IUMControlAdapter
     {
         UnderMaintenanceTime GetUnderMaintenanceTime(Sites siteId);
     }

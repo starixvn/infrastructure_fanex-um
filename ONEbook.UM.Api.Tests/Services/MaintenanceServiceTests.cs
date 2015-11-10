@@ -101,9 +101,9 @@
         {
             var siteIds = Enum.GetValues(typeof(Sites)).Cast<int>();
 
-            var siteTokens = _maintenanceService.GetAllUMSecretToken();
+            var siteTokens = _maintenanceService.GetAllUMSecretTokens();
 
-            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId] == GenerateToken((Sites)siteId));
+            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId].Token == GenerateToken((Sites)siteId));
             Assert.IsTrue(isAllSiteTokensValid);
         }
 

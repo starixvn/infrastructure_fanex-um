@@ -1,12 +1,14 @@
 ﻿namespace ONEbook.UM.Configurations
 {
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
 
-    public class IPElement : ConfigurationElement
+    internal class IPElement : ConfigurationElement
     {
         private const string ValueName = "Value";
 
-        [ConfigurationProperty(ValueName, IsRequired = true)]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Reviewed!"),
+        ConfigurationProperty(ValueName, IsRequired = true)]
         public string Value
         {
             get

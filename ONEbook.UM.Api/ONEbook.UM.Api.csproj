@@ -118,11 +118,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\TokenValidationController.cs" />
+    <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Models\SiteToken.cs" />
+    <Compile Include="Models\TokenValidationRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IMaintenanceService.cs" />
     <Compile Include="Services\Impl\MaintenanceService.cs" />
@@ -136,10 +138,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ONEbook.UM\ONEbook.UM.csproj">
       <Project>{82217767-5911-437a-a1c5-1b22ed259c5f}</Project>

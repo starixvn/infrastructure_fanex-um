@@ -6,6 +6,7 @@
     using System.Security.Cryptography;
     using System.Text;
     using Fanex.Common.Helper;
+    using ONEbook.UM.Api.Models;
     using Sunplus.UMControllerLibrary;
 
     public class MaintenanceService : IMaintenanceService
@@ -40,14 +41,20 @@
             return GenerateToken(siteId);
         }
 
-        public IDictionary<Sites, string> GetAllUMSecretToken()
+        public IDictionary<Sites, SiteToken> GetAllUMSecretTokens()
         {
             var siteIds = Enum.GetValues(typeof(Sites)).Cast<Sites>();
-            var siteTokens = new Dictionary<Sites, string>();
+            var siteTokens = new Dictionary<Sites, SiteToken>();
 
             foreach (Sites siteId in siteIds)
             {
-                siteTokens.Add(siteId, GenerateToken(siteId));
+                siteTokens.Add(
+                    siteId, 
+                    new SiteToken
+                    {
+                        SiteId = (int)siteId,
+                        Token = GenerateToken(siteId)
+                    });
             }
 
             return siteTokens;

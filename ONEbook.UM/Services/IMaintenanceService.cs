@@ -8,7 +8,7 @@
 
     public interface IMaintenanceService
     {
-        bool IsUnderMaintenance(Sites siteId);
+        bool IsUnderMaintenanceOnLogin(Sites siteId);
 
         bool IsUnderMaintenanceOnRecheckIn(Sites siteId);
     }

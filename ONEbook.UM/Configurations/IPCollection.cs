@@ -4,7 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
 
     [SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface", Justification = "Reviewed!")]
-    public class IPCollection : ConfigurationElementCollection
+    internal class IPCollection : ConfigurationElementCollection
     {
         public override ConfigurationElementCollectionType CollectionType
         {

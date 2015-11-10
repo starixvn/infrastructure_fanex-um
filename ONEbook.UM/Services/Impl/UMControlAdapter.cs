@@ -4,7 +4,7 @@
     using ONEbook.UM.Models;
     using Sunplus.UMControllerLibrary;
 
-    public class UMController : IUMController
+    public class UMControlAdapter : IUMControlAdapter
     {
         public UnderMaintenanceTime GetUnderMaintenanceTime(Sites siteId)
         {

@@ -64,7 +64,7 @@
 
         [ConfigurationProperty(AllowedIPListName, IsDefaultCollection = false)]
         [ConfigurationCollection(typeof(IPCollection), AddItemName = "add")]
-        public IPCollection IPList
+        internal IPCollection IPList
         {
             get
             {
