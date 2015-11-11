@@ -4,6 +4,7 @@
     using System.Net;
     using System.Net.Http;
     using System.Web.Http;
+    using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Filters;
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
@@ -38,11 +39,17 @@
             return Request.CreateResponse(HttpStatusCode.OK, isValid);
         }
 
-        public HttpResponseMessage GetAll()
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", Justification = "Reviewed!")]
+        public HttpResponseMessage GetAll(string secretKey)
         {
-            var siteTokens = _maintenanceService.GetAllUMSecretTokens();
+            if (UnderMaintenanceApiConfiguration.Settings.SecretKey == secretKey)
+            {
+                var siteTokens = _maintenanceService.GetAllUMSecretTokens();
 
-            return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
+                return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
+            }
+
+            return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Secret Key is not valid");
         }
     }
 }

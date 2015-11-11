@@ -6,6 +6,7 @@
     using System.Net.Http.Formatting;
     using System.Web.Http;
     using Newtonsoft.Json.Serialization;
+    using ONEbook.UM.Api.Helpers;
 
     public static class WebApiConfig
     {
@@ -28,6 +29,8 @@
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
+
+            config.Filters.Add(new GlobalExceptionFilter());
 
             var formaters = GlobalConfiguration.Configuration.Formatters;
             formaters.Clear();

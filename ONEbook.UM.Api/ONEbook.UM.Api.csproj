@@ -121,7 +121,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Configurations\UnderMaintenanceApiConfiguration.cs" />
     <Compile Include="Controllers\TokenController.cs" />
+    <Compile Include="Filters\GlobalExceptionFilter.cs" />
     <Compile Include="Filters\HmacAuthorizationFilter.cs" />
+    <Compile Include="Filters\HttpRequestMessageExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

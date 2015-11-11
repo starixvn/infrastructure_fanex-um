@@ -1,5 +1,6 @@
 ﻿namespace ONEbook.UM.Tests.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
@@ -35,6 +36,15 @@
         }
 
         #region IsUnderMaintenanceOnLogin Test cases
+
+        [Test]
+        public void IsUnderMaintenanceOnLogin_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
+        {
+            int siteId = 0;
+
+            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
+                () => _maintenanceService.IsUnderMaintenanceOnLogin((Sites)siteId)));
+        }
 
         [Test]
         public void IsUnderMaintenanceOnLogin_ExecuteGetDowntime()
@@ -190,9 +200,18 @@
             Assert.IsTrue(_maintenanceService.ByPassUM);
         }
 
-        #endregion IsUnderMaintenance Test cases
+        #endregion IsUnderMaintenanceOnLogin Test cases
 
         #region IsUnderMaintenanceOnRecheckIn Test Cases
+
+        [Test]
+        public void IsUnderMaintenanceOnRecheckIn_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
+        {
+            int siteId = 0;
+
+            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
+                () => _maintenanceService.IsUnderMaintenanceOnRecheckIn((Sites)siteId)));
+        }
 
         [Test]
         public void IsUnderMaintenanceOnRecheckIn_NowIsNotUMTime_ReturnFalse()

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Web;
     using Fanex.UM.Helpers;
@@ -57,32 +56,43 @@
 
         public bool IsUnderMaintenanceOnLogin(Sites siteId)
         {
-            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
+            CheckSiteIdIsValid(siteId);
 
-            if (!underMaintenanceTime.IsUnderMaintenanceTime)
+            if (NowIsNotUnderMaintenance(siteId))
             {
                 return false;
             }
 
             var secretToken = GetSecretTokenFromQueryString();
 
-            if (string.IsNullOrEmpty(secretToken)
-                || !IsRequestIPAllowToAccess())
+            if (!string.IsNullOrEmpty(secretToken)
+                && IsRequestIPAllowToAccess()
+                && IsSecretTokenValid(siteId, secretToken))
             {
-                return true;
+                ByPassUM = true;
+
+                return false;
             }
 
-            if (!IsUMSecretTokenValid(siteId, secretToken))
-            {
-                return true;
-            }
-
-            ByPassUM = true;
-
-            return false;
+            return true;
         }
 
-        private bool IsUMSecretTokenValid(Sites siteId, string secretToken)
+        private void CheckSiteIdIsValid(Sites siteId)
+        {
+            if (!Enum.IsDefined(typeof(Sites), siteId))
+            {
+                throw new ArgumentOutOfRangeException("siteId", "Site Id is not valid");
+            }
+        }
+
+        private bool NowIsNotUnderMaintenance(Sites siteId)
+        {
+            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
+
+            return !underMaintenanceTime.IsUnderMaintenanceTime;
+        }
+
+        private bool IsSecretTokenValid(Sites siteId, string secretToken)
         {
             var request = new RestRequest("/token/validate", Method.GET);
             request.AddObject(new { siteId = siteId, secretToken = secretToken });
@@ -118,9 +128,9 @@
 
         public bool IsUnderMaintenanceOnRecheckIn(Sites siteId)
         {
-            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
+            CheckSiteIdIsValid(siteId);
 
-            if (!underMaintenanceTime.IsUnderMaintenanceTime)
+            if (NowIsNotUnderMaintenance(siteId))
             {
                 return false;
             }
