@@ -6,6 +6,7 @@
     using System.Text;
     using NSubstitute;
     using NUnit.Framework;
+    using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Services.Impl;
     using Sunplus.UMControllerLibrary;
 
@@ -64,7 +65,7 @@
 
         private string GenerateToken(Sites siteId)
         {
-            string key = string.Format("{0}_{1}", siteId, DateTime.Now.ToShortDateString());
+            string key = string.Format("{0}_{1}_{2}", siteId, DateTime.UtcNow.ToShortDateString(), UnderMaintenanceApiConfiguration.Settings.SecretKey);
 
             return Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(key)));
         }

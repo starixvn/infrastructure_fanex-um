@@ -6,6 +6,7 @@
     using System.Security.Cryptography;
     using System.Text;
     using Fanex.Common.Helper;
+    using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Models;
     using Sunplus.UMControllerLibrary;
 
@@ -24,7 +25,7 @@
         private string GenerateToken(Sites siteId)
         {
             var today = DateTime.UtcNow.ToShortDateString();
-            var key = string.Format("{0}_{1}", siteId, today);
+            var key = string.Format("{0}_{1}_{2}", siteId, today, UnderMaintenanceApiConfiguration.Settings.SecretKey);
 
             using (MD5 md5 = MD5.Create())
             {
