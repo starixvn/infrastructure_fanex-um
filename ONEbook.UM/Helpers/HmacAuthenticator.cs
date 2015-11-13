@@ -12,7 +12,7 @@
     /// <summary>
     /// http://bitoftech.net/2014/12/15/secure-asp-net-web-api-using-api-key-authentication-hmac-authentication/
     /// </summary>
-    internal class HmacAuthenticator : IAuthenticator
+    public class HmacAuthenticator : IAuthenticator
     {
         private readonly string _machineIP;
 

@@ -10,6 +10,7 @@
     using ONEbook.UM.Api.Services;
     using ONEbook.UM.Api.Services.Impl;
 
+    [HmacAuthorizationFilter]
     public class TokenController : ApiController
     {
         private readonly IMaintenanceService _maintenanceService;
@@ -25,8 +26,7 @@
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", Justification = "Reviewed!"), 
-        HttpGet,
-        HmacAuthorizationFilter]
+        HttpGet]
         public HttpResponseMessage Validate([FromUri]TokenValidationRequest request)
         {
             if (request == null)
@@ -40,16 +40,11 @@
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", Justification = "Reviewed!")]
-        public HttpResponseMessage GetAll(string secretKey)
+        public HttpResponseMessage GetAll()
         {
-            if (UnderMaintenanceApiConfiguration.Settings.SecretKey == secretKey)
-            {
-                var siteTokens = _maintenanceService.GetAllUMSecretTokens();
+            var siteTokens = _maintenanceService.GetAllUMSecretTokens();
 
-                return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
-            }
-
-            return Request.CreateErrorResponse(HttpStatusCode.Forbidden, "Secret Key is not valid");
+            return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
         }
     }
 }
