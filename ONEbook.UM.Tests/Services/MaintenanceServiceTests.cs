@@ -8,6 +8,7 @@
     using System.Web;
     using System.Web.Hosting;
     using System.Web.SessionState;
+    using Fanex.Logging;
     using NSubstitute;
     using NUnit.Framework;
     using ONEbook.UM.Models;
@@ -24,15 +25,17 @@
         private IRestClient _restClient;
         private IList<string> _allowIPs;
         private string _clientIP;
+        private ILogger _logger;
 
         [SetUp]
         public void SetUp()
         {
             _underMaintenanceControlAdapter = Substitute.For<IUMControlAdapter>();
             _restClient = Substitute.For<IRestClient>();
+            _logger = Substitute.For<ILogger>();
             _allowIPs = new List<string>();
             _clientIP = "10.18.200.209";
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP);
+            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger);
         }
 
         #region IsUnderMaintenanceOnLogin Test cases
@@ -198,6 +201,22 @@
             _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
 
             Assert.IsTrue(_maintenanceService.ByPassUM);
+        }
+
+        [Test]
+        public void IsUnderMaintenanceOnLogin_TokenAPIThrowException_ReturnTrue()
+        {
+            var siteId = Sites.AccountSite;
+            var queryString = "UMToken=UMToken";
+            FakeHttpContext(queryString);
+            AssumeUMTime();
+            _allowIPs.Add("10.18.200.209");
+
+            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(x => { throw new Exception(); });
+
+            var isUMActual = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+
+            Assert.IsTrue(isUMActual);
         }
 
         #endregion IsUnderMaintenanceOnLogin Test cases

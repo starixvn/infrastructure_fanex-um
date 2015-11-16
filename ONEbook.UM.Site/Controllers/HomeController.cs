@@ -23,6 +23,7 @@
         public ActionResult Login(int siteId = 0)
         {
             Sites siteIdNeedBeChecked = siteId == 0 ? Sites.AccountSite : (Sites)siteId;
+
             var isUM = _maintenanceService.IsUnderMaintenanceOnLogin(siteIdNeedBeChecked);
 
             var contentResult = new ContentResult();
@@ -37,6 +38,7 @@
         public ActionResult RecheckIn(int siteId = 0)
         {
             Sites siteIdNeedBeChecked = siteId == 0 ? Sites.AccountSite : (Sites)siteId;
+
             var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn(siteIdNeedBeChecked);
 
             var contentResult = new ContentResult();

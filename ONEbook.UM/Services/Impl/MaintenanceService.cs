@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Web;
+    using Fanex.Logging;
     using Fanex.UM.Helpers;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
@@ -16,11 +18,12 @@
         private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
         private readonly IUMControlAdapter _underMaintenanceControlAdapter;
         private readonly IRestClient _restClient;
+        private readonly ILogger _logger;
         private IList<string> _allowedIPs;
         private string _clientIP;
 
         public MaintenanceService()
-            : this(null, null, null, null)
+            : this(null, null, null, null, null)
         {
         }
 
@@ -28,12 +31,14 @@
             IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
             IList<string> allowedIPs,
-            string clientIP)
+            string clientIP,
+            ILogger logger)
         {
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
             _restClient = restClient ?? GetRestClient();
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
+            _logger = logger ?? Logger.Log;
         }
 
         public bool ByPassUM
@@ -92,16 +97,24 @@
             return !underMaintenanceTime.IsUnderMaintenanceTime;
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
         private bool IsSecretTokenValid(Sites siteId, string secretToken)
         {
             var request = new RestRequest("/token/validate", Method.GET);
             request.AddObject(new { siteId = siteId, secretToken = secretToken });
 
-            IRestResponse response = _restClient.Execute(request);
-
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                return Convert.ToBoolean(response.Content);
+                IRestResponse response = _restClient.Execute(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return Convert.ToBoolean(response.Content);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message, ex);
             }
 
             return false;
