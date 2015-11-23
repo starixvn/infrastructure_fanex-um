@@ -117,10 +117,10 @@
             set { this[UMToName] = value; }
         }
 
-        [ConfigurationProperty(SiteIdName, IsRequired = false)]
-        public Sites SiteId
+        [ConfigurationProperty(SiteIdName, IsRequired = true)]
+        public int SiteId
         {
-            get { return (Sites)this[SiteIdName]; }
+            get { return (int)this[SiteIdName]; }
             set { this[SiteIdName] = value; }
         }
     }

@@ -54,7 +54,7 @@
                     new SiteToken
                     {
                         SiteId = (int)siteId,
-                        Token = GenerateToken(siteId)
+                        Token = Uri.EscapeDataString(GenerateToken(siteId))
                     });
             }
 

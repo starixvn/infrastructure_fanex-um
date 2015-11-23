@@ -42,7 +42,7 @@
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
             _logger = logger ?? Logger.Log;
-            _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
+            _siteId = (int)siteId == 0 ? (Sites)UMClientConfiguration.Settings.SiteId : siteId;
         }
 
         public bool ByPassUM

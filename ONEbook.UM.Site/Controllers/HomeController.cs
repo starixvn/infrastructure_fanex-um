@@ -9,15 +9,19 @@
     public class HomeController : Controller
     {
         private readonly IMaintenanceService _maintenanceService;
+        private readonly IUMControlAdapter _underMaintenanceControl;
 
         public HomeController()
-            : this(null)
+            : this(null, null)
         {
         }
 
-        public HomeController(IMaintenanceService maintenanceService)
+        public HomeController(
+            IMaintenanceService maintenanceService,
+            IUMControlAdapter underMaintenanceControl)
         {
             _maintenanceService = maintenanceService ?? new MaintenanceService();
+            _underMaintenanceControl = underMaintenanceControl ?? new UMControlAdapter();
         }
 
         public ActionResult Login()
@@ -27,7 +31,7 @@
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
                 "Site {0} is {1} under maintenance on login.",
-                UMClientConfiguration.Settings.SiteId, 
+                (Sites)UMClientConfiguration.Settings.SiteId,
                 isUM ? string.Empty : "not");
 
             return contentResult;
@@ -40,10 +44,17 @@
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
                 "Site {0} {1} under maintenance on recheckin.",
-                UMClientConfiguration.Settings.SiteId,
+                (Sites)UMClientConfiguration.Settings.SiteId,
                 isPassUM ? "passes" : "does not pass");
 
             return contentResult;
+        }
+
+        public ActionResult GetUMInfo()
+        {
+            return Json(
+                _underMaintenanceControl.GetUnderMaintenanceTime((Sites)UMClientConfiguration.Settings.SiteId), 
+                JsonRequestBehavior.AllowGet);
         }
     }
 }

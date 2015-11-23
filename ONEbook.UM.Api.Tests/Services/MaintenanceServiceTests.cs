@@ -104,7 +104,7 @@
 
             var siteTokens = _maintenanceService.GetAllUMSecretTokens();
 
-            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId].Token == GenerateToken((Sites)siteId));
+            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId].Token == Uri.EscapeDataString(GenerateToken((Sites)siteId)));
             Assert.IsTrue(isAllSiteTokensValid);
         }
 
