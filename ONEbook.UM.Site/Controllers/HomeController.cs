@@ -22,7 +22,7 @@
 
         public ActionResult Login()
         {
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin();
+            var isUM = _maintenanceService.IsUnderMaintenanceOnLoginPage();
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
@@ -35,13 +35,13 @@
 
         public ActionResult RecheckIn()
         {
-            var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn();
+            var isPassUM = _maintenanceService.IsPassUnderMaintenance();
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
-                "Site {0} is {1} under maintenance on recheckin.",
+                "Site {0} {1} under maintenance on recheckin.",
                 UMClientConfiguration.Settings.SiteId,
-                isUM ? string.Empty : "not");
+                isPassUM ? "passes" : "does not pass");
 
             return contentResult;
         }

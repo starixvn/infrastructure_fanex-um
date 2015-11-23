@@ -8,8 +8,8 @@
 
     public interface IMaintenanceService
     {
-        bool IsUnderMaintenanceOnLogin();
+        bool IsUnderMaintenanceOnLoginPage();
 
-        bool IsUnderMaintenanceOnRecheckIn();
+        bool IsPassUnderMaintenance();
     }
 }

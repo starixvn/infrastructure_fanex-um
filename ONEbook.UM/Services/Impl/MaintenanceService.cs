@@ -63,7 +63,7 @@
             }
         }
 
-        public bool IsUnderMaintenanceOnLogin()
+        public bool IsUnderMaintenanceOnLoginPage()
         {
             CheckSiteIdIsValid();
 
@@ -144,16 +144,16 @@
             return IPHelper.IsAuthorizedIP(clientIP, _allowedIPs);
         }
 
-        public bool IsUnderMaintenanceOnRecheckIn()
+        public bool IsPassUnderMaintenance()
         {
             CheckSiteIdIsValid();
 
             if (ByPassUM)
             {
-                return false;
+                return true;
             }
 
-            return !NowIsNotUnderMaintenance();
+            return NowIsNotUnderMaintenance();
         }
 
         private IRestClient GetRestClient()
