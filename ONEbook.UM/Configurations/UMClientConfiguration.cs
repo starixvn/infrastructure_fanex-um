@@ -1,16 +1,22 @@
 ﻿namespace ONEbook.UM.Configurations
 {
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
+    using Sunplus.UMControllerLibrary;
 
     public class UMClientConfiguration : ConfigurationSection
     {
         private const string SiteIdName = "SiteId";
         private const string ServiceUrisName = "ServiceUris";
         private const string EnableCheckUMName = "EnableCheckUM";
+        private const string EnableUMNowName = "EnableUMNow";
+        private const string UMFromName = "UMFrom";
+        private const string UMToName = "UMTo";
         private const string UMAddressName = "UMAddress";
         private const string AllowedIPListName = "AllowedIPs";
-        private static IList<string> _allowIPs; 
+        private static IList<Tuple<string, string>> _allowIPs;
 
         private static UMClientConfiguration settings
             = ConfigurationManager.GetSection("ONEbook.UM") as UMClientConfiguration;
@@ -23,17 +29,26 @@
             }
         }
 
-        public static IList<string> AllowedIPs
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Reviewed!")]
+        public static IList<Tuple<string, string>> AllowedIPs
         {
             get
             {
                 if (_allowIPs == null)
                 {
-                    _allowIPs = new List<string>();
+                    _allowIPs = new List<Tuple<string, string>>();
 
                     foreach (IPElement ip in settings.IPList)
                     {
-                        _allowIPs.Add(ip.Value);
+                        if (!string.IsNullOrEmpty(ip.Value))
+                        {
+                            _allowIPs.Add(new Tuple<string, string>(ip.Value, ip.Value));
+                        }
+
+                        if (!string.IsNullOrEmpty(ip.From) && !string.IsNullOrEmpty(ip.To))
+                        {
+                            _allowIPs.Add(new Tuple<string, string>(ip.From, ip.To));
+                        }
                     }
                 }
 
@@ -79,6 +94,34 @@
         {
             get { return (string)this["SecretKey"]; }
             set { this["SecretKey"] = value; }
+        }
+
+        [ConfigurationProperty(EnableUMNowName, IsRequired = false, DefaultValue = false)]
+        public bool EnableUMNow
+        {
+            get { return (bool)this[EnableUMNowName]; }
+            set { this[EnableUMNowName] = value; }
+        }
+
+        [ConfigurationProperty(UMFromName, IsRequired = false)]
+        public string UMFrom
+        {
+            get { return (string)this[UMFromName]; }
+            set { this[UMFromName] = value; }
+        }
+
+        [ConfigurationProperty(UMToName, IsRequired = false)]
+        public string UMTo
+        {
+            get { return (string)this[UMToName]; }
+            set { this[UMToName] = value; }
+        }
+
+        [ConfigurationProperty(SiteIdName, IsRequired = false)]
+        public Sites SiteId
+        {
+            get { return (Sites)this[SiteIdName]; }
+            set { this[SiteIdName] = value; }
         }
     }
 }

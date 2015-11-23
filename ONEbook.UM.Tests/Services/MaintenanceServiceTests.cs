@@ -23,9 +23,10 @@
         private MaintenanceService _maintenanceService;
         private IUMControlAdapter _underMaintenanceControlAdapter;
         private IRestClient _restClient;
-        private IList<string> _allowIPs;
+        private IList<Tuple<string, string>> _allowIPs;
         private string _clientIP;
         private ILogger _logger;
+        private Sites _siteId;
 
         [SetUp]
         public void SetUp()
@@ -33,9 +34,10 @@
             _underMaintenanceControlAdapter = Substitute.For<IUMControlAdapter>();
             _restClient = Substitute.For<IRestClient>();
             _logger = Substitute.For<ILogger>();
-            _allowIPs = new List<string>();
+            _allowIPs = new List<Tuple<string, string>>();
             _clientIP = "10.18.200.209";
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger);
+            _siteId = Sites.AccountSite;
+            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, _siteId);
         }
 
         #region IsUnderMaintenanceOnLogin Test cases
@@ -43,39 +45,34 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
         {
-            int siteId = 0;
+            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500);
 
             Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
-                () => _maintenanceService.IsUnderMaintenanceOnLogin((Sites)siteId)));
+                () => _maintenanceService.IsUnderMaintenanceOnLogin()));
         }
 
         [Test]
         public void IsUnderMaintenanceOnLogin_ExecuteGetDowntime()
         {
-            var siteId = Sites.AccountSite;
             AssumeUMTime(isUMTime: false);
 
-            _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            _maintenanceService.IsUnderMaintenanceOnLogin();
 
             _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime(
-                Arg.Is<Sites>(actualSiteId => actualSiteId == siteId));
+                Arg.Is<Sites>(actualSiteId => actualSiteId == _siteId));
         }
 
         private void AssumeUMTime(bool isUMTime = true)
         {
-            _underMaintenanceControlAdapter.GetUnderMaintenanceTime(Arg.Any<Sites>()).Returns(new UnderMaintenanceTime
-            {
-                IsUnderMaintenanceTime = isUMTime
-            });
+            _underMaintenanceControlAdapter.GetUnderMaintenanceTime(Arg.Any<Sites>()).Returns(new UnderMaintenanceTime(isUMTime, string.Empty, string.Empty));
         }
 
         [Test]
         public void IsUnderMaintenanceOnLogin_NowIsNotUMTime_ReturnFalse()
         {
-            var siteId = Sites.AccountSite;
             AssumeUMTime(isUMTime: false);
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsFalse(isUM);
         }
@@ -107,11 +104,10 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_RequestDoesNotContainSecretToken_ReturnTrue()
         {
-            var siteId = Sites.AccountSite;
             FakeHttpContext(string.Empty);
             AssumeUMTime();
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsTrue(isUM);
         }
@@ -119,12 +115,11 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_IPIsNotAllowedToAccess_ReturnTrue()
         {
-            var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
             FakeHttpContext(queryString);
             AssumeUMTime();
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsTrue(isUM);
         }
@@ -132,13 +127,12 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_IPIsAllowedToAccess_ExecuteRestClient()
         {
-            var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
             FakeHttpContext(queryString);
             AssumeUMTime();
-            _allowIPs.Add("10.18.200.209");
+            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
 
-            _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            _maintenanceService.IsUnderMaintenanceOnLogin();
 
             _restClient.Received().Execute(Arg.Any<IRestRequest>());
         }
@@ -146,11 +140,10 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_SecretTokenIsValid_ReturnFalse()
         {
-            var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
             FakeHttpContext(queryString);
             AssumeUMTime();
-            _allowIPs.Add("10.18.200.209");
+            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
 
             RestResponse restResponse = new RestResponse();
             restResponse.StatusCode = HttpStatusCode.OK;
@@ -158,7 +151,7 @@
 
             _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsFalse(isUM);
         }
@@ -166,11 +159,10 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_SecretTokenIsNotValid_ReturnTrue()
         {
-            var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
             FakeHttpContext(queryString);
             AssumeUMTime();
-            _allowIPs.Add("10.18.200.209");
+            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
 
             RestResponse restResponse = new RestResponse();
             restResponse.StatusCode = HttpStatusCode.OK;
@@ -178,7 +170,7 @@
 
             _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsTrue(isUM);
         }
@@ -186,11 +178,10 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_SecretTokenIsValid_SetByPassUMToSession()
         {
-            var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
             FakeHttpContext(queryString);
             AssumeUMTime();
-            _allowIPs.Add("10.18.200.209");
+            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
 
             RestResponse restResponse = new RestResponse();
             restResponse.StatusCode = HttpStatusCode.OK;
@@ -198,7 +189,7 @@
 
             _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
-            _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsTrue(_maintenanceService.ByPassUM);
         }
@@ -206,15 +197,14 @@
         [Test]
         public void IsUnderMaintenanceOnLogin_TokenAPIThrowException_ReturnTrue()
         {
-            var siteId = Sites.AccountSite;
             var queryString = "UMToken=UMToken";
             FakeHttpContext(queryString);
             AssumeUMTime();
-            _allowIPs.Add("10.18.200.209");
+            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
 
             _restClient.Execute(Arg.Any<IRestRequest>()).Returns(x => { throw new Exception(); });
 
-            var isUMActual = _maintenanceService.IsUnderMaintenanceOnLogin(siteId);
+            var isUMActual = _maintenanceService.IsUnderMaintenanceOnLogin();
 
             Assert.IsTrue(isUMActual);
         }
@@ -226,34 +216,32 @@
         [Test]
         public void IsUnderMaintenanceOnRecheckIn_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
         {
-            int siteId = 0;
+            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500);
 
             Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
-                () => _maintenanceService.IsUnderMaintenanceOnRecheckIn((Sites)siteId)));
+                () => _maintenanceService.IsUnderMaintenanceOnRecheckIn()));
         }
 
         [Test]
         public void IsUnderMaintenanceOnRecheckIn_NowIsNotUMTime_ReturnFalse()
         {
-            var siteId = Sites.AccountSite;
             AssumeUMTime(false);
 
-            _maintenanceService.IsUnderMaintenanceOnRecheckIn(siteId);
+            _maintenanceService.IsUnderMaintenanceOnRecheckIn();
 
             _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime(
-                Arg.Is<Sites>(actualSiteId => actualSiteId == siteId));
+                Arg.Is<Sites>(actualSiteId => actualSiteId == _siteId));
         }
 
         [TestCase(true)]
         [TestCase(false)]
         public void IsUnderMaintenanceOnRecheckIn_NowIsUMTime_ReturnByPassUM(bool isByPassUM)
         {
-            var siteId = Sites.AccountSite;
             AssumeUMTime();
 
             HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = isByPassUM;
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn();
 
             Assert.AreEqual(isByPassUM, !isUM);
         }
@@ -261,12 +249,11 @@
         [Test]
         public void IsUnderMaintenanceOnRecheckIn_ByPassUMInSessionIsNull_ReturnTrue()
         {
-            var siteId = Sites.AccountSite;
             AssumeUMTime();
 
             HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = null;
 
-            var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn(siteId);
+            var isUM = _maintenanceService.IsUnderMaintenanceOnRecheckIn();
 
             Assert.IsTrue(isUM);
         }

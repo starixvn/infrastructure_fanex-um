@@ -8,12 +8,10 @@
     {
         public UnderMaintenanceTime GetUnderMaintenanceTime(Sites siteId)
         {
-            var downTime = new UnderMaintenanceTime
+            if (UMClientConfiguration.Settings.EnableUMNow)
             {
-                From = "0:00",
-                To = "0:00",
-                IsUnderMaintenanceTime = false
-            };
+                return new UnderMaintenanceTime(true, UMClientConfiguration.Settings.UMFrom, UMClientConfiguration.Settings.UMTo);
+            }
 
             if (UMClientConfiguration.Settings.EnableCheckUM)
             {
@@ -21,20 +19,19 @@
                 string timeTo = string.Empty;
                 var umctrl = new UMBusiness();
 
-                downTime.IsUnderMaintenanceTime = umctrl.isUnderMaintainence(
+                var isUnderMaintenanceTime = umctrl.isUnderMaintainence(
                     siteId,
                     UMClientConfiguration.Settings.UMAddress,
                     ref timeFrom,
                     ref timeTo);
 
-                if (downTime.IsUnderMaintenanceTime)
+                if (isUnderMaintenanceTime)
                 {
-                    downTime.From = timeFrom;
-                    downTime.To = timeTo;
+                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom, timeTo);
                 }
             }
 
-            return downTime;
+            return new UnderMaintenanceTime(false, "0:00", "0:00");
         }
     }
 }

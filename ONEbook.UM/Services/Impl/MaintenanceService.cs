@@ -19,26 +19,30 @@
         private readonly IUMControlAdapter _underMaintenanceControlAdapter;
         private readonly IRestClient _restClient;
         private readonly ILogger _logger;
-        private IList<string> _allowedIPs;
+        private IList<Tuple<string, string>> _allowedIPs;
         private string _clientIP;
+        private Sites _siteId;
 
         public MaintenanceService()
-            : this(null, null, null, null, null)
+            : this(null, null, null, null, null, 0)
         {
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Reviewed!")]
         public MaintenanceService(
             IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
-            IList<string> allowedIPs,
+            IList<Tuple<string, string>> allowedIPs,
             string clientIP,
-            ILogger logger)
+            ILogger logger,
+            Sites siteId)
         {
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
             _restClient = restClient ?? GetRestClient();
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
             _logger = logger ?? Logger.Log;
+            _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
         }
 
         public bool ByPassUM
@@ -59,11 +63,11 @@
             }
         }
 
-        public bool IsUnderMaintenanceOnLogin(Sites siteId)
+        public bool IsUnderMaintenanceOnLogin()
         {
-            CheckSiteIdIsValid(siteId);
+            CheckSiteIdIsValid();
 
-            if (NowIsNotUnderMaintenance(siteId))
+            if (NowIsNotUnderMaintenance())
             {
                 return false;
             }
@@ -72,7 +76,7 @@
 
             if (!string.IsNullOrEmpty(secretToken)
                 && IsRequestIPAllowToAccess()
-                && IsSecretTokenValid(siteId, secretToken))
+                && IsSecretTokenValid(secretToken))
             {
                 ByPassUM = true;
 
@@ -82,26 +86,27 @@
             return true;
         }
 
-        private void CheckSiteIdIsValid(Sites siteId)
+        [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "Reviewed")]
+        private void CheckSiteIdIsValid()
         {
-            if (!Enum.IsDefined(typeof(Sites), siteId))
+            if (!Enum.IsDefined(typeof(Sites), _siteId))
             {
-                throw new ArgumentOutOfRangeException("siteId", "Site Id is not valid");
+                throw new ArgumentOutOfRangeException("_siteId", "Site Id is not valid");
             }
         }
 
-        private bool NowIsNotUnderMaintenance(Sites siteId)
+        private bool NowIsNotUnderMaintenance()
         {
-            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
+            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(_siteId);
 
             return !underMaintenanceTime.IsUnderMaintenanceTime;
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
-        private bool IsSecretTokenValid(Sites siteId, string secretToken)
+        private bool IsSecretTokenValid(string secretToken)
         {
             var request = new RestRequest("/token/validate", Method.GET);
-            request.AddObject(new { siteId = siteId, secretToken = secretToken });
+            request.AddObject(new { siteId = _siteId, secretToken = secretToken });
 
             try
             {
@@ -136,19 +141,19 @@
         {
             var clientIP = _clientIP ?? IPHelper.GetClientIPAddress(HttpContext.Current.Request);
 
-            return _allowedIPs.Contains(clientIP);
+            return IPHelper.IsAuthorizedIP(clientIP, _allowedIPs);
         }
 
-        public bool IsUnderMaintenanceOnRecheckIn(Sites siteId)
+        public bool IsUnderMaintenanceOnRecheckIn()
         {
-            CheckSiteIdIsValid(siteId);
+            CheckSiteIdIsValid();
 
-            if (NowIsNotUnderMaintenance(siteId))
+            if (ByPassUM)
             {
                 return false;
             }
 
-            return !ByPassUM;
+            return !NowIsNotUnderMaintenance();
         }
 
         private IRestClient GetRestClient()

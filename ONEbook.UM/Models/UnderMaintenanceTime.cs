@@ -2,10 +2,20 @@
 {
     public class UnderMaintenanceTime
     {
-        public string From { get; set; }
+        public UnderMaintenanceTime(
+            bool isUnderMaintenanceTime,
+            string from,
+            string to)
+        {
+            IsUnderMaintenanceTime = isUnderMaintenanceTime;
+            From = from;
+            To = to;
+        }
 
-        public string To { get; set; }
+        public string From { get; private set; }
 
-        public bool IsUnderMaintenanceTime { get; set; }
+        public string To { get; private set; }
+
+        public bool IsUnderMaintenanceTime { get; private set; }
     }
 }
