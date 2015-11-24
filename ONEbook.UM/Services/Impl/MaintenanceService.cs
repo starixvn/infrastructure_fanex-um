@@ -72,11 +72,11 @@
                 return false;
             }
 
-            var secretToken = GetSecretTokenFromQueryString();
+            var token = GetTokenFromQueryString();
 
-            if (!string.IsNullOrEmpty(secretToken)
+            if (!string.IsNullOrEmpty(token)
                 && IsRequestIPAllowToAccess()
-                && IsSecretTokenValid(secretToken))
+                && IsTokenValid(token))
             {
                 ByPassUM = true;
 
@@ -103,10 +103,10 @@
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
-        private bool IsSecretTokenValid(string secretToken)
+        private bool IsTokenValid(string token)
         {
             var request = new RestRequest("/token/validate", Method.GET);
-            request.AddObject(new { siteId = _siteId, secretToken = secretToken });
+            request.AddObject(new { siteId = _siteId, token = token });
 
             try
             {
@@ -115,6 +115,10 @@
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     return Convert.ToBoolean(response.Content);
+                }
+                else 
+                {
+                    _logger.Warn(string.Format("{0} \r\n {1}", response.Content, response.ErrorMessage ?? string.Empty));
                 }
             }
             catch (Exception ex)
@@ -125,7 +129,7 @@
             return false;
         }
 
-        private string GetSecretTokenFromQueryString()
+        private string GetTokenFromQueryString()
         {
             var request = HttpContext.Current.Request;
             if (request != null

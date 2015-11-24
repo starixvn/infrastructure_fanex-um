@@ -6,6 +6,6 @@
     {
         public Sites SiteId { get; set; }
 
-        public string SecretToken { get; set; }
+        public string Token { get; set; }
     }
 }

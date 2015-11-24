@@ -21,44 +21,44 @@
             _maintenanceService = new MaintenanceService();
         }
 
-        #region IsValidUMSecretToken
+        #region IsValidUMToken
 
         [TestCase(null)]
         [TestCase("")]
-        public void IsValidUMSecretToken_TokenIsNullOrEmpty_ThrowArgumentException(string token)
+        public void IsValidUMToken_TokenIsNullOrEmpty_ThrowArgumentException(string token)
         {
             Assert.Throws<ArgumentException>(new TestDelegate(
-                () => _maintenanceService.IsValidUMSecretToken(Arg.Any<Sites>(), token)));
+                () => _maintenanceService.IsValidUMToken(Arg.Any<Sites>(), token)));
         }
 
         [TestCase(0)]
         [TestCase(-1)]
-        public void IsValidUMSecretToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(int siteId)
+        public void IsValidUMToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(int siteId)
         {
             string token = "Token";
 
             Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
-                () => _maintenanceService.IsValidUMSecretToken((Sites)siteId, token)));
+                () => _maintenanceService.IsValidUMToken((Sites)siteId, token)));
         }
 
         [Test]
-        public void IsValidUMSecretToken_WrongToken_ReturnFalse()
+        public void IsValidUMToken_WrongToken_ReturnFalse()
         {
             string token = "aaaaa";
             Sites siteId = Sites.AccountSite;
 
-            var isValid = _maintenanceService.IsValidUMSecretToken(siteId, token);
+            var isValid = _maintenanceService.IsValidUMToken(siteId, token);
 
             Assert.IsFalse(isValid);
         }
 
         [Test]
-        public void IsValidUMSecretToken_ValidToken_ReturnTrue()
+        public void IsValidUMToken_ValidToken_ReturnTrue()
         {
             var siteId = Sites.AccountSite;
             string token = GenerateToken(siteId);
 
-            var isValid = _maintenanceService.IsValidUMSecretToken(siteId, token);
+            var isValid = _maintenanceService.IsValidUMToken(siteId, token);
 
             Assert.IsTrue(isValid);
         }
@@ -70,44 +70,44 @@
             return Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(key)));
         }
 
-        #endregion IsValidUMSecretToken
+        #endregion IsValidUMToken
 
-        #region GetUMSecretToken
+        #region GetUMToken
 
         [TestCase(0)]
         [TestCase(-1)]
-        public void GetUMSecretToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(Sites siteId)
+        public void GetUMToken_SiteIdIsNegativeOrZero_ThrowArgumentOutOfRangeException(Sites siteId)
         {
             Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
-                () => _maintenanceService.GetUMSecretToken(siteId)));
+                () => _maintenanceService.GetUMToken(siteId)));
         }
 
         [Test]
-        public void GetUMSecretToken_SiteIdIsGreaterThanZero_ReturnSecretToken()
+        public void GetUMToken_SiteIdIsGreaterThanZero_ReturnSecretToken()
         {
             var siteId = Sites.AccountSite;
             var expectedToken = GenerateToken(siteId);
 
-            var actualToken = _maintenanceService.GetUMSecretToken(siteId);
+            var actualToken = _maintenanceService.GetUMToken(siteId);
 
             Assert.AreEqual(expectedToken, actualToken);
         }
 
-        #endregion GetUMSecretToken
+        #endregion GetUMToken
 
-        #region GetAllUMSecretToken
+        #region GetAllUMTokens
 
         [Test]
-        public void GetAllUMSecretToken_ReturnAllSiteSecretToken()
+        public void GetAllUMTokens_ReturnAllSiteSecretToken()
         {
             var siteIds = Enum.GetValues(typeof(Sites)).Cast<int>();
 
-            var siteTokens = _maintenanceService.GetAllUMSecretTokens();
+            var siteTokens = _maintenanceService.GetAllUMTokens();
 
             var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId].Token == Uri.EscapeDataString(GenerateToken((Sites)siteId)));
             Assert.IsTrue(isAllSiteTokensValid);
         }
 
-        #endregion GetAllUMSecretToken
+        #endregion GetAllUMTokens
     }
 }

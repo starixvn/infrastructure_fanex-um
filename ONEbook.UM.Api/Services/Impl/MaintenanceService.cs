@@ -12,14 +12,14 @@
 
     public class MaintenanceService : IMaintenanceService
     {
-        public bool IsValidUMSecretToken(Sites siteId, string secretToken)
+        public bool IsValidUMToken(Sites siteId, string token)
         {
-            Check.Argument.IsNotEmpty(secretToken, "secretToken");
+            Check.Argument.IsNotEmpty(token, "token");
             Check.Argument.IsNotNegativeOrZero((int)siteId, "siteId");
 
             var validToken = GenerateToken(siteId);
 
-            return validToken.Equals(secretToken, StringComparison.Ordinal);
+            return validToken.Equals(token, StringComparison.Ordinal);
         }
 
         private string GenerateToken(Sites siteId)
@@ -35,14 +35,14 @@
             }
         }
 
-        public string GetUMSecretToken(Sites siteId)
+        public string GetUMToken(Sites siteId)
         {
             Check.Argument.IsNotNegativeOrZero((int)siteId, "siteId");
 
             return GenerateToken(siteId);
         }
 
-        public IDictionary<Sites, SiteToken> GetAllUMSecretTokens()
+        public IDictionary<Sites, SiteToken> GetAllUMTokens()
         {
             var siteIds = Enum.GetValues(typeof(Sites)).Cast<Sites>();
             var siteTokens = new Dictionary<Sites, SiteToken>();

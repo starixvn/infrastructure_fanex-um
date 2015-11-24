@@ -6,10 +6,10 @@
 
     public interface IMaintenanceService
     {
-        bool IsValidUMSecretToken(Sites siteId, string secretToken);
+        bool IsValidUMToken(Sites siteId, string token);
 
-        string GetUMSecretToken(Sites siteId);
+        string GetUMToken(Sites siteId);
 
-        IDictionary<Sites, SiteToken> GetAllUMSecretTokens();
+        IDictionary<Sites, SiteToken> GetAllUMTokens();
     }
 }
