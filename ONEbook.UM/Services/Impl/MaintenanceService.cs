@@ -6,7 +6,6 @@
     using System.Net;
     using System.Web;
     using Fanex.Logging;
-    using Fanex.UM.Helpers;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using RestSharp;
@@ -116,7 +115,7 @@
                 {
                     return Convert.ToBoolean(response.Content);
                 }
-                else 
+                else
                 {
                     _logger.Warn(string.Format("{0} \r\n {1}", response.Content, response.ErrorMessage ?? string.Empty));
                 }

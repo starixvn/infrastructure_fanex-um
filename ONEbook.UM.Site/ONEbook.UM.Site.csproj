@@ -151,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ONEbook.UM\ONEbook.UM.csproj">
-      <Project>{82217767-5911-437a-a1c5-1b22ed259c5f}</Project>
+      <Project>{581ed0ed-4aac-4dd4-bc28-4e99d9861911}</Project>
       <Name>ONEbook.UM</Name>
     </ProjectReference>
   </ItemGroup>

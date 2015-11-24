@@ -4,7 +4,6 @@
     using System.Security.Cryptography;
     using System.Text;
     using System.Web;
-    using Fanex.UM.Helpers;
     using ONEbook.UM.Configurations;
     using RestSharp;
     using RestSharp.Authenticators;

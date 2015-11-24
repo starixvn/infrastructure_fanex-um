@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -21,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("448c252d-ecad-4e6d-9843-ae2a85e9b2b8")]
+[assembly: Guid("2673439a-2289-4474-bb0c-4debffecdc93")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -35,5 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
 [assembly: InternalsVisibleTo("ONEbook.UM.Tests")]
