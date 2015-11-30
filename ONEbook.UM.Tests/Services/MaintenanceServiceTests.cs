@@ -58,13 +58,12 @@
 
             _maintenanceService.IsUnderMaintenanceOnLoginPage();
 
-            _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime(
-                Arg.Is<Sites>(actualSiteId => actualSiteId == _siteId));
+            _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
         }
 
         private void AssumeUMTime(bool isUMTime = true)
         {
-            _underMaintenanceControlAdapter.GetUnderMaintenanceTime(Arg.Any<Sites>()).Returns(new UnderMaintenanceTime(isUMTime, string.Empty, string.Empty));
+            _underMaintenanceControlAdapter.GetUnderMaintenanceTime().Returns(new UnderMaintenanceTime(isUMTime, string.Empty, string.Empty));
         }
 
         [Test]
@@ -238,8 +237,7 @@
 
             _maintenanceService.IsPassUnderMaintenance();
 
-            _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime(
-                Arg.Is<Sites>(actualSiteId => actualSiteId == _siteId));
+            _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
         }
 
         [TestCase(true)]

@@ -32,7 +32,7 @@
                 throw new ArgumentNullException("request", "Rest Request cannot be null");
             }
 
-            string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).ToString().ToLower());
+            string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
 
             string requestHttpMethod = request.Method.ToString();
 

@@ -53,7 +53,7 @@
         public ActionResult GetUMInfo()
         {
             return Json(
-                _underMaintenanceControl.GetUnderMaintenanceTime((Sites)UMClientConfiguration.Settings.SiteId), 
+                _underMaintenanceControl.GetUnderMaintenanceTime(), 
                 JsonRequestBehavior.AllowGet);
         }
     }

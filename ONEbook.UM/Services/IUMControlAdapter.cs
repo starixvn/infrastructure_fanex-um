@@ -5,6 +5,6 @@
 
     public interface IUMControlAdapter
     {
-        UnderMaintenanceTime GetUnderMaintenanceTime(Sites siteId);
+        UnderMaintenanceTime GetUnderMaintenanceTime();
     }
 }

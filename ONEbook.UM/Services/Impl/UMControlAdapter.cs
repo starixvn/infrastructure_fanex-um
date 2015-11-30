@@ -6,7 +6,19 @@
 
     public class UMControlAdapter : IUMControlAdapter
     {
-        public UnderMaintenanceTime GetUnderMaintenanceTime(Sites siteId)
+        private readonly Sites _siteId;
+
+        public UMControlAdapter()
+            : this((Sites)UMClientConfiguration.Settings.SiteId)
+        {
+        }
+
+        public UMControlAdapter(Sites site)
+        {
+            _siteId = site;
+        }
+
+        public UnderMaintenanceTime GetUnderMaintenanceTime()
         {
             if (UMClientConfiguration.Settings.EnableUMNow)
             {
@@ -20,7 +32,7 @@
                 var umctrl = new UMBusiness();
 
                 var isUnderMaintenanceTime = umctrl.isUnderMaintainence(
-                    siteId,
+                    _siteId,
                     UMClientConfiguration.Settings.UMAddress,
                     ref timeFrom,
                     ref timeTo);

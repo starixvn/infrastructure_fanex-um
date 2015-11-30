@@ -36,12 +36,12 @@
             ILogger logger,
             Sites siteId)
         {
-            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
+            _siteId = (int)siteId == 0 ? (Sites)UMClientConfiguration.Settings.SiteId : siteId;
+            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId);
             _restClient = restClient ?? GetRestClient();
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
             _logger = logger ?? Logger.Log;
-            _siteId = (int)siteId == 0 ? (Sites)UMClientConfiguration.Settings.SiteId : siteId;
         }
 
         public bool ByPassUM
@@ -96,7 +96,7 @@
 
         private bool NowIsNotUnderMaintenance()
         {
-            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime(_siteId);
+            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime();
 
             return !underMaintenanceTime.IsUnderMaintenanceTime;
         }
@@ -110,7 +110,6 @@
             try
             {
                 IRestResponse response = _restClient.Execute(request);
-
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     return Convert.ToBoolean(response.Content);
