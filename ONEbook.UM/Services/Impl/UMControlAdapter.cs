@@ -4,7 +4,7 @@
     using ONEbook.UM.Models;
     using Sunplus.UMControllerLibrary;
 
-    public class UMControlAdapter : IUMControlAdapter
+    internal class UMControlAdapter : IUMControlAdapter
     {
         private readonly Sites _siteId;
 
@@ -20,7 +20,7 @@
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
         {
-            if (UMClientConfiguration.Settings.EnableUMNow)
+            if (UMClientConfiguration.Settings.EnableUnscheduledUM)
             {
                 return new UnderMaintenanceTime(true, UMClientConfiguration.Settings.UMFrom, UMClientConfiguration.Settings.UMTo);
             }

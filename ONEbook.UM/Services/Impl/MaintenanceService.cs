@@ -8,6 +8,7 @@
     using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
+    using ONEbook.UM.Models;
     using RestSharp;
     using Sunplus.UMControllerLibrary;
 
@@ -62,7 +63,7 @@
             }
         }
 
-        public bool IsUnderMaintenanceOnLoginPage()
+        public bool IsUnderMaintenance()
         {
             CheckSiteIdIsValid();
 
@@ -164,6 +165,11 @@
             restClient.Authenticator = new HmacAuthenticator();
 
             return restClient;
+        }
+
+        public UnderMaintenanceTime GetUnderMaintenanceTime()
+        {
+            return _underMaintenanceControlAdapter.GetUnderMaintenanceTime();
         }
     }
 }

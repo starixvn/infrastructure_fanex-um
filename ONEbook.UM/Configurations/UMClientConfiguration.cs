@@ -11,7 +11,7 @@
         private const string SiteIdName = "SiteId";
         private const string ServiceUrisName = "ServiceUris";
         private const string EnableCheckUMName = "EnableCheckUM";
-        private const string EnableUMNowName = "EnableUMNow";
+        private const string EnableUnscheduledUMName = "EnableUnscheduledUM";
         private const string UMFromName = "UMFrom";
         private const string UMToName = "UMTo";
         private const string UMAddressName = "UMAddress";
@@ -96,11 +96,11 @@
             set { this["SecretKey"] = value; }
         }
 
-        [ConfigurationProperty(EnableUMNowName, IsRequired = false, DefaultValue = false)]
-        public bool EnableUMNow
+        [ConfigurationProperty(EnableUnscheduledUMName, IsRequired = false, DefaultValue = false)]
+        public bool EnableUnscheduledUM
         {
-            get { return (bool)this[EnableUMNowName]; }
-            set { this[EnableUMNowName] = value; }
+            get { return (bool)this[EnableUnscheduledUMName]; }
+            set { this[EnableUnscheduledUMName] = value; }
         }
 
         [ConfigurationProperty(UMFromName, IsRequired = false)]

@@ -9,24 +9,21 @@
     public class HomeController : Controller
     {
         private readonly IMaintenanceService _maintenanceService;
-        private readonly IUMControlAdapter _underMaintenanceControl;
 
         public HomeController()
-            : this(null, null)
+            : this(null)
         {
         }
 
         public HomeController(
-            IMaintenanceService maintenanceService,
-            IUMControlAdapter underMaintenanceControl)
+            IMaintenanceService maintenanceService)
         {
             _maintenanceService = maintenanceService ?? new MaintenanceService();
-            _underMaintenanceControl = underMaintenanceControl ?? new UMControlAdapter();
         }
 
         public ActionResult Login()
         {
-            var isUM = _maintenanceService.IsUnderMaintenanceOnLoginPage();
+            var isUM = _maintenanceService.IsUnderMaintenance();
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
@@ -53,7 +50,7 @@
         public ActionResult GetUMInfo()
         {
             return Json(
-                _underMaintenanceControl.GetUnderMaintenanceTime(), 
+                _maintenanceService.GetUnderMaintenanceTime(), 
                 JsonRequestBehavior.AllowGet);
         }
     }

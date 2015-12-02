@@ -1,15 +1,13 @@
 ﻿namespace ONEbook.UM.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Sunplus.UMControllerLibrary;
+    using ONEbook.UM.Models;
 
     public interface IMaintenanceService
     {
-        bool IsUnderMaintenanceOnLoginPage();
+        bool IsUnderMaintenance();
 
         bool IsPassUnderMaintenance();
+
+        UnderMaintenanceTime GetUnderMaintenanceTime();
     }
 }
