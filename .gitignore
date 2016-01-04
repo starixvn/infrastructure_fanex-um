@@ -89,4 +89,4 @@ node_modules
 bower_components
 **/Typings/**
 **/Compass/**
-Fanex.CustomerSetting.DemoSite/App/
+*.vs
