@@ -11,6 +11,7 @@
     using System.Web;
     using System.Web.Http.Controllers;
     using System.Web.Http.Filters;
+    using Fanex.Logging;
     using ONEbook.UM.Api.Configurations;
 
     /// <summary>
@@ -88,6 +89,7 @@
         private bool IsValidRequest(HttpRequestMessage req, string siteId, string incomingBase64Signature, string nonce, string requestTimeStamp)
         {
             string requestUri = HttpUtility.UrlEncode(req.RequestUri.AbsoluteUri.ToLower());
+            LogService.Info("requestUri: " + requestUri);
             string requestHttpMethod = req.Method.Method;
 
             var sharedKey = UnderMaintenanceApiConfiguration.Settings.SecretKey;

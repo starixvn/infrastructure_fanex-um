@@ -4,6 +4,7 @@
     using System.Security.Cryptography;
     using System.Text;
     using System.Web;
+    using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using RestSharp;
     using RestSharp.Authenticators;
@@ -33,6 +34,8 @@
             }
 
             string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
+
+            LogService.Info("requestUri: " + requestUri);
 
             string requestHttpMethod = request.Method.ToString();
 
