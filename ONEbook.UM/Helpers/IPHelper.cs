@@ -6,7 +6,7 @@
     using System.Net;
     using System.Net.Sockets;
     using System.Web;
-
+    using Fanex.Logging;
     /// <summary>
     /// Helper class for getting current client IP address.
     /// </summary>
@@ -83,6 +83,8 @@
                     return true;
                 }
             }
+
+            LogService.Info("User IP is not allowed: " + clientIP);
 
             return false;
         }

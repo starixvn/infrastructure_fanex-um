@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Net.Http.Formatting;
     using System.Web.Http;
+    using Filters;
     using Newtonsoft.Json.Serialization;
     using ONEbook.UM.Api.Helpers;
 
@@ -39,6 +40,8 @@
             var jsonFormater = formaters.JsonFormatter;
             jsonFormater.Indent = true;
             jsonFormater.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            config.Filters.Add(new LogInfoFilter());
         }
     }
 }

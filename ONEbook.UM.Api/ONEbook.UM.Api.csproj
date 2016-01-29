@@ -129,6 +129,7 @@
     <Compile Include="Filters\GlobalExceptionFilter.cs" />
     <Compile Include="Filters\HmacAuthorizationFilter.cs" />
     <Compile Include="Filters\HttpRequestMessageExtensions.cs" />
+    <Compile Include="Filters\LogInfoFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -145,9 +146,9 @@
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <None Include="Web.pro.config">
+    <Content Include="Web.pro.config">
       <DependentUpon>Web.config</DependentUpon>
-    </None>
+    </Content>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
