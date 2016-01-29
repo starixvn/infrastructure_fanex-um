@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Web;
     using Fanex.Common.Helper;
     using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Models;
@@ -31,7 +32,7 @@
             {
                 var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(key));
 
-                return Convert.ToBase64String(hash);
+                return HttpServerUtility.UrlTokenEncode(hash);
             }
         }
 
@@ -50,11 +51,11 @@
             foreach (Sites siteId in siteIds)
             {
                 siteTokens.Add(
-                    siteId, 
+                    siteId,
                     new SiteToken
                     {
                         SiteId = (int)siteId,
-                        Token = Uri.EscapeDataString(GenerateToken(siteId))
+                        Token = GenerateToken(siteId)
                     });
             }
 

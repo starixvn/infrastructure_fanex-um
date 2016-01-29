@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Web;
     using NSubstitute;
     using NUnit.Framework;
     using ONEbook.UM.Api.Configurations;
@@ -67,7 +68,7 @@
         {
             string key = string.Format("{0}_{1}_{2}", siteId, DateTime.UtcNow.ToShortDateString(), UnderMaintenanceApiConfiguration.Settings.SecretKey);
 
-            return Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(key)));
+            return HttpServerUtility.UrlTokenEncode(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(key)));
         }
 
         #endregion IsValidUMToken
@@ -104,7 +105,7 @@
 
             var siteTokens = _maintenanceService.GetAllUMTokens();
 
-            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId].Token == Uri.EscapeDataString(GenerateToken((Sites)siteId)));
+            var isAllSiteTokensValid = siteIds.All(siteId => siteTokens[(Sites)siteId].Token == GenerateToken((Sites)siteId));
             Assert.IsTrue(isAllSiteTokensValid);
         }
 

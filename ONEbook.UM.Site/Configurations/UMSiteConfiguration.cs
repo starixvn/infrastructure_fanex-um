@@ -44,7 +44,8 @@
             set { this[AllowedLoginAccountsConfigName] = value; }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed!"), ConfigurationProperty(ServiceUriName, IsRequired = true)]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed!"), 
+            ConfigurationProperty(ServiceUriName, IsRequired = true)]
         public string ServiceUri
         {
             get { return (string)this[ServiceUriName]; }
