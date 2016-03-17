@@ -27,6 +27,7 @@
         private string _clientIP;
         private ILogger _logger;
         private Sites _siteId;
+        private bool _isAllowAllIPs;
 
         [SetUp]
         public void SetUp()
@@ -37,7 +38,15 @@
             _allowIPs = new List<Tuple<string, string>>();
             _clientIP = "10.18.200.209";
             _siteId = Sites.AccountSite;
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, _siteId);
+
+            _maintenanceService = new MaintenanceService(
+                _underMaintenanceControlAdapter, 
+                _restClient, 
+                _allowIPs, 
+                _clientIP, 
+                _logger, 
+                _siteId,
+                _isAllowAllIPs);
         }
 
         #region IsUnderMaintenance Test cases
@@ -45,7 +54,7 @@
         [Test]
         public void IsUnderMaintenance_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
         {
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500);
+            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500, _isAllowAllIPs);
 
             Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
                 () => _maintenanceService.IsUnderMaintenance()));
@@ -223,7 +232,7 @@
         [Test]
         public void IsPassUnderMaintenance_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
         {
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500);
+            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500, _isAllowAllIPs);
 
             Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
                 () => _maintenanceService.IsPassUnderMaintenance()));

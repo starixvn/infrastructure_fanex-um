@@ -6,12 +6,21 @@
     [SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface", Justification = "Reviewed!")]
     internal class IPCollection : ConfigurationElementCollection
     {
+        private const string AllowAllName = "AllowAll";
+
         public override ConfigurationElementCollectionType CollectionType
         {
             get
             {
                 return ConfigurationElementCollectionType.AddRemoveClearMap;
             }
+        }
+
+        [ConfigurationProperty(AllowAllName, IsRequired = false, DefaultValue = true)]
+        public bool AllowAll
+        {
+            get { return (bool)this[AllowAllName]; }
+            set { this[AllowAllName] = value; }
         }
 
         public IPElement this[int index]

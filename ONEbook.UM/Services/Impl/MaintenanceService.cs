@@ -22,20 +22,22 @@
         private IList<Tuple<string, string>> _allowedIPs;
         private string _clientIP;
         private Sites _siteId;
+        private bool _isAllowAllIPs;
 
         public MaintenanceService()
-            : this(null, null, null, null, null, 0)
+            : this(null, null, null, null, null, 0, null)
         {
         }
 
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Reviewed!")]
-        public MaintenanceService(
+        internal MaintenanceService(
             IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
             IList<Tuple<string, string>> allowedIPs,
             string clientIP,
             ILogger logger,
-            Sites siteId)
+            Sites siteId,
+            bool? isAllowAllIPs)
         {
             _siteId = (int)siteId == 0 ? (Sites)UMClientConfiguration.Settings.SiteId : siteId;
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId);
@@ -43,6 +45,7 @@
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
             _logger = logger ?? Logger.Log;
+            _isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
         }
 
         public bool ByPassUM
@@ -142,6 +145,11 @@
 
         private bool IsRequestIPAllowToAccess()
         {
+            if (_isAllowAllIPs)
+            {
+                return true;
+            }
+
             var clientIP = _clientIP ?? IPHelper.GetClientIPAddress(HttpContext.Current.Request);
 
             return IPHelper.IsAuthorizedIP(clientIP, _allowedIPs);

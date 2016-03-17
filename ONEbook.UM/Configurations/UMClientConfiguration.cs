@@ -16,6 +16,9 @@
         private const string UMToName = "UMTo";
         private const string UMAddressName = "UMAddress";
         private const string AllowedIPListName = "AllowedIPs";
+        private const string SecretKeyName = "SecretKey";
+        private const string UMPageUrlName = "UMPageUrl";
+
         private static IList<Tuple<string, string>> _allowIPs;
 
         private static UMClientConfiguration settings
@@ -89,11 +92,11 @@
             }
         }
 
-        [ConfigurationProperty("SecretKey", IsRequired = false, DefaultValue = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=")]
+        [ConfigurationProperty(SecretKeyName, IsRequired = false, DefaultValue = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=")]
         public string SecretKey
         {
-            get { return (string)this["SecretKey"]; }
-            set { this["SecretKey"] = value; }
+            get { return (string)this[SecretKeyName]; }
+            set { this[SecretKeyName] = value; }
         }
 
         [ConfigurationProperty(EnableUnscheduledUMName, IsRequired = false, DefaultValue = false)]
@@ -115,6 +118,13 @@
         {
             get { return (string)this[UMToName]; }
             set { this[UMToName] = value; }
+        }
+
+        [ConfigurationProperty(UMPageUrlName, IsRequired = false, DefaultValue = "~/UserLogin/Common/Offline")]
+        public string UMPageUrl
+        {
+            get { return (string)this[UMPageUrlName]; }
+            set { this[UMPageUrlName] = value; }
         }
 
         [ConfigurationProperty(SiteIdName, IsRequired = true)]

@@ -7,6 +7,7 @@
     using System.Net.Sockets;
     using System.Web;
     using Fanex.Logging;
+
     /// <summary>
     /// Helper class for getting current client IP address.
     /// </summary>

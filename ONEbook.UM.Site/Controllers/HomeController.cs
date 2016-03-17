@@ -5,7 +5,7 @@
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
     using Sunplus.UMControllerLibrary;
-
+    using UM.Filters;
     public class HomeController : Controller
     {
         private readonly IMaintenanceService _maintenanceService;
@@ -33,6 +33,33 @@
 
             return contentResult;
         }
+
+        [UMBackdoorFilter]
+        public ActionResult LoginWithFilter()
+        {
+            var contentResult = new ContentResult();
+            contentResult.Content = "Login OK";
+            return contentResult;
+        }
+
+        [CheckUMFilter]
+        public ActionResult RecheckInWithAttribute()
+        {
+            var contentResult = new ContentResult();
+            contentResult.Content = "Recheck in OK";
+            return contentResult;
+        }
+
+        public ActionResult ClearSession()
+        {
+            Session.Clear();
+            Session.Abandon();
+
+            var contentResult = new ContentResult();
+            contentResult.Content = "Clear session done";
+            return contentResult;
+        }
+
 
         public ActionResult RecheckIn()
         {

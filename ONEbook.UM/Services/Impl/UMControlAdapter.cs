@@ -13,7 +13,7 @@
         {
         }
 
-        public UMControlAdapter(Sites site)
+        internal UMControlAdapter(Sites site)
         {
             _siteId = site;
         }
