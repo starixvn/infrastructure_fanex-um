@@ -27,7 +27,7 @@
                 || filterContext.HttpContext.Request.HttpMethod.ToUpper() == "POST")
             {
                 response.Clear();
-                response.Write("{ code: 999999, \"message\": \"Under maintenance time.\" }");
+                response.Write("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }");
                 filterContext.Result = new HttpUnauthorizedResult();
                 filterContext.Result.ExecuteResult(filterContext.Controller.ControllerContext);
                 response.TrySkipIisCustomErrors = true;
