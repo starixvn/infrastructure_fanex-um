@@ -14,13 +14,6 @@
     /// </summary>
     public class HmacAuthenticator : IAuthenticator
     {
-        private readonly string _machineIP;
-
-        public HmacAuthenticator()
-        {
-            _machineIP = IPHelper.GetClientIPAddress(HttpContext.Current.Request);
-        }
-
         public void Authenticate(IRestClient client, IRestRequest request)
         {
             if (client == null)
@@ -32,6 +25,8 @@
             {
                 throw new ArgumentNullException("request", "Rest Request cannot be null");
             }
+
+            var machineIP = IPHelper.GetClientIPAddress(HttpContext.Current.Request);
 
             string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
 
@@ -48,7 +43,7 @@
             string nonce = Guid.NewGuid().ToString("N");
 
             // Creating the raw signature string
-            string signatureRawData = string.Format("{0}{1}{2}{3}{4}", _machineIP, requestHttpMethod, requestUri, requestTimeStamp, nonce);
+            string signatureRawData = string.Format("{0}{1}{2}{3}{4}", machineIP, requestHttpMethod, requestUri, requestTimeStamp, nonce);
 
             var secretKeyByteArray = Convert.FromBase64String(UMClientConfiguration.Settings.SecretKey);
 
@@ -60,7 +55,7 @@
                 string requestSignatureBase64String = Convert.ToBase64String(signatureBytes);
 
                 // Setting the values in the Authorization header using custom scheme (amx)
-                string authHeader = string.Format("amx {0}", string.Format("{0}:{1}:{2}:{3}", _machineIP, requestSignatureBase64String, nonce, requestTimeStamp));
+                string authHeader = string.Format("amx {0}", string.Format("{0}:{1}:{2}:{3}", machineIP, requestSignatureBase64String, nonce, requestTimeStamp));
                 request.AddParameter("Authorization", authHeader, ParameterType.HttpHeader);
             }
         }
