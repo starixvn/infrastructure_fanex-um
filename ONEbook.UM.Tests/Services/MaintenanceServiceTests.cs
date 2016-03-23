@@ -38,6 +38,7 @@
             _allowIPs = new List<Tuple<string, string>>();
             _clientIP = "10.18.200.209";
             _siteId = Sites.AccountSite;
+            _isAllowAllIPs = false;
 
             _maintenanceService = new MaintenanceService(
                 _underMaintenanceControlAdapter, 
