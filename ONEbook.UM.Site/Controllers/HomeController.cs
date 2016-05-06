@@ -6,6 +6,7 @@
     using ONEbook.UM.Services.Impl;
     using Sunplus.UMControllerLibrary;
     using UM.Filters;
+
     public class HomeController : Controller
     {
         private readonly IMaintenanceService _maintenanceService;
@@ -60,7 +61,6 @@
             return contentResult;
         }
 
-
         public ActionResult RecheckIn()
         {
             var isPassUM = _maintenanceService.IsPassUnderMaintenance();
@@ -77,7 +77,7 @@
         public ActionResult GetUMInfo()
         {
             return Json(
-                _maintenanceService.GetUnderMaintenanceTime(), 
+                _maintenanceService.GetUnderMaintenanceTime(),
                 JsonRequestBehavior.AllowGet);
         }
     }

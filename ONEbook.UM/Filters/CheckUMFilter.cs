@@ -23,8 +23,7 @@
         {
             HttpResponseBase response = filterContext.HttpContext.Response;
 
-            if (filterContext.HttpContext.Request.IsAjaxRequest()
-                || filterContext.HttpContext.Request.HttpMethod.ToUpper() == "POST")
+            if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 response.Clear();
                 response.Write("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }");
