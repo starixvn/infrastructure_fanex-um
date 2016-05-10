@@ -15,7 +15,6 @@
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
     using RestSharp;
-    using Sunplus.UMControllerLibrary;
 
     [TestFixture]
     public class MaintenanceServiceTests
@@ -26,7 +25,7 @@
         private IList<Tuple<string, string>> _allowIPs;
         private string _clientIP;
         private ILogger _logger;
-        private Sites _siteId;
+        private int _siteId;
         private bool _isAllowAllIPs;
 
         [SetUp]
@@ -37,29 +36,20 @@
             _logger = Substitute.For<ILogger>();
             _allowIPs = new List<Tuple<string, string>>();
             _clientIP = "10.18.200.209";
-            _siteId = Sites.AccountSite;
+            _siteId = 2000000;
             _isAllowAllIPs = false;
 
             _maintenanceService = new MaintenanceService(
-                _underMaintenanceControlAdapter, 
-                _restClient, 
-                _allowIPs, 
-                _clientIP, 
-                _logger, 
+                _underMaintenanceControlAdapter,
+                _restClient,
+                _allowIPs,
+                _clientIP,
+                _logger,
                 _siteId,
                 _isAllowAllIPs);
         }
 
         #region IsUnderMaintenance Test cases
-
-        [Test]
-        public void IsUnderMaintenance_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
-        {
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500, _isAllowAllIPs);
-
-            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
-                () => _maintenanceService.IsUnderMaintenance()));
-        }
 
         [Test]
         public void IsUnderMaintenance_ExecuteGetDowntime()
@@ -229,15 +219,6 @@
         #endregion IsUnderMaintenance Test cases
 
         #region IsUnderMaintenanceOnRecheckIn Test Cases
-
-        [Test]
-        public void IsPassUnderMaintenance_SiteIdIsNotValid_ThrowArgumentOutOfRangeException()
-        {
-            _maintenanceService = new MaintenanceService(_underMaintenanceControlAdapter, _restClient, _allowIPs, _clientIP, _logger, (Sites)500, _isAllowAllIPs);
-
-            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(
-                () => _maintenanceService.IsPassUnderMaintenance()));
-        }
 
         [Test]
         public void IsPassUnderMaintenance_NowIsNotUMTime_ReturnTrue()

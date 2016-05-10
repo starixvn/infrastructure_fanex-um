@@ -4,7 +4,6 @@
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
-    using Sunplus.UMControllerLibrary;
     using UM.Filters;
 
     public class HomeController : Controller
@@ -25,12 +24,20 @@
         public ActionResult Login()
         {
             var isUM = _maintenanceService.IsUnderMaintenance();
+            var notText = isUM ? string.Empty : "not";
 
             var contentResult = new ContentResult();
-            contentResult.Content = string.Format(
-                "Site {0} is {1} under maintenance on login.",
-                (Sites)UMClientConfiguration.Settings.SiteId,
-                isUM ? string.Empty : "not");
+
+            if (isUM)
+            {
+                var underMaintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
+                contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is in under maintenance " 
+                    + " from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
+            }
+            else
+            {
+                contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is not in under maintenance.";
+            }
 
             return contentResult;
         }
@@ -68,7 +75,7 @@
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
                 "Site {0} {1} under maintenance on recheckin.",
-                (Sites)UMClientConfiguration.Settings.SiteId,
+                UMClientConfiguration.Settings.SiteId,
                 isPassUM ? "passes" : "does not pass");
 
             return contentResult;

@@ -1,21 +1,22 @@
 ﻿namespace ONEbook.UM.Services.Impl
 {
+    using System;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Models;
-    using Sunplus.UMControllerLibrary;
+    using ONELab.UMService.UMClient;
 
     internal class UMControlAdapter : IUMControlAdapter
     {
-        private readonly Sites _siteId;
+        private readonly int _siteId;
 
         public UMControlAdapter()
-            : this((Sites)UMClientConfiguration.Settings.SiteId)
+            : this(UMClientConfiguration.Settings.SiteId)
         {
         }
 
-        internal UMControlAdapter(Sites site)
+        internal UMControlAdapter(int siteId)
         {
-            _siteId = site;
+            _siteId = siteId;
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
@@ -27,19 +28,17 @@
 
             if (UMClientConfiguration.Settings.EnableCheckUM)
             {
-                string timeFrom = string.Empty;
-                string timeTo = string.Empty;
-                var umctrl = new UMBusiness();
+                DateTime timeFrom;
+                DateTime timeTo;
 
-                var isUnderMaintenanceTime = umctrl.isUnderMaintainence(
-                    _siteId,
-                    UMClientConfiguration.Settings.UMAddress,
-                    ref timeFrom,
-                    ref timeTo);
+                var isUnderMaintenanceTime = ServiceClient.IsUnderUM(
+                    _siteId.ToString(),
+                    out timeFrom,
+                    out timeTo);
 
                 if (isUnderMaintenanceTime)
                 {
-                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom, timeTo);
+                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom.ToString(), timeTo.ToString());
                 }
             }
 

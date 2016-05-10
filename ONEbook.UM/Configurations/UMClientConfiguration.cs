@@ -76,13 +76,6 @@
             set { this[EnableCheckUMName] = value; }
         }
 
-        [ConfigurationProperty(UMAddressName, IsRequired = true)]
-        public string UMAddress
-        {
-            get { return (string)this[UMAddressName]; }
-            set { this[UMAddressName] = value; }
-        }
-
         [ConfigurationProperty(AllowedIPListName, IsDefaultCollection = false)]
         [ConfigurationCollection(typeof(IPCollection), AddItemName = "add")]
         internal IPCollection IPList
@@ -130,7 +123,7 @@
             set { this[UMPageUrlName] = value; }
         }
 
-        [ConfigurationProperty(SiteIdName, IsRequired = true)]
+        [ConfigurationProperty(SiteIdName, IsRequired = true, DefaultValue = 4120)]
         public int SiteId
         {
             get { return (int)this[SiteIdName]; }

@@ -10,7 +10,6 @@
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Models;
     using RestSharp;
-    using Sunplus.UMControllerLibrary;
 
     public class MaintenanceService : IMaintenanceService
     {
@@ -21,7 +20,7 @@
         private readonly ILogger _logger;
         private IList<Tuple<string, string>> _allowedIPs;
         private string _clientIP;
-        private Sites _siteId;
+        private int _siteId;
         private bool _isAllowAllIPs;
 
         public MaintenanceService()
@@ -36,10 +35,10 @@
             IList<Tuple<string, string>> allowedIPs,
             string clientIP,
             ILogger logger,
-            Sites siteId,
+            int siteId,
             bool? isAllowAllIPs)
         {
-            _siteId = (int)siteId == 0 ? (Sites)UMClientConfiguration.Settings.SiteId : siteId;
+            _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId);
             _restClient = restClient ?? GetRestClient();
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
@@ -68,8 +67,6 @@
 
         public bool IsUnderMaintenance()
         {
-            CheckSiteIdIsValid();
-
             if (NowIsNotUnderMaintenance())
             {
                 return false;
@@ -87,15 +84,6 @@
             }
 
             return true;
-        }
-
-        [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly", Justification = "Reviewed")]
-        private void CheckSiteIdIsValid()
-        {
-            if (!Enum.IsDefined(typeof(Sites), _siteId))
-            {
-                throw new ArgumentOutOfRangeException("_siteId", "Site Id is not valid");
-            }
         }
 
         private bool NowIsNotUnderMaintenance()
@@ -157,8 +145,6 @@
 
         public bool IsPassUnderMaintenance()
         {
-            CheckSiteIdIsValid();
-
             if (ByPassUM)
             {
                 return true;
