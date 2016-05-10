@@ -6,6 +6,7 @@
     using ONEbook.UM.Services.Impl;
     using UM.Filters;
 
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly IMaintenanceService _maintenanceService;
@@ -32,7 +33,7 @@
             {
                 var underMaintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
                 contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is in under maintenance " 
-                    + " from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
+                    + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
             else
             {
