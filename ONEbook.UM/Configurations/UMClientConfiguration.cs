@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics.CodeAnalysis;
-    using Sunplus.UMControllerLibrary;
 
     public class UMClientConfiguration : ConfigurationSection
     {
@@ -21,13 +20,17 @@
 
         private static IList<Tuple<string, string>> _allowIPs;
 
-        private static UMClientConfiguration settings
-            = ConfigurationManager.GetSection("ONEbook.UM") as UMClientConfiguration;
+        private static UMClientConfiguration settings;
 
         public static UMClientConfiguration Settings
         {
             get
             {
+                if (settings == null)
+                {
+                    settings = ConfigurationManager.GetSection("ONEbook.UM") as UMClientConfiguration;
+                }
+
                 return settings;
             }
         }
