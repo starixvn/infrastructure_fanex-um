@@ -14,12 +14,12 @@
     [TestFixture]
     public class MaintenanceServiceTests
     {
-        private MaintenanceService _maintenanceService;
+        private UMTokenService _maintenanceService;
 
         [SetUp]
         public void SetUp()
         {
-            _maintenanceService = new MaintenanceService();
+            _maintenanceService = new UMTokenService();
         }
 
         #region IsValidUMToken

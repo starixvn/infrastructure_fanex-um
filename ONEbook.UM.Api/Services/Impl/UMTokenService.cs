@@ -11,7 +11,7 @@
     using ONEbook.UM.Api.Models;
     using Sunplus.UMControllerLibrary;
 
-    public class MaintenanceService : IMaintenanceService
+    public class UMTokenService : IUMTokenService
     {
         public bool IsValidUMToken(Sites siteId, string token)
         {

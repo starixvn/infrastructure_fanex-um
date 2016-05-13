@@ -1,22 +1,38 @@
 ﻿namespace ONEbook.UM.Services.Impl
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Net;
+    using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Models;
     using ONELab.UMService.UMClient;
+    using RestSharp;
 
     internal class UMControlAdapter : IUMControlAdapter
     {
+        private const string SiteUMCacheKey = "ONEbook.UM.Site.{0}";
+        private const string FormatTime = "HH:mm tt";
         private readonly int _siteId;
+        private readonly ICachingService _cachingService;
+        private readonly IRestClient _restClient;
+        private readonly ILogger _logger;
 
         public UMControlAdapter()
-            : this(UMClientConfiguration.Settings.SiteId)
+            : this(UMClientConfiguration.Settings.SiteId, new CachingService(), new RestClient(), Logger.Log)
         {
         }
 
-        internal UMControlAdapter(int siteId)
+        internal UMControlAdapter(
+            int siteId,
+            ICachingService cachingService,
+            IRestClient restClient,
+            ILogger logger)
         {
             _siteId = siteId;
+            _cachingService = cachingService;
+            _restClient = restClient;
+            _logger = logger;
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
@@ -26,20 +42,56 @@
                 return new UnderMaintenanceTime(true, UMClientConfiguration.Settings.UMFrom, UMClientConfiguration.Settings.UMTo);
             }
 
+            var defaultUnderMaintenanceTime = new UnderMaintenanceTime(false, "0:00", "0:00");
+
             if (UMClientConfiguration.Settings.EnableCheckUM)
             {
-                DateTime timeFrom;
-                DateTime timeTo;
+                _cachingService.GetOrAdd(
+                    string.Format(SiteUMCacheKey, _siteId),
+                    () =>
+                    {
+                        DateTime timeFrom;
+                        DateTime timeTo;
 
-                var isUnderMaintenanceTime = ServiceClient.IsUnderUM(
-                    _siteId.ToString(),
-                    out timeFrom,
-                    out timeTo);
+                        var isUnderMaintenanceTime = ServiceClient.IsUnderUM(
+                            _siteId.ToString(),
+                            out timeFrom,
+                            out timeTo);
 
-                if (isUnderMaintenanceTime)
+                        if (isUnderMaintenanceTime)
+                        {
+                            return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom.ToString(FormatTime), timeTo.ToString(FormatTime));
+                        }
+
+                        return defaultUnderMaintenanceTime;
+                    }, 
+                    DateTime.Now.AddSeconds(60));
+            }
+
+            return defaultUnderMaintenanceTime;
+        }
+
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
+        private UnderMaintenanceTime GetUnderMaintenance()
+        {
+            var request = new RestRequest("/UnderMaintenance/get", Method.GET);
+            request.AddObject(new { siteId = _siteId });
+
+            try
+            {
+                IRestResponse response = _restClient.Execute(request);
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom.ToString(), timeTo.ToString());
+                    return SimpleJson.DeserializeObject<UnderMaintenanceTime>(response.Content);
                 }
+                else
+                {
+                    _logger.Warn(string.Format("{0} \r\n {1}", response.Content, response.ErrorMessage ?? string.Empty));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message, ex);
             }
 
             return new UnderMaintenanceTime(false, "0:00", "0:00");

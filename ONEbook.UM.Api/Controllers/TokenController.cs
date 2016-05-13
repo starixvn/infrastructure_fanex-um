@@ -4,7 +4,6 @@
     using System.Net;
     using System.Net.Http;
     using System.Web.Http;
-    using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Filters;
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
@@ -13,22 +12,22 @@
     [HmacAuthorizationFilter]
     public class TokenController : ApiController
     {
-        private readonly IMaintenanceService _maintenanceService;
+        private readonly IUMTokenService _umTokenService;
 
         public TokenController()
             : this(null)
         {
         }
 
-        public TokenController(IMaintenanceService maintenanceService)
+        public TokenController(IUMTokenService umTokenService)
         {
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
+            _umTokenService = umTokenService ?? new UMTokenService();
         }
 
-        [SuppressMessage("Microsoft.Globalization", 
-            "CA1303:Do not pass literals as localized parameters", 
-            MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", 
-            Justification = "Reviewed!"), 
+        [SuppressMessage("Microsoft.Globalization",
+            "CA1303:Do not pass literals as localized parameters",
+            MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)",
+            Justification = "Reviewed!"),
         HttpGet]
         public HttpResponseMessage Validate([FromUri]TokenValidationRequest request)
         {
@@ -37,18 +36,18 @@
                 return Request.CreateErrorResponse(HttpStatusCode.PreconditionFailed, "Token Validation Request cannot be null!");
             }
 
-            var isValid = _maintenanceService.IsValidUMToken(request.SiteId, request.Token);
+            var isValid = _umTokenService.IsValidUMToken(request.SiteId, request.Token);
 
             return Request.CreateResponse(HttpStatusCode.OK, isValid);
         }
 
-        [SuppressMessage("Microsoft.Globalization", 
-            "CA1303:Do not pass literals as localized parameters", 
-            MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)", 
+        [SuppressMessage("Microsoft.Globalization",
+            "CA1303:Do not pass literals as localized parameters",
+            MessageId = "System.Net.Http.HttpRequestMessageExtensions.CreateErrorResponse(System.Net.Http.HttpRequestMessage,System.Net.HttpStatusCode,System.String)",
             Justification = "Reviewed!")]
         public HttpResponseMessage GetAll()
         {
-            var siteTokens = _maintenanceService.GetAllUMTokens();
+            var siteTokens = _umTokenService.GetAllUMTokens();
 
             return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
         }

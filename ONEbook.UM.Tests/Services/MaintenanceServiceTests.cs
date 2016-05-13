@@ -27,6 +27,7 @@
         private ILogger _logger;
         private int _siteId;
         private bool _isAllowAllIPs;
+        private ICachingService _cachingService;
 
         [SetUp]
         public void SetUp()
@@ -34,10 +35,12 @@
             _underMaintenanceControlAdapter = Substitute.For<IUMControlAdapter>();
             _restClient = Substitute.For<IRestClient>();
             _logger = Substitute.For<ILogger>();
+            _cachingService = Substitute.For<ICachingService>();
             _allowIPs = new List<Tuple<string, string>>();
             _clientIP = "10.18.200.209";
             _siteId = 2000000;
             _isAllowAllIPs = false;
+
 
             _maintenanceService = new MaintenanceService(
                 _underMaintenanceControlAdapter,
@@ -45,6 +48,7 @@
                 _allowIPs,
                 _clientIP,
                 _logger,
+                _cachingService,
                 _siteId,
                 _isAllowAllIPs);
         }

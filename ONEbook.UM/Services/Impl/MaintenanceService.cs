@@ -18,13 +18,14 @@
         private readonly IUMControlAdapter _underMaintenanceControlAdapter;
         private readonly IRestClient _restClient;
         private readonly ILogger _logger;
+        private readonly ICachingService _cachingService;
         private IList<Tuple<string, string>> _allowedIPs;
         private string _clientIP;
         private int _siteId;
         private bool _isAllowAllIPs;
 
         public MaintenanceService()
-            : this(null, null, null, null, null, 0, null)
+            : this(null, null, null, null, null, null, 0, null)
         {
         }
 
@@ -35,15 +36,19 @@
             IList<Tuple<string, string>> allowedIPs,
             string clientIP,
             ILogger logger,
+            ICachingService cachingService,
             int siteId,
             bool? isAllowAllIPs)
         {
-            _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
-            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId);
+            _logger = logger ?? Logger.Log;
             _restClient = restClient ?? GetRestClient();
+            _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
+            _cachingService = cachingService ?? new CachingService();
+            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _logger);
+            
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
-            _logger = logger ?? Logger.Log;
+            
             _isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
         }
 
