@@ -36,8 +36,8 @@
             formaters.Add(new JsonMediaTypeFormatter());
 
             var jsonFormater = formaters.JsonFormatter;
-            jsonFormater.Indent = true;
-            jsonFormater.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            //jsonFormater.Indent = true;
+            //jsonFormater.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
             config.Filters.Add(new LogInfoFilter());
         }

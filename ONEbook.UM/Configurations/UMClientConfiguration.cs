@@ -17,6 +17,7 @@
         private const string AllowedIPListName = "AllowedIPs";
         private const string SecretKeyName = "SecretKey";
         private const string UMPageUrlName = "UMPageUrl";
+        private const string UMResultCacheDurationName = "UMResultCacheDuration";
 
         private static IList<Tuple<string, string>> _allowIPs;
 
@@ -128,6 +129,13 @@
         {
             get { return (int)this[SiteIdName]; }
             set { this[SiteIdName] = value; }
+        }
+
+        [ConfigurationProperty(UMResultCacheDurationName, IsRequired = false, DefaultValue = 60)]
+        public int ResultCacheDuration
+        {
+            get { return (int)this[UMResultCacheDurationName]; }
+            set { this[UMResultCacheDurationName] = value; }
         }
     }
 }

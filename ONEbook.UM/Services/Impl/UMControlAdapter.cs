@@ -6,7 +6,6 @@
     using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Models;
-    using ONELab.UMService.UMClient;
     using RestSharp;
 
     internal class UMControlAdapter : IUMControlAdapter
@@ -42,33 +41,18 @@
                 return new UnderMaintenanceTime(true, UMClientConfiguration.Settings.UMFrom, UMClientConfiguration.Settings.UMTo);
             }
 
-            var defaultUnderMaintenanceTime = new UnderMaintenanceTime(false, "0:00", "0:00");
-
             if (UMClientConfiguration.Settings.EnableCheckUM)
             {
-                _cachingService.GetOrAdd(
+                return _cachingService.GetOrAdd(
                     string.Format(SiteUMCacheKey, _siteId),
                     () =>
                     {
-                        DateTime timeFrom;
-                        DateTime timeTo;
-
-                        var isUnderMaintenanceTime = ServiceClient.IsUnderUM(
-                            _siteId.ToString(),
-                            out timeFrom,
-                            out timeTo);
-
-                        if (isUnderMaintenanceTime)
-                        {
-                            return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom.ToString(FormatTime), timeTo.ToString(FormatTime));
-                        }
-
-                        return defaultUnderMaintenanceTime;
-                    }, 
-                    DateTime.Now.AddSeconds(60));
+                        return GetUnderMaintenance();
+                    },
+                    DateTime.Now.AddSeconds(UMClientConfiguration.Settings.ResultCacheDuration));
             }
 
-            return defaultUnderMaintenanceTime;
+            return new UnderMaintenanceTime(false, "0:00", "0:00");
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
