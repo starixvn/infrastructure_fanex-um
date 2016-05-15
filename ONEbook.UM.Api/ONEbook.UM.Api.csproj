@@ -170,9 +170,9 @@
     <Content Include="Web.uat.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <None Include="Web.sit.config">
+    <Content Include="Web.sit.config">
       <DependentUpon>Web.config</DependentUpon>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
