@@ -71,7 +71,8 @@
 
         public bool IsUnderMaintenance()
         {
-            if (NowIsNotUnderMaintenance())
+            if (NowIsNotUnderMaintenance()
+                || ByPassUM)
             {
                 return false;
             }
@@ -145,16 +146,6 @@
             var clientIP = _clientIP ?? IPHelper.GetClientIPAddress(HttpContext.Current.Request);
 
             return IPHelper.IsAuthorizedIP(clientIP, _allowedIPs);
-        }
-
-        public bool IsPassUnderMaintenance()
-        {
-            if (ByPassUM)
-            {
-                return true;
-            }
-
-            return NowIsNotUnderMaintenance();
         }
 
         private IRestClient GetRestClient()

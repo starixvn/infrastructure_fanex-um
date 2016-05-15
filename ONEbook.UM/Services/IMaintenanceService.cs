@@ -6,8 +6,6 @@
     {
         bool IsUnderMaintenance();
 
-        bool IsPassUnderMaintenance();
-
         UnderMaintenanceTime GetUnderMaintenanceTime();
     }
 }

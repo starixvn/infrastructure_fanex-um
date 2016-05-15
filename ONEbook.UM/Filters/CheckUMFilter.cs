@@ -40,9 +40,9 @@
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var isPassUM = _maintenanceService.IsPassUnderMaintenance();
+            var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
 
-            if (!isPassUM)
+            if (isUnderMaintenance)
             {
                 UnderMaintenanceAction(filterContext);
             }

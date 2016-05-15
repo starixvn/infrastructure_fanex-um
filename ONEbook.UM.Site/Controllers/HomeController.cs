@@ -43,7 +43,7 @@
             return contentResult;
         }
 
-        [UMBackdoorFilter]
+        [CheckUMFilter]
         public ActionResult LoginWithFilter()
         {
             var contentResult = new ContentResult();
@@ -71,7 +71,7 @@
 
         public ActionResult RecheckIn()
         {
-            var isPassUM = _maintenanceService.IsPassUnderMaintenance();
+            var isPassUM = _maintenanceService.IsUnderMaintenance();
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(

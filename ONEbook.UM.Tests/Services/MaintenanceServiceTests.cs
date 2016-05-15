@@ -229,36 +229,35 @@
             FakeHttpContext(string.Empty);
             AssumeUMTime(false);
 
-            _maintenanceService.IsPassUnderMaintenance();
+            _maintenanceService.IsUnderMaintenance();
 
             _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public void IsPassUnderMaintenance_NowIsUMTime_ReturnByPassUM(bool isByPassUM)
+        [Test]
+        public void IsUnderMaintenance_NowIsUMTimeAndByPassM_ReturnFalse()
         {
             FakeHttpContext(string.Empty);
             AssumeUMTime();
 
-            HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = isByPassUM;
+            HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = true;
 
-            var isPassUM = _maintenanceService.IsPassUnderMaintenance();
+            var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
 
-            Assert.AreEqual(isByPassUM, isPassUM);
+            Assert.IsFalse(false);
         }
 
         [Test]
-        public void IsPassUnderMaintenance_ByPassUMInSessionIsNull_ReturnFalse()
+        public void IsUnderMaintenance_ByPassUMInSessionIsNull_ReturnTrue()
         {
             FakeHttpContext(string.Empty);
             AssumeUMTime();
 
             HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = null;
 
-            var isPassUM = _maintenanceService.IsPassUnderMaintenance();
+            var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
 
-            Assert.IsFalse(isPassUM);
+            Assert.IsTrue(isUnderMaintenance);
         }
 
         #endregion IsUnderMaintenanceOnRecheckIn Test Cases

@@ -93,7 +93,6 @@
     <Compile Include="Configurations\IPElement.cs" />
     <Compile Include="Configurations\UMClientConfiguration.cs" />
     <Compile Include="Filters\CheckUMFilter.cs" />
-    <Compile Include="Filters\UMBackdoorFilter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\HmacAuthenticator.cs" />
     <Compile Include="Helpers\IPHelper.cs" />
