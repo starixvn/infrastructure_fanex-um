@@ -7,21 +7,21 @@
 
     public class UnderMaintenanceController : ApiController
     {
-        private readonly IUMControlAdapter _umControlAdapter;
+        private readonly IUMControlAdapter _underMaintenanceControlAdapter;
 
         public UnderMaintenanceController()
             : this(null)
         {
         }
 
-        public UnderMaintenanceController(IUMControlAdapter umControlAdapter)
+        public UnderMaintenanceController(IUMControlAdapter underMaintenanceControlAdapter)
         {
-            _umControlAdapter = umControlAdapter ?? new UMControlAdapter();
+            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
         }
 
         public UnderMaintenanceTime Get(int siteId)
         {
-            return _umControlAdapter.GetUnderMaintenanceTime(siteId);
+            return _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
         }
     }
 }

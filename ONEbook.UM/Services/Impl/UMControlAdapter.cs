@@ -60,6 +60,7 @@
         {
             var request = new RestRequest("/UnderMaintenance/get", Method.GET);
             request.AddObject(new { siteId = _siteId });
+            request.Timeout = 15000;
 
             try
             {

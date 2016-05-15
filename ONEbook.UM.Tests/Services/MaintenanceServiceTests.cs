@@ -41,7 +41,6 @@
             _siteId = 2000000;
             _isAllowAllIPs = false;
 
-
             _maintenanceService = new MaintenanceService(
                 _underMaintenanceControlAdapter,
                 _restClient,

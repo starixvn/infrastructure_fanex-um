@@ -1,9 +1,8 @@
 ﻿namespace ONEbook.UM.Api.Services.Impl
 {
-    using System;
     using Configurations;
     using Models;
-    using ONELab.UMService.UMClient;
+    using Sunplus.UMControllerLibrary;
 
     public class UMControlAdapter : IUMControlAdapter
     {
@@ -18,17 +17,19 @@
 
             if (UnderMaintenanceApiConfiguration.Settings.EnableCheckUM)
             {
-                DateTime timeFrom;
-                DateTime timeTo;
+                string timeFrom = string.Empty;
+                string timeTo = string.Empty;
+                var umctrl = new UMBusiness();
 
-                var isUnderMaintenanceTime = ServiceClient.IsUnderUM(
-                    siteId.ToString(),
-                    out timeFrom,
-                    out timeTo);
+                var isUnderMaintenanceTime = umctrl.isUnderMaintainence(
+                    (Sites)siteId,
+                    UnderMaintenanceApiConfiguration.Settings.UMAddress,
+                    ref timeFrom,
+                    ref timeTo);
 
                 if (isUnderMaintenanceTime)
                 {
-                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom.ToString(FormatTime), timeTo.ToString(FormatTime));
+                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom, timeTo);
                 }
             }
 

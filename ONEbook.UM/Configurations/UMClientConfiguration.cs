@@ -13,7 +13,6 @@
         private const string EnableUnscheduledUMName = "EnableUnscheduledUM";
         private const string UMFromName = "UMFrom";
         private const string UMToName = "UMTo";
-        private const string UMAddressName = "UMAddress";
         private const string AllowedIPListName = "AllowedIPs";
         private const string SecretKeyName = "SecretKey";
         private const string UMPageUrlName = "UMPageUrl";

@@ -45,10 +45,8 @@
             _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
             _cachingService = cachingService ?? new CachingService();
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _logger);
-            
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
-            
             _isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
         }
 
@@ -56,7 +54,8 @@
         {
             get
             {
-                if (HttpContext.Current.Session[ByPassUMSessionKey] == null)
+                if (HttpContext.Current == null 
+                    || HttpContext.Current.Session[ByPassUMSessionKey] == null)
                 {
                     return false;
                 }

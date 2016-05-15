@@ -12,16 +12,16 @@
     [HmacAuthorizationFilter]
     public class TokenController : ApiController
     {
-        private readonly IUMTokenService _umTokenService;
+        private readonly IUMTokenService _underMaintenanceTokenService;
 
         public TokenController()
             : this(null)
         {
         }
 
-        public TokenController(IUMTokenService umTokenService)
+        public TokenController(IUMTokenService underMaintenanceTokenService)
         {
-            _umTokenService = umTokenService ?? new UMTokenService();
+            _underMaintenanceTokenService = underMaintenanceTokenService ?? new UMTokenService();
         }
 
         [SuppressMessage("Microsoft.Globalization",
@@ -36,7 +36,7 @@
                 return Request.CreateErrorResponse(HttpStatusCode.PreconditionFailed, "Token Validation Request cannot be null!");
             }
 
-            var isValid = _umTokenService.IsValidUMToken(request.SiteId, request.Token);
+            var isValid = _underMaintenanceTokenService.IsValidUMToken(request.SiteId, request.Token);
 
             return Request.CreateResponse(HttpStatusCode.OK, isValid);
         }
@@ -47,7 +47,7 @@
             Justification = "Reviewed!")]
         public HttpResponseMessage GetAll()
         {
-            var siteTokens = _umTokenService.GetAllUMTokens();
+            var siteTokens = _underMaintenanceTokenService.GetAllUMTokens();
 
             return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
         }

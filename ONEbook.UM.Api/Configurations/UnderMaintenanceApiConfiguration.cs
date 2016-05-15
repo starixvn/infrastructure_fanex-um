@@ -9,6 +9,7 @@
         private const string UMToName = "UMTo";
         private const string SecretKeyName = "SecretKey";
         private const string EnableCheckUMName = "EnableCheckUM";
+        private const string UMAddressName = "UMAddress";
 
         private static UnderMaintenanceApiConfiguration settings
             = ConfigurationManager.GetSection("ONEbook.UM.Api") as UnderMaintenanceApiConfiguration;
@@ -54,6 +55,13 @@
         {
             get { return (string)this[UMToName]; }
             set { this[UMToName] = value; }
+        }
+
+        [ConfigurationProperty(UMAddressName, IsRequired = false)]
+        public string UMAddress
+        {
+            get { return (string)this[UMAddressName]; }
+            set { this[UMAddressName] = value; }
         }
     }
 }
