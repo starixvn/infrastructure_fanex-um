@@ -9,7 +9,7 @@
     using ONEbook.UM.Models;
     using RestSharp;
 
-    internal class UMControlAdapter : IUMControlAdapter
+    public class UMControlAdapter : IUMControlAdapter
     {
         private const string SiteUMCacheKey = "ONEbook.UM.Site.{0}";
         private const string FormatTime = "HH:mm tt";

@@ -6,7 +6,7 @@
     /// <summary>
     ///  <see cref="https://github.com/alastairtree/LazyCache"/>
     /// </summary>
-    public class CachingService : ICachingService
+    internal class CachingService : ICachingService
     {
         private readonly ObjectCache _cache;
 

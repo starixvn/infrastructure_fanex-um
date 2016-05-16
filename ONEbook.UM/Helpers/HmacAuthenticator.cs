@@ -26,7 +26,7 @@
                 throw new ArgumentNullException("request", "Rest Request cannot be null");
             }
 
-            var machineIP = IPHelper.GetClientIPAddress(HttpContext.Current.Request);
+            var machineIP = IPHelper.GetMachineIP();
 
             string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
 

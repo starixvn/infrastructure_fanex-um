@@ -65,6 +65,20 @@
             return null;
         }
 
+        public static string GetMachineIP()
+        {
+            var hostName = Dns.GetHostName();
+
+            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+
+            foreach (IPAddress addr in localIPs)
+            {
+                addr.ToString();
+            }
+
+            return "127.0.0.1";
+        }
+
         public static bool IsAuthorizedIP(string clientIP, IList<Tuple<string, string>> allowedIPs)
         {
             foreach (var allowIP in allowedIPs)
