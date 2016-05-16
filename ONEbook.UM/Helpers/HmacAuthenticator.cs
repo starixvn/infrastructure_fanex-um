@@ -30,8 +30,6 @@
 
             string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
 
-            LogService.Info("requestUri: " + requestUri);
-
             string requestHttpMethod = request.Method.ToString();
 
             // Calculate UNIX time
