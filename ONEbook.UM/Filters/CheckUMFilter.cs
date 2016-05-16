@@ -34,7 +34,12 @@
             }
             else
             {
-                filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.UMPageUrl);
+                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(UMClientConfiguration.Settings.UMPageUrl).ToLower();
+                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLower();
+                if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
+                {
+                    filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.UMPageUrl);
+                }
             }
         }
 

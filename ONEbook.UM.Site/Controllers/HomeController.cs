@@ -88,5 +88,13 @@
                 _maintenanceService.GetUnderMaintenanceTime(),
                 JsonRequestBehavior.AllowGet);
         }
+
+        [CheckUMFilter]
+        public ActionResult UMPage()
+        {
+            var contentResult = new ContentResult();
+            contentResult.Content = "UM PAGE";
+            return contentResult;
+        }
     }
 }
