@@ -81,6 +81,7 @@
     <Compile Include="Helpers\HmacAuthenticator.cs" />
     <Compile Include="Helpers\IPHelper.cs" />
     <Compile Include="Helpers\RandomHelper.cs" />
+    <Compile Include="Helpers\RestClientHelper.cs" />
     <Compile Include="Models\UnderMaintenanceTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ICachingService.cs" />

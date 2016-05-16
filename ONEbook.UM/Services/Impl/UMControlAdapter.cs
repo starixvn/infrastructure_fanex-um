@@ -4,6 +4,7 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using Fanex.Logging;
+    using Helpers;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Models;
     using RestSharp;
@@ -18,7 +19,7 @@
         private readonly ILogger _logger;
 
         public UMControlAdapter()
-            : this(UMClientConfiguration.Settings.SiteId, new CachingService(), new RestClient(), Logger.Log)
+            : this(UMClientConfiguration.Settings.SiteId, new CachingService(), null, Logger.Log)
         {
         }
 
@@ -30,7 +31,7 @@
         {
             _siteId = siteId;
             _cachingService = cachingService;
-            _restClient = restClient;
+            _restClient = restClient ?? RestClientHelper.GetRestClient();
             _logger = logger;
         }
 

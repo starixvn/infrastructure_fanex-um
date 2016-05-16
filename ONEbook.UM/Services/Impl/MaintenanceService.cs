@@ -41,7 +41,7 @@
             bool? isAllowAllIPs)
         {
             _logger = logger ?? Logger.Log;
-            _restClient = restClient ?? GetRestClient();
+            _restClient = restClient ?? RestClientHelper.GetRestClient();
             _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
             _cachingService = cachingService ?? new CachingService();
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _logger);
@@ -146,14 +146,6 @@
             var clientIP = _clientIP ?? IPHelper.GetClientIPAddress(HttpContext.Current.Request);
 
             return IPHelper.IsAuthorizedIP(clientIP, _allowedIPs);
-        }
-
-        private IRestClient GetRestClient()
-        {
-            var restClient = new RestClient(RandomHelper.GetRandomUri(UMClientConfiguration.Settings.ServiceUris));
-            restClient.Authenticator = new HmacAuthenticator();
-
-            return restClient;
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
