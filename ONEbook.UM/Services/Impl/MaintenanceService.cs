@@ -41,7 +41,7 @@
             bool? isAllowAllIPs)
         {
             _logger = logger ?? Logger.Log;
-            _restClient = restClient ?? RestClientHelper.GetRestClient();
+            _restClient = restClient;
             _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
             _cachingService = cachingService ?? new CachingService();
             _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _logger);
@@ -106,7 +106,8 @@
 
             try
             {
-                IRestResponse response = _restClient.Execute(request);
+                var restClient = _restClient ?? RestClientHelper.GetRestClient();
+                IRestResponse response = restClient.Execute(request);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     return Convert.ToBoolean(response.Content);

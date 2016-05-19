@@ -31,7 +31,7 @@
         {
             _siteId = siteId;
             _cachingService = cachingService;
-            _restClient = restClient ?? RestClientHelper.GetRestClient();
+            _restClient = restClient;
             _logger = logger;
         }
 
@@ -65,7 +65,8 @@
 
             try
             {
-                IRestResponse response = _restClient.Execute(request);
+                var restClient = _restClient ?? RestClientHelper.GetRestClient();
+                IRestResponse response = restClient.Execute(request);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     return SimpleJson.DeserializeObject<UnderMaintenanceTime>(response.Content);
