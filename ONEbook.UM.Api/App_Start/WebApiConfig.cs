@@ -39,7 +39,7 @@
             jsonFormater.Indent = true;
             ////jsonFormater.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
-            config.Filters.Add(new LogInfoFilter());
+            ////config.Filters.Add(new LogInfoFilter());
         }
     }
 }
