@@ -160,6 +160,7 @@
     </None>
     <Content Include="Web.local.config" />
     <Content Include="Web.pro.config" />
+    <Content Include="Web.backupMNL.config" />
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
