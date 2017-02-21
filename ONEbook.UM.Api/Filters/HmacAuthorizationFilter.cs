@@ -1,6 +1,7 @@
 ﻿namespace ONEbook.UM.Api.Filters
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Net.Http;
     using System.Runtime.Caching;
@@ -86,10 +87,14 @@
             }
         }
 
+        [SuppressMessage("Microsoft.Globalization",
+            "CA1303:Do not pass literals as localized parameters",
+            MessageId = "Fanex.Logging.LogService.Info(System.String)",
+            Justification = "Reviewed")]
         private bool IsValidRequest(HttpRequestMessage req, string siteId, string incomingBase64Signature, string nonce, string requestTimeStamp)
         {
             string requestUri = HttpUtility.UrlEncode(req.RequestUri.AbsoluteUri.ToLower());
-            LogService.Info("requestUri: " + requestUri);
+            LogService.Info("Request Uri: " + requestUri);
             string requestHttpMethod = req.Method.Method;
 
             var sharedKey = UnderMaintenanceApiConfiguration.Settings.SecretKey;

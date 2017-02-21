@@ -25,14 +25,13 @@
         public ActionResult Login()
         {
             var isUM = _maintenanceService.IsUnderMaintenance();
-            var notText = isUM ? string.Empty : "not";
 
             var contentResult = new ContentResult();
 
             if (isUM)
             {
                 var underMaintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
-                contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is in under maintenance " 
+                contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
             else
