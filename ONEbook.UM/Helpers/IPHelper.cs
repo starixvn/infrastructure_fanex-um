@@ -67,13 +67,14 @@
 
         public static string GetMachineIP()
         {
-            var hostName = Dns.GetHostName();
+            var host = Dns.GetHostEntry(Dns.GetHostName());
 
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-
-            foreach (IPAddress addr in localIPs)
+            foreach (var ip in host.AddressList)
             {
-                addr.ToString();
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
             }
 
             return "127.0.0.1";

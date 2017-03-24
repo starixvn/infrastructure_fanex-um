@@ -88,8 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\RandomHelperTests.cs" />
+    <Compile Include="Helpers\RestClientHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\MaintenanceServiceTests.cs" />
+    <Compile Include="Services\UMControlAdapterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

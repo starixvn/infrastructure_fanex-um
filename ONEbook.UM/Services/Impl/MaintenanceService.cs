@@ -17,12 +17,12 @@
         private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
         private readonly IUMControlAdapter _underMaintenanceControlAdapter;
         private readonly IRestClient _restClient;
-        private readonly ILogger _logger;
+        private readonly ILoggingService _loggingService;
         private readonly ICachingService _cachingService;
-        private IList<Tuple<string, string>> _allowedIPs;
-        private string _clientIP;
-        private int _siteId;
-        private bool _isAllowAllIPs;
+        private readonly IList<Tuple<string, string>> _allowedIPs;
+        private readonly string _clientIP;
+        private readonly int _siteId;
+        private readonly bool _isAllowAllIPs;
 
         public MaintenanceService()
             : this(null, null, null, null, null, null, 0, null)
@@ -35,16 +35,16 @@
             IRestClient restClient,
             IList<Tuple<string, string>> allowedIPs,
             string clientIP,
-            ILogger logger,
+            ILoggingService loggingService,
             ICachingService cachingService,
             int siteId,
             bool? isAllowAllIPs)
         {
-            _logger = logger ?? Logger.Log;
             _restClient = restClient;
-            _siteId = (int)siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
+            _siteId = siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
             _cachingService = cachingService ?? new CachingService();
-            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _logger);
+            _loggingService = loggingService ?? new LoggingService(clientIP, _siteId, Logger.Log, UMClientConfiguration.Settings.UMLoggingCategory);
+            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _loggingService);
             _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
             _clientIP = clientIP;
             _isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
@@ -54,7 +54,7 @@
         {
             get
             {
-                if (HttpContext.Current == null 
+                if (HttpContext.Current == null
                     || HttpContext.Current.Session[ByPassUMSessionKey] == null)
                 {
                     return false;
@@ -112,14 +112,12 @@
                 {
                     return Convert.ToBoolean(response.Content);
                 }
-                else
-                {
-                    _logger.Warn(string.Format("{0} \r\n {1}", response.Content, response.ErrorMessage ?? string.Empty));
-                }
+
+                _loggingService.Warning(string.Format("{0} \r\n {1}", response.Content, response.ErrorMessage ?? string.Empty));
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                _loggingService.Error(ex.Message, ex);
             }
 
             return false;

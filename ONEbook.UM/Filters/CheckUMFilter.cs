@@ -43,6 +43,30 @@
             }
         }
 
+        public static void ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
+        {
+            HttpResponseBase response = filterContext.HttpContext.Response;
+
+            if (filterContext.HttpContext.Request.IsAjaxRequest())
+            {
+                response.Clear();
+                response.Write("{ \"code\": 999998, \"message\": \"UM Error\" }");
+                filterContext.Result = new HttpUnauthorizedResult();
+                filterContext.Result.ExecuteResult(filterContext.Controller.ControllerContext);
+                response.TrySkipIisCustomErrors = true;
+                response.End();
+            }
+            else
+            {
+                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(UMClientConfiguration.Settings.ErrorUMPageUrl).ToLower();
+                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLower();
+                if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
+                {
+                    filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.ErrorUMPageUrl);
+                }
+            }
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
@@ -50,6 +74,12 @@
             if (isUnderMaintenance)
             {
                 UnderMaintenanceAction(filterContext);
+            }
+
+            if (!string.IsNullOrWhiteSpace(UMClientConfiguration.Settings.ErrorUMPageUrl)
+                && _maintenanceService.GetUnderMaintenanceTime().ConnectionResult.IsNotOk)
+            {
+                ErrorUnderMaintenanceAction(filterContext);
             }
         }
     }
