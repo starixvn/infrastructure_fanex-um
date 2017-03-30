@@ -8,7 +8,6 @@
     using System.Web;
     using System.Web.Hosting;
     using System.Web.SessionState;
-    using Fanex.Logging;
     using NSubstitute;
     using NUnit.Framework;
     using ONEbook.UM.Models;
@@ -24,7 +23,7 @@
         private IRestClient _restClient;
         private IList<Tuple<string, string>> _allowIPs;
         private string _clientIP;
-        private ILogger _logger;
+        private ILoggingService _loggingService;
         private int _siteId;
         private bool _isAllowAllIPs;
         private ICachingService _cachingService;
@@ -34,7 +33,7 @@
         {
             _underMaintenanceControlAdapter = Substitute.For<IUMControlAdapter>();
             _restClient = Substitute.For<IRestClient>();
-            _logger = Substitute.For<ILogger>();
+            _loggingService = Substitute.For<ILoggingService>();
             _cachingService = Substitute.For<ICachingService>();
             _allowIPs = new List<Tuple<string, string>>();
             _clientIP = "10.18.200.209";
@@ -46,7 +45,7 @@
                 _restClient,
                 _allowIPs,
                 _clientIP,
-                _logger,
+                _loggingService,
                 _cachingService,
                 _siteId,
                 _isAllowAllIPs);
@@ -244,7 +243,7 @@
 
             var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
 
-            Assert.IsFalse(false);
+            Assert.IsFalse(isUnderMaintenance);
         }
 
         [Test]

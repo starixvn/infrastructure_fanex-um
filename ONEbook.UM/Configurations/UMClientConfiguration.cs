@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     public class UMClientConfiguration : ConfigurationSection
     {
@@ -16,9 +17,12 @@
         private const string AllowedIPListName = "AllowedIPs";
         private const string SecretKeyName = "SecretKey";
         private const string UMPageUrlName = "UMPageUrl";
+        private const string ErrorUmPageUrlName = "ErrorUMPageUrl";
         private const string UMResultCacheDurationName = "UMResultCacheDuration";
+        private const string UMLoggingCategoryName = "UMLoggingCategory";
 
         private static IList<Tuple<string, string>> _allowIPs;
+        private static IEnumerable<string> _serviceUrls;
 
         private static UMClientConfiguration settings;
 
@@ -59,6 +63,32 @@
                 }
 
                 return _allowIPs;
+            }
+        }
+
+        public static IEnumerable<string> ServiceUriList
+        {
+            get
+            {
+                if (_serviceUrls == null)
+                {
+                    _serviceUrls = Settings.ServiceUris.Split(',').ToList();
+                }
+
+                return _serviceUrls;
+            }
+
+            internal set
+            {
+                _serviceUrls = value;
+            }
+        }
+
+        public static bool HasMoreThanOneService
+        {
+            get
+            {
+                return ServiceUriList.Count() > 1;
             }
         }
 
@@ -135,6 +165,20 @@
         {
             get { return (int)this[UMResultCacheDurationName]; }
             set { this[UMResultCacheDurationName] = value; }
+        }
+
+        [ConfigurationProperty(UMLoggingCategoryName, IsRequired = false, DefaultValue = "ONEbook-UM")]
+        public string UMLoggingCategory
+        {
+            get { return (string)this[UMLoggingCategoryName]; }
+            set { this[UMLoggingCategoryName] = value; }
+        }
+
+        [ConfigurationProperty(ErrorUmPageUrlName, IsRequired = false, DefaultValue = "")]
+        public string ErrorUMPageUrl
+        {
+            get { return (string)this[ErrorUmPageUrlName]; }
+            set { this[ErrorUmPageUrlName] = value; }
         }
     }
 }

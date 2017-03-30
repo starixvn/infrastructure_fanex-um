@@ -70,7 +70,7 @@
 
         public ActionResult RecheckIn()
         {
-            var isPassUM = _maintenanceService.IsUnderMaintenance();
+            var isPassUM = !_maintenanceService.IsUnderMaintenance();
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
@@ -93,6 +93,14 @@
         {
             var contentResult = new ContentResult();
             contentResult.Content = "UM PAGE";
+            return contentResult;
+        }
+
+        [CheckUMFilter]
+        public ActionResult ErrorUMPage()
+        {
+            var contentResult = new ContentResult();
+            contentResult.Content = "Error UM Page";
             return contentResult;
         }
     }
