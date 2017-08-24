@@ -58,6 +58,14 @@
             return contentResult;
         }
 
+        [HttpPost, CheckUMFilter]
+        public JsonResult RecheckInWithAttributeAndPostAction()
+        {
+            var contentResult = new ContentResult();
+            contentResult.Content = "Recheck in OK";
+            return Json(contentResult);
+        }
+
         public ActionResult ClearSession()
         {
             Session.Clear();
