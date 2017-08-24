@@ -1,5 +1,6 @@
 ﻿namespace ONEbook.UM.Filters
 {
+    using System.Net;
     using System.Web;
     using System.Web.Mvc;
     using Configurations;
@@ -27,7 +28,7 @@
             {
                 response.Clear();
                 response.Write("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }");
-                filterContext.Result = new HttpUnauthorizedResult();
+                filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.ServiceUnavailable);
                 filterContext.Result.ExecuteResult(filterContext.Controller.ControllerContext);
                 response.TrySkipIisCustomErrors = true;
                 response.End();
@@ -51,7 +52,7 @@
             {
                 response.Clear();
                 response.Write("{ \"code\": 999998, \"message\": \"UM Error\" }");
-                filterContext.Result = new HttpUnauthorizedResult();
+                filterContext.Result = new HttpStatusCodeResult(HttpStatusCode.ServiceUnavailable);
                 filterContext.Result.ExecuteResult(filterContext.Controller.ControllerContext);
                 response.TrySkipIisCustomErrors = true;
                 response.End();
