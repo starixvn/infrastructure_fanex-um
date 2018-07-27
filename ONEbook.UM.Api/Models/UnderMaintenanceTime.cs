@@ -5,17 +5,21 @@
         public UnderMaintenanceTime(
             bool isUnderMaintenanceTime,
             string from,
-            string to)
+            string to,
+            int errorCode = 0)
         {
             IsUnderMaintenanceTime = isUnderMaintenanceTime;
             From = from;
             To = to;
+            ErrorCode = errorCode;
         }
 
-        public string From { get; private set; }
+        public string From { get; }
 
-        public string To { get; private set; }
+        public string To { get; }
 
-        public bool IsUnderMaintenanceTime { get; private set; }
+        public bool IsUnderMaintenanceTime { get; }
+
+        public int ErrorCode { get; }
     }
 }
