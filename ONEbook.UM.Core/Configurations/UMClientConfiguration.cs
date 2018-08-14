@@ -26,11 +26,27 @@
         private static IEnumerable<string> _serviceUrls;
 
         private static UMClientConfiguration settings;
-        private static IConfigurationRoot _configurationRoot => InitConfigurationRoot();
+        private static IConfigurationRoot _configurationRoot;
 
-        public static void InjectSettings(UMClientConfiguration injectSettings)
+        public static void InitConfigurationRoot(string rootPath)
         {
-            settings = injectSettings;
+            if (string.IsNullOrEmpty(rootPath))
+            {
+                rootPath = Directory.GetCurrentDirectory();
+            }
+
+            var configFileName = "appsettings.json";
+
+            if (File.Exists(Path.Combine(rootPath, configFileName)))
+            {
+                Console.WriteLine("Exist Configuration");
+
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(rootPath)
+                    .AddJsonFile(configFileName);
+
+                _configurationRoot = builder.Build();
+            }
         }
 
         public static UMClientConfiguration Settings
@@ -89,7 +105,7 @@
             {
                 if (_serviceUrls == null)
                 {
-                    _serviceUrls = Settings?.ServiceUris?.Split(',').ToList();
+                    _serviceUrls = Settings.ServiceUris.Split(',').ToList();
                 }
 
                 return _serviceUrls ?? throw new InvalidDataException("Missing ServiceUrls config");
@@ -191,23 +207,6 @@
         {
             get { return (string)this[ErrorUmPageUrlName]; }
             set { this[ErrorUmPageUrlName] = value; }
-        }
-
-        private static IConfigurationRoot InitConfigurationRoot()
-        {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var configFileName = "appsettings.json";
-
-            if (File.Exists(Path.Combine(currentDirectory, configFileName)))
-            {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(currentDirectory)
-                    .AddJsonFile(configFileName);
-
-                return builder.Build();
-            }
-
-            return null;
         }
     }
 }

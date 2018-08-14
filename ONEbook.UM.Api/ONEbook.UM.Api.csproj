@@ -135,6 +135,7 @@
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\NewUnderMaintenanceController.cs" />
     <Compile Include="Controllers\UnderMaintenanceController.cs" />
+    <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Filters\GlobalExceptionFilter.cs" />
     <Compile Include="Filters\HmacAuthorizationFilter.cs" />
     <Compile Include="Filters\HttpRequestMessageExtensions.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Models\TokenValidationRequest.cs" />
     <Compile Include="Models\UnderMaintenanceTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Impl\FakeUMControlAdapter.cs" />
     <Compile Include="Services\Impl\NewUMControlAdapter.cs" />
     <Compile Include="Services\Impl\UMControlAdapter.cs" />
     <Compile Include="Services\IUMControlAdapter.cs" />

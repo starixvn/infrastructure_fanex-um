@@ -6,10 +6,15 @@
 
     public class UMControlAdapter : IUMControlAdapter
     {
-        private const string FormatTime = "HH:mm tt";
-
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
         {
+            var fakeUMInfo = FakeUMControlAdapter.GetUnderMaintenance();
+
+            if (fakeUMInfo != null)
+            {
+                return fakeUMInfo;
+            }
+
             if (UnderMaintenanceApiConfiguration.Settings.EnableUnscheduledUM)
             {
                 return new UnderMaintenanceTime(true, UnderMaintenanceApiConfiguration.Settings.UMFrom, UnderMaintenanceApiConfiguration.Settings.UMTo);
