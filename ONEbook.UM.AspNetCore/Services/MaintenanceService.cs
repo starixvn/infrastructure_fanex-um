@@ -1,5 +1,6 @@
 ﻿namespace ONEbook.UM.AspNetCore.Services
 {
+    using System;
     using System.Net;
     using System.Threading.Tasks;
     using Fanex.Caching;
@@ -41,10 +42,21 @@
             {
                 var siteId = UMClientConfiguration.Settings.SiteId;
 
-                return await _cacheService.GetOrSet(string.Format(SiteUMCacheKey, siteId), async () =>
+                var umInfo = _cacheService.Get<UnderMaintenanceTime>(string.Format(SiteUMCacheKey, siteId));
+
+                if (umInfo == null)
                 {
-                    return await SendRequestToGetUnderMaintenanceTime(siteId);
-                });
+                    umInfo = await SendRequestToGetUnderMaintenanceTime(siteId);
+
+                    if (umInfo.IsUnderMaintenanceTime)
+                    {
+                        await _cacheService.SetAsync(
+                           string.Format(SiteUMCacheKey, siteId), umInfo,
+                           new CacheItemOptions { AbsoluteExpiration = Convert.ToDateTime(umInfo.To) });
+                    }
+                }
+
+                return umInfo;
             }
 
             return new UnderMaintenanceTime(false, "0:00", "0:00");

@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
     <ProjectReference Include="..\ONEbook.UM.Core\ONEbook.UM.Core.csproj" />
   </ItemGroup>

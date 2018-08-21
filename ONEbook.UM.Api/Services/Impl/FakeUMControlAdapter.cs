@@ -3,7 +3,6 @@
     using System;
     using System.Configuration;
     using System.Linq;
-    using ONEbook.UM.Api.Extensions;
     using ONEbook.UM.Api.Models;
 
     public static class FakeUMControlAdapter
@@ -26,7 +25,7 @@
                 if (minute == now.Minute || (now.Minute > minute && ((now.Minute - minute) * 60 < umPeriod)))
                 {
                     var startFakeTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, minute, 0);
-                    return new UnderMaintenanceTime(true, startFakeTime.ToGMTString(8), startFakeTime.AddSeconds(umPeriod).ToGMTString(8), 0);
+                    return new UnderMaintenanceTime(true, startFakeTime.ToString(), startFakeTime.AddSeconds(umPeriod).ToString(), 0);
                 }
             }
 

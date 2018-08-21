@@ -3,6 +3,7 @@
     using System;
     using ONEbook.UM.Api.Models;
     using ONELab.UMService.UMClient;
+    using ONEbook.UM.Api.Extensions;
 
     public class NewUMControlAdapter : IUMControlAdapter
     {
