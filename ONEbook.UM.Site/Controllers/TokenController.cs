@@ -2,9 +2,9 @@
 {
     using System;
     using System.Web.Mvc;
-    using ONEbook.UM.Helpers;
     using ONEbook.UM.Site.Configurations;
     using ONEbook.UM.Site.Filters;
+    using ONEbook.UM.Transport;
     using RestSharp;
 
     [UMSiteAuthorization]
@@ -34,8 +34,8 @@
 
         private IRestClient GetRestClient()
         {
-            var restClient = new RestClient(UMSiteConfiguration.Settings.ServiceUri);
-            restClient.Authenticator = new HmacAuthenticator();
+            var restClient = new RestSharp.RestClient(UMSiteConfiguration.Settings.ServiceUri);
+            //restClient.Authenticator = new HmacAuthenticator();
 
             return restClient;
         }

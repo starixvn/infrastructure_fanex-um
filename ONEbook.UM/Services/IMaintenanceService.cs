@@ -1,11 +1,12 @@
 ﻿namespace ONEbook.UM.Services
 {
+    using System.Threading.Tasks;
     using ONEbook.UM.Models;
 
     public interface IMaintenanceService
     {
-        bool IsUnderMaintenance();
+        Task<bool> IsUnderMaintenance();
 
-        UnderMaintenanceTime GetUnderMaintenanceTime();
+        Task<UnderMaintenanceTime> GetUnderMaintenanceTime();
     }
 }

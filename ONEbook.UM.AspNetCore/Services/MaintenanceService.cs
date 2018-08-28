@@ -52,7 +52,7 @@
                     {
                         await _cacheService.SetAsync(
                            string.Format(SiteUMCacheKey, siteId), umInfo,
-                           new CacheItemOptions { AbsoluteExpiration = Convert.ToDateTime(umInfo.To) });
+                           new CacheItemOptions().SetAbsoluteExpiration(new TimeSpan(0, 1, 0)));
                     }
                 }
 

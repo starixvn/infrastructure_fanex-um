@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Configuration;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using Microsoft.Extensions.Configuration;
 
-    public class UMClientConfiguration : ConfigurationSection
+    public class UMClientConfiguration : System.Configuration.ConfigurationSection
     {
         private const string SiteIdName = "SiteId";
         private const string ServiceUrisName = "ServiceUris";
@@ -23,8 +23,13 @@
 
         private static IList<Tuple<string, string>> _allowIPs;
         private static IEnumerable<string> _serviceUrls;
-
         private static UMClientConfiguration settings;
+        private static IConfiguration configuration;
+
+        public static void Configure(IConfiguration configurationRoot)
+        {
+            configuration = configurationRoot;
+        }
 
         public static UMClientConfiguration Settings
         {
@@ -33,13 +38,18 @@
                 if (settings == null)
                 {
                     settings = ConfigurationManager.GetSection("ONEbook.UM") as UMClientConfiguration;
+
+                    if (settings == null)
+                    {
+                        settings = new UMClientConfiguration();
+                        configuration.GetSection("ONEbook.UM").Bind(settings);
+                    }
                 }
 
                 return settings;
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Reviewed!")]
         public static IList<Tuple<string, string>> AllowedIPs
         {
             get

@@ -5,18 +5,11 @@
 
     public static class UMClientManager
     {
-        private static Action<string> _errorHandler = (message) => { throw new UMClientException(message); };
-
-        internal static Action<string> ErrorHandler => _errorHandler;
+        internal static Action<string> ErrorHandler { get; private set; } = (message) => throw new UMClientException(message);
 
         public static void WhenError(Action<string> errorHandler)
         {
-            if (errorHandler == null)
-            {
-                throw new ArgumentNullException(nameof(errorHandler), "Error Handler cannot be null");
-            }
-
-            _errorHandler = errorHandler;
+            ErrorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler), "Error Handler cannot be null");
         }
     }
 }

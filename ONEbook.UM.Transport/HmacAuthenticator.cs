@@ -1,20 +1,17 @@
-﻿namespace ONEbook.UM.Helpers
+﻿namespace ONEbook.UM.Transport
 {
     using System;
     using System.Security.Cryptography;
     using System.Text;
     using System.Web;
-    using Fanex.Logging;
     using ONEbook.UM.Configurations;
+    using ONEbook.UM.Helpers;
     using RestSharp;
     using RestSharp.Authenticators;
 
-    /// <summary>
-    /// http://bitoftech.net/2014/12/15/secure-asp-net-web-api-using-api-key-authentication-hmac-authentication/
-    /// </summary>
     public class HmacAuthenticator : IAuthenticator
     {
-        public void Authenticate(IRestClient client, IRestRequest request)
+        public void Authenticate(RestSharp.IRestClient client, IRestRequest request)
         {
             if (client == null)
             {

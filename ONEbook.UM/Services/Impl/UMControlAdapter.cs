@@ -1,40 +1,27 @@
 ﻿namespace ONEbook.UM.Services.Impl
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Net;
+    using System.Threading.Tasks;
+    using Fanex.Caching;
     using Helpers;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Models;
-    using RestSharp;
 
     public class UMControlAdapter : IUMControlAdapter
     {
         private const string SiteUMCacheKey = "ONEbook.UM.Site.{0}";
-        private const int RestClientTimeout = 15000;
-        private readonly int _siteId;
-        private readonly ICachingService _cachingService;
-        private readonly IRestClient _restClient;
-        private readonly ILoggingService _loggingService;
-
-        public UMControlAdapter()
-            : this(UMClientConfiguration.Settings.SiteId, new CachingService(), null, new LoggingService())
-        {
-        }
+        private readonly ICacheService cacheService;
+        private readonly IRestClient restClient;
 
         internal UMControlAdapter(
-            int siteId,
-            ICachingService cachingService,
-            IRestClient restClient,
-            ILoggingService loggingService)
+            ICacheService cacheService,
+            IRestClient restClient)
         {
-            _siteId = siteId;
-            _cachingService = cachingService;
-            _restClient = restClient;
-            _loggingService = loggingService;
+            this.cacheService = cacheService;
+            this.restClient = restClient;
         }
 
-        public UnderMaintenanceTime GetUnderMaintenanceTime()
+        public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime()
         {
             if (UMClientConfiguration.Settings.EnableUnscheduledUM)
             {
@@ -43,28 +30,27 @@
 
             if (UMClientConfiguration.Settings.EnableCheckUM)
             {
-                return _cachingService.GetOrAdd(
-                    string.Format(SiteUMCacheKey, _siteId),
-                    () =>
-                    {
-                        return GetUnderMaintenance();
-                    },
-                    DateTime.Now.AddSeconds(UMClientConfiguration.Settings.ResultCacheDuration));
+                var cacheKey = string.Format(SiteUMCacheKey, UMClientConfiguration.Settings.SiteId);
+                var umInfo = cacheService.Get<UnderMaintenanceTime>(cacheKey);
+
+                if (umInfo == null)
+                {
+                    umInfo = await GetUnderMaintenance();
+
+                    cacheService.Set(cacheKey, umInfo,
+                        new CacheItemOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(UMClientConfiguration.Settings.ResultCacheDuration)));
+                }
+
+                return umInfo;
             }
 
             return new UnderMaintenanceTime(false, "0:00", "0:00");
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
-        internal UnderMaintenanceTime GetUnderMaintenance()
+        internal async Task<UnderMaintenanceTime> GetUnderMaintenance()
         {
-            var request = new RestRequest("/UnderMaintenance/get", Method.GET);
-            request.AddObject(new { siteId = _siteId });
-            request.Timeout = RestClientTimeout;
-
-            var restClient = _restClient ?? RestClientHelper.GetRestClient();
-
-            var underMaintenance = GetUnderMaintenanceWithSurvivedService(restClient, request);
+            var underMaintenance = await GetUnderMaintenanceWithSurvivedService();
 
             if (underMaintenance.ConnectionResult != null
                 && underMaintenance.ConnectionResult.IsNotOk
@@ -76,43 +62,20 @@
             return underMaintenance;
         }
 
-        internal UnderMaintenanceTime GetUnderMaintenance(IRestClient restClient, RestRequest request)
+        internal async Task<UnderMaintenanceTime> GetUnderMaintenanceWithSurvivedService()
         {
             try
             {
-                IRestResponse response = restClient.Execute(request);
-                if (response.StatusCode == HttpStatusCode.OK)
+                var umInfo = await restClient.ExecuteGetAsync<UnderMaintenanceTime>($"/NewUnderMaintenance/get?siteId={UMClientConfiguration.Settings.SiteId}");
+
+                if (UMClientConfiguration.HasMoreThanOneService && umInfo.ConnectionResult.IsNotOk)
                 {
-                    return SimpleJson.DeserializeObject<UnderMaintenanceTime>(response.Content);
+                    restClient.KeepTrackErrorService();
+                    restClient.InitSurvivedRestClient();
+                    return await GetUnderMaintenanceWithSurvivedService();
                 }
 
-                var logMessage = LogErrorMessage(response, restClient.BaseUrl);
-
-                return UnderMaintenanceTime.CreateFailedConnection(logMessage);
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex.Message, ex);
-
-                return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
-            }
-        }
-
-        internal UnderMaintenanceTime GetUnderMaintenanceWithSurvivedService(IRestClient restClient, RestRequest request)
-        {
-            try
-            {
-                var underMaintenance = GetUnderMaintenance(restClient, request);
-
-                if (UMClientConfiguration.HasMoreThanOneService
-                    && underMaintenance.ConnectionResult.IsNotOk)
-                {
-                    RestClientHelper.KeepTrackErrorService(restClient.BaseUrl.ToString());
-
-                    return GetUnderMaintenanceWithSurvivedService(RestClientHelper.GetSurvivedRestClient(), request);
-                }
-
-                return underMaintenance;
+                return umInfo;
             }
             catch (Exception ex)
             {
@@ -123,20 +86,6 @@
 
                 return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
             }
-        }
-
-        private string LogErrorMessage(IRestResponse restResponse, Uri baseRequestUri)
-        {
-            var logMessage = string.Join(
-                    "\r\n",
-                    "Base Url: " + baseRequestUri,
-                    "Status Code: " + (int)restResponse.StatusCode,
-                    "Response Content: " + restResponse.Content,
-                    "Response Error Message: " + (restResponse.ErrorMessage ?? string.Empty));
-
-            _loggingService.Error(logMessage);
-
-            return logMessage;
         }
     }
 }

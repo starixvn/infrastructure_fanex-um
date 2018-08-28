@@ -1,9 +1,12 @@
 ﻿namespace ONEbook.UM.Site.Controllers
 {
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using ONEbook.UM.Configurations;
+    using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
     using ONEbook.UM.Services.Impl;
+    using ONEbook.UM.Transport;
     using UM.Filters;
 
     [AllowAnonymous]
@@ -19,18 +22,18 @@
         public HomeController(
             IMaintenanceService maintenanceService)
         {
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
+            _maintenanceService = maintenanceService ?? new MaintenanceService(new RestClient(), new HttpContextHelper());
         }
 
-        public ActionResult Login()
+        public async Task<ActionResult> Login()
         {
-            var isUM = _maintenanceService.IsUnderMaintenance();
+            var isUM = await _maintenanceService.IsUnderMaintenance();
 
             var contentResult = new ContentResult();
 
             if (isUM)
             {
-                var underMaintenanceInfo = _maintenanceService.GetUnderMaintenanceTime();
+                var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTime();
                 contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
@@ -76,9 +79,9 @@
             return contentResult;
         }
 
-        public ActionResult RecheckIn()
+        public async Task<ActionResult> RecheckIn()
         {
-            var isPassUM = !_maintenanceService.IsUnderMaintenance();
+            var isPassUM = !(await _maintenanceService.IsUnderMaintenance());
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(

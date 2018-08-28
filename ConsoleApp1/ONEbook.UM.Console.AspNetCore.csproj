@@ -15,9 +15,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
-    <ProjectReference Include="..\ONEbook.UM.Core\ONEbook.UM.Core.csproj" />
-  </ItemGroup>
 </Project>

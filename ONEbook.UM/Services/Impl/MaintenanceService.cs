@@ -2,82 +2,79 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Net;
-    using System.Web;
+    using System.Threading.Tasks;
+    using Fanex.Caching;
     using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Models;
-    using RestSharp;
 
     public class MaintenanceService : IMaintenanceService
     {
         private const string TokenName = "UMToken";
         private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
-        private readonly IUMControlAdapter _underMaintenanceControlAdapter;
-        private readonly IRestClient _restClient;
-        private readonly ILoggingService _loggingService;
-        private readonly ICachingService _cachingService;
-        private readonly IList<Tuple<string, string>> _allowedIPs;
-        private readonly string _clientIP;
-        private readonly int _siteId;
-        private readonly bool _isAllowAllIPs;
+        private readonly IUMControlAdapter underMaintenanceControlAdapter;
+        private readonly IRestClient restClient;
+        private readonly ILoggingService loggingService;
+        private readonly IList<Tuple<string, string>> allowedIPs;
+        private readonly string clientIP;
+        private readonly int siteId;
+        private readonly bool isAllowAllIPs;
+        private readonly IHttpContextHelper httpContextHelper;
 
-        public MaintenanceService()
-            : this(null, null, null, null, null, null, 0, null)
+        public MaintenanceService(IRestClient restClient, IHttpContextHelper httpContextHelper)
+         : this(null, restClient, null, null, null, 0, null, httpContextHelper)
         {
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Justification = "Reviewed!")]
         internal MaintenanceService(
             IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
             IList<Tuple<string, string>> allowedIPs,
             string clientIP,
             ILoggingService loggingService,
-            ICachingService cachingService,
             int siteId,
-            bool? isAllowAllIPs)
+            bool? isAllowAllIPs,
+            IHttpContextHelper httpContextHelper)
         {
-            _restClient = restClient;
-            _siteId = siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
-            _cachingService = cachingService ?? new CachingService();
-            _loggingService = loggingService ?? new LoggingService(clientIP, _siteId, Logger.Log, UMClientConfiguration.Settings.UMLoggingCategory);
-            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(_siteId, _cachingService, _restClient, _loggingService);
-            _allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
-            _clientIP = clientIP;
-            _isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
+            this.restClient = restClient;
+            this.siteId = siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
+            this.loggingService = loggingService ?? new LoggingService(clientIP, this.siteId, Logger.Log, UMClientConfiguration.Settings.UMLoggingCategory);
+            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(new CacheService(), this.restClient);
+            this.allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
+            this.clientIP = clientIP;
+            this.isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
+            this.httpContextHelper = httpContextHelper;
         }
 
         public bool ByPassUM
         {
             get
             {
-                if (HttpContext.Current == null
-                    || HttpContext.Current.Session[ByPassUMSessionKey] == null)
-                {
-                    return false;
-                }
+                var isByPassUM = httpContextHelper.GetSession(ByPassUMSessionKey);
 
-                return (bool)HttpContext.Current.Session[ByPassUMSessionKey];
+                return !string.IsNullOrEmpty(isByPassUM) && isByPassUM == "1";
             }
 
             private set
             {
-                HttpContext.Current.Session[ByPassUMSessionKey] = value;
+                httpContextHelper.SetSession(ByPassUMSessionKey, value ? "1" : "0");
             }
         }
 
-        public bool IsUnderMaintenance()
+        public Task<UnderMaintenanceTime> GetUnderMaintenanceTime()
+           => underMaintenanceControlAdapter.GetUnderMaintenanceTime();
+
+        public async Task<bool> IsUnderMaintenance()
         {
-            if (NowIsNotUnderMaintenance()
-                || ByPassUM)
+            var nowIsNotUnderMaintenance = await NowIsNotUnderMaintenance();
+
+            if (nowIsNotUnderMaintenance || ByPassUM)
             {
                 return false;
             }
 
-            var token = GetTokenFromQueryString();
+            var token = httpContextHelper.GetValueFromQueryString(TokenName);
 
             if (!string.IsNullOrEmpty(token)
                 && IsRequestIPAllowToAccess()
@@ -91,65 +88,37 @@
             return true;
         }
 
-        private bool NowIsNotUnderMaintenance()
+        private async Task<bool> NowIsNotUnderMaintenance()
         {
-            var underMaintenanceTime = _underMaintenanceControlAdapter.GetUnderMaintenanceTime();
+            var underMaintenanceTime = await underMaintenanceControlAdapter.GetUnderMaintenanceTime();
 
             return !underMaintenanceTime.IsUnderMaintenanceTime;
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Reviewed!")]
         private bool IsTokenValid(string token)
         {
-            var request = new RestRequest("/token/validate", Method.GET);
-            request.AddObject(new { siteId = _siteId, token = token });
+            var isTokenValid = false;
 
             try
             {
-                var restClient = _restClient ?? RestClientHelper.GetRestClient();
-                IRestResponse response = restClient.Execute(request);
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return Convert.ToBoolean(response.Content);
-                }
-
-                _loggingService.Warning(string.Format("{0} \r\n {1}", response.Content, response.ErrorMessage ?? string.Empty));
+                isTokenValid = restClient.ExecuteGetAsync<bool>("/token/validate", new { siteId, token }).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
-                _loggingService.Error(ex.Message, ex);
+                loggingService.Error(ex.Message, ex);
             }
 
-            return false;
-        }
-
-        private string GetTokenFromQueryString()
-        {
-            var request = HttpContext.Current.Request;
-            if (request != null
-                && !string.IsNullOrEmpty(request.QueryString[TokenName]))
-            {
-                return request.QueryString[TokenName];
-            }
-
-            return string.Empty;
+            return isTokenValid;
         }
 
         private bool IsRequestIPAllowToAccess()
         {
-            if (_isAllowAllIPs)
+            if (isAllowAllIPs)
             {
                 return true;
             }
 
-            var clientIP = _clientIP ?? IPHelper.GetClientIPAddress(HttpContext.Current.Request);
-
-            return IPHelper.IsAuthorizedIP(clientIP, _allowedIPs);
-        }
-
-        public UnderMaintenanceTime GetUnderMaintenanceTime()
-        {
-            return _underMaintenanceControlAdapter.GetUnderMaintenanceTime();
+            return IPHelper.IsAuthorizedIP(this.clientIP ?? httpContextHelper.GetIpAddress(), allowedIPs);
         }
     }
 }

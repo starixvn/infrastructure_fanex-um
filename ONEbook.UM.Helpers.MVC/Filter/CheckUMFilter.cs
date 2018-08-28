@@ -5,24 +5,23 @@
     using System.Web.Mvc;
     using Configurations;
     using Services;
-    using Services.Impl;
 
-    public sealed class CheckUMFilter : ActionFilterAttribute
+    public sealed class CheckUMFilterAttribute : ActionFilterAttribute
     {
-        private IMaintenanceService _maintenanceService;
+        private readonly IMaintenanceService maintenanceService;
 
-        public CheckUMFilter() : this(null)
+        public CheckUMFilterAttribute() : this(null)
         {
         }
 
-        public CheckUMFilter(IMaintenanceService maintenanceService)
+        public CheckUMFilterAttribute(IMaintenanceService maintenanceService)
         {
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
+            this.maintenanceService = maintenanceService;
         }
 
         public static void UnderMaintenanceAction(ActionExecutingContext filterContext)
         {
-            HttpResponseBase response = filterContext.HttpContext.Response;
+            var response = filterContext.HttpContext.Response;
 
             if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
@@ -68,9 +67,9 @@
             }
         }
 
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public override async void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
+            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance();
 
             if (isUnderMaintenance)
             {
@@ -78,7 +77,7 @@
             }
 
             if (!string.IsNullOrWhiteSpace(UMClientConfiguration.Settings.ErrorUMPageUrl)
-                && _maintenanceService.GetUnderMaintenanceTime().ConnectionResult.IsNotOk)
+                && (await maintenanceService.GetUnderMaintenanceTime()).ConnectionResult.IsNotOk)
             {
                 ErrorUnderMaintenanceAction(filterContext);
             }
