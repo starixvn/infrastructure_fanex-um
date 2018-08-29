@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ONEbook.UM.Helpers.Core\ONEbook.UM.AspNetCore.csproj" />
-    <ProjectReference Include="..\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj" />
-    <ProjectReference Include="..\ONEbook.UM\ONEbook.UM.csproj" />
+    <ProjectReference Include="..\..\src\client\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj" />
+    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj" />
   </ItemGroup>
 
 </Project>

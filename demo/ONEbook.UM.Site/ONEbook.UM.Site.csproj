@@ -153,16 +153,16 @@
     <Folder Include="Views\Token\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ONEbook.UM.Helpers.MVC\ONEbook.UM.AspNetMVC.csproj">
-      <Project>{9f74a21f-4ed8-4943-b04b-210a3960d65b}</Project>
+    <ProjectReference Include="..\..\src\client\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj">
+      <Project>{672c317c-aeab-49f0-a3e9-6aee1c7e3e05}</Project>
       <Name>ONEbook.UM.AspNetMVC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj">
-      <Project>{c82035ba-e3bd-4784-96b5-7b80457c6aa8}</Project>
+    <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj">
+      <Project>{07c3f454-fa66-4709-a5a5-1b6dc273fd36}</Project>
       <Name>ONEbook.UM.Transport</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ONEbook.UM\ONEbook.UM.csproj">
-      <Project>{581ed0ed-4aac-4dd4-bc28-4e99d9861911}</Project>
+    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj">
+      <Project>{63c48884-d79f-458a-8b26-66ed6d9bee31}</Project>
       <Name>ONEbook.UM</Name>
     </ProjectReference>
   </ItemGroup>
@@ -192,7 +192,6 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
