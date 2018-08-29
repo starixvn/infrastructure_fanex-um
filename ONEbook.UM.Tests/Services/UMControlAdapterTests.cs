@@ -15,7 +15,7 @@
         private IRestClient _restClient;
         private ILoggingService _loggingService;
         private int _siteId;
-        private ICachingService _cachingService;
+        private ICacheService _cachingService;
         private UMControlAdapter _underMaintenanceControlAdapter;
 
         [SetUp]

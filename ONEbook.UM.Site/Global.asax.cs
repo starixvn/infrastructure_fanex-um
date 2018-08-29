@@ -1,9 +1,10 @@
 ﻿namespace ONEbook.UM.Site
 {
-    using System.Web;
     using System.Web.Mvc;
     using System.Web.Routing;
-    using UM.Configurations;
+    using ONEbook.UM.AspNetMVC.Configuration;
+    using ONEbook.UM.Helpers;
+    using ONEbook.UM.Transport;
 
     public class MvcApplication : System.Web.HttpApplication
     {
@@ -12,7 +13,12 @@
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            UMClientManager.WhenError((message) => HttpContext.Current.Response.Write(message.Replace("\r\n", "<br/>") + "<br/>"));
+            var umConfig = new UMClientConfiguration();
+
+            UMClientManager
+                .UseConfig(umConfig)
+                .UseRestClient(new RestClient(umConfig))
+                .UseHttpContext(new HttpContextHelper());
 
             ////GlobalFilters.Filters.Add(new AuthorizeAttribute());
         }

@@ -1,13 +1,19 @@
-﻿namespace ONEbook.UM.Services.Impl
+﻿namespace ONEbook.UM.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Models;
+
+    public interface IMaintenanceService
+    {
+        Task<bool> IsUnderMaintenance();
+
+        Task<UnderMaintenanceTime> GetUnderMaintenanceTime();
+    }
 
     public class MaintenanceService : IMaintenanceService
     {
@@ -16,35 +22,29 @@
         private readonly IUMControlAdapter underMaintenanceControlAdapter;
         private readonly IRestClient restClient;
         private readonly ILoggingService loggingService;
-        private readonly IList<Tuple<string, string>> allowedIPs;
-        private readonly string clientIP;
-        private readonly int siteId;
-        private readonly bool isAllowAllIPs;
         private readonly IHttpContextHelper httpContextHelper;
+        private readonly IUMClientConfiguration configuration;
 
-        public MaintenanceService(IRestClient restClient, IHttpContextHelper httpContextHelper)
-         : this(null, restClient, null, null, null, 0, null, httpContextHelper)
+        public MaintenanceService()
+         : this(null, null, null, null, null, null)
         {
         }
 
-        internal MaintenanceService(
+        public MaintenanceService(
             IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
-            IList<Tuple<string, string>> allowedIPs,
             string clientIP,
             ILoggingService loggingService,
-            int siteId,
-            bool? isAllowAllIPs,
-            IHttpContextHelper httpContextHelper)
+            IHttpContextHelper httpContextHelper,
+            IUMClientConfiguration configuration)
         {
-            this.restClient = restClient;
-            this.siteId = siteId == 0 ? UMClientConfiguration.Settings.SiteId : siteId;
-            this.loggingService = loggingService ?? new LoggingService(clientIP, this.siteId, Logger.Log, UMClientConfiguration.Settings.UMLoggingCategory);
-            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter(new CacheService(), this.restClient);
-            this.allowedIPs = allowedIPs ?? UMClientConfiguration.AllowedIPs;
-            this.clientIP = clientIP;
-            this.isAllowAllIPs = isAllowAllIPs.HasValue ? isAllowAllIPs.Value : UMClientConfiguration.Settings.IPList.AllowAll;
-            this.httpContextHelper = httpContextHelper;
+            this.configuration = configuration ?? UMClientManager.UMClientConfigs;
+            this.restClient = restClient ?? UMClientManager.RestClient;
+            this.httpContextHelper = httpContextHelper ?? UMClientManager.HttpContext;
+
+            this.loggingService = loggingService ?? new LoggingService(clientIP, Logger.Log, this.configuration);
+            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter
+               ?? new UMControlAdapter(new CacheService(), this.restClient, this.configuration);
         }
 
         public bool ByPassUM
@@ -76,9 +76,7 @@
 
             var token = httpContextHelper.GetValueFromQueryString(TokenName);
 
-            if (!string.IsNullOrEmpty(token)
-                && IsRequestIPAllowToAccess()
-                && IsTokenValid(token))
+            if (!string.IsNullOrEmpty(token) && IsTokenValid(token))
             {
                 ByPassUM = true;
 
@@ -101,7 +99,7 @@
 
             try
             {
-                isTokenValid = restClient.ExecuteGetAsync<bool>("/token/validate", new { siteId, token }).GetAwaiter().GetResult();
+                isTokenValid = restClient.ExecuteGetAsync<bool>("/token/validate", new { configuration.SiteId, token }).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -109,16 +107,6 @@
             }
 
             return isTokenValid;
-        }
-
-        private bool IsRequestIPAllowToAccess()
-        {
-            if (isAllowAllIPs)
-            {
-                return true;
-            }
-
-            return IPHelper.IsAuthorizedIP(this.clientIP ?? httpContextHelper.GetIpAddress(), allowedIPs);
         }
     }
 }

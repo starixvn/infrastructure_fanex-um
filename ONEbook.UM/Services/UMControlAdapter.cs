@@ -1,4 +1,4 @@
-﻿namespace ONEbook.UM.Services.Impl
+﻿namespace ONEbook.UM.Services
 {
     using System;
     using System.Threading.Tasks;
@@ -7,30 +7,38 @@
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Models;
 
+    public interface IUMControlAdapter
+    {
+        Task<UnderMaintenanceTime> GetUnderMaintenanceTime();
+    }
+
     public class UMControlAdapter : IUMControlAdapter
     {
         private const string SiteUMCacheKey = "ONEbook.UM.Site.{0}";
         private readonly ICacheService cacheService;
         private readonly IRestClient restClient;
+        private readonly IUMClientConfiguration configuration;
 
         internal UMControlAdapter(
             ICacheService cacheService,
-            IRestClient restClient)
+            IRestClient restClient,
+            IUMClientConfiguration configuration)
         {
             this.cacheService = cacheService;
             this.restClient = restClient;
+            this.configuration = configuration;
         }
 
         public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime()
         {
-            if (UMClientConfiguration.Settings.EnableUnscheduledUM)
+            if (configuration.EnableUnscheduledUM)
             {
-                return new UnderMaintenanceTime(true, UMClientConfiguration.Settings.UMFrom, UMClientConfiguration.Settings.UMTo);
+                return new UnderMaintenanceTime(true, configuration.UMFrom, configuration.UMTo);
             }
 
-            if (UMClientConfiguration.Settings.EnableCheckUM)
+            if (configuration.EnableCheckUM)
             {
-                var cacheKey = string.Format(SiteUMCacheKey, UMClientConfiguration.Settings.SiteId);
+                var cacheKey = string.Format(SiteUMCacheKey, configuration.SiteId);
                 var umInfo = cacheService.Get<UnderMaintenanceTime>(cacheKey);
 
                 if (umInfo == null)
@@ -39,7 +47,7 @@
 
                     cacheService.Set(cacheKey, umInfo,
                         new CacheItemOptions()
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(UMClientConfiguration.Settings.ResultCacheDuration)));
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(configuration.ResultCacheDuration)));
                 }
 
                 return umInfo;
@@ -50,32 +58,10 @@
 
         internal async Task<UnderMaintenanceTime> GetUnderMaintenance()
         {
-            var underMaintenance = await GetUnderMaintenanceWithSurvivedService();
-
-            if (underMaintenance.ConnectionResult != null
-                && underMaintenance.ConnectionResult.IsNotOk
-                && UMClientManager.ErrorHandler != null)
-            {
-                UMClientManager.ErrorHandler(underMaintenance.ConnectionResult.Message);
-            }
-
-            return underMaintenance;
-        }
-
-        internal async Task<UnderMaintenanceTime> GetUnderMaintenanceWithSurvivedService()
-        {
             try
             {
-                var umInfo = await restClient.ExecuteGetAsync<UnderMaintenanceTime>($"/NewUnderMaintenance/get?siteId={UMClientConfiguration.Settings.SiteId}");
-
-                if (UMClientConfiguration.HasMoreThanOneService && umInfo.ConnectionResult.IsNotOk)
-                {
-                    restClient.KeepTrackErrorService();
-                    restClient.InitSurvivedRestClient();
-                    return await GetUnderMaintenanceWithSurvivedService();
-                }
-
-                return umInfo;
+                return await restClient.ExecuteGetAsync<UnderMaintenanceTime>(
+                    $"/NewUnderMaintenance/get?siteId={configuration.SiteId}");
             }
             catch (Exception ex)
             {

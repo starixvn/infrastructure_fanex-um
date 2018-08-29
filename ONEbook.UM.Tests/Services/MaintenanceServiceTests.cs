@@ -5,14 +5,17 @@
     using System.IO;
     using System.Net;
     using System.Reflection;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.SessionState;
+    using Fanex.Caching;
     using NSubstitute;
     using NUnit.Framework;
+    using ONEbook.UM.Configurations;
+    using ONEbook.UM.Helpers;
     using ONEbook.UM.Models;
     using ONEbook.UM.Services;
-    using ONEbook.UM.Services.Impl;
     using RestSharp;
 
     [TestFixture]
@@ -20,47 +23,41 @@
     {
         private MaintenanceService _maintenanceService;
         private IUMControlAdapter _underMaintenanceControlAdapter;
-        private IRestClient _restClient;
-        private IList<Tuple<string, string>> _allowIPs;
-        private string _clientIP;
-        private ILoggingService _loggingService;
-        private int _siteId;
-        private bool _isAllowAllIPs;
-        private ICachingService _cachingService;
+        private UM.Helpers.IRestClient restClient;
+        private string clientIP;
+        private ILoggingService loggingService;
+        private IHttpContextHelper httpContextHelper;
+        private IUMClientConfiguration configuration;
 
         [SetUp]
         public void SetUp()
         {
             _underMaintenanceControlAdapter = Substitute.For<IUMControlAdapter>();
-            _restClient = Substitute.For<IRestClient>();
-            _loggingService = Substitute.For<ILoggingService>();
-            _cachingService = Substitute.For<ICachingService>();
-            _allowIPs = new List<Tuple<string, string>>();
-            _clientIP = "10.18.200.209";
-            _siteId = 2000000;
-            _isAllowAllIPs = false;
+            restClient = Substitute.For<UM.Helpers.IRestClient>();
+            loggingService = Substitute.For<ILoggingService>();
+            httpContextHelper = Substitute.For<IHttpContextHelper>();
+            configuration = Substitute.For<IUMClientConfiguration>();
+            clientIP = "10.18.200.209";
 
             _maintenanceService = new MaintenanceService(
                 _underMaintenanceControlAdapter,
-                _restClient,
-                _allowIPs,
-                _clientIP,
-                _loggingService,
-                _cachingService,
-                _siteId,
-                _isAllowAllIPs);
+                restClient,
+                clientIP,
+                loggingService,
+                httpContextHelper,
+                configuration);
         }
 
         #region IsUnderMaintenance Test cases
 
         [Test]
-        public void IsUnderMaintenance_ExecuteGetDowntime()
+        public async Task IsUnderMaintenance_ExecuteGetDowntime()
         {
             AssumeUMTime(isUMTime: false);
 
-            _maintenanceService.IsUnderMaintenance();
+            await _maintenanceService.IsUnderMaintenance();
 
-            _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
+            await _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
         }
 
         private void AssumeUMTime(bool isUMTime = true)
@@ -69,11 +66,11 @@
         }
 
         [Test]
-        public void IsUnderMaintenance_NowIsNotUMTime_ReturnFalse()
+        public async Task IsUnderMaintenance_NowIsNotUMTime_ReturnFalse()
         {
             AssumeUMTime(isUMTime: false);
 
-            var isUM = _maintenanceService.IsUnderMaintenance();
+            var isUM = await _maintenanceService.IsUnderMaintenance();
 
             Assert.IsFalse(isUM);
         }
@@ -126,7 +123,7 @@
             restResponse.StatusCode = HttpStatusCode.OK;
             restResponse.Content = "true";
 
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
             var isUM = _maintenanceService.IsUnderMaintenance();
 
@@ -143,7 +140,7 @@
 
             _maintenanceService.IsUnderMaintenance();
 
-            _restClient.Received().Execute(Arg.Any<IRestRequest>());
+            restClient.Received().Execute(Arg.Any<IRestRequest>());
         }
 
         [Test]
@@ -158,7 +155,7 @@
             restResponse.StatusCode = HttpStatusCode.OK;
             restResponse.Content = "true";
 
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
             var isUM = _maintenanceService.IsUnderMaintenance();
 
@@ -177,7 +174,7 @@
             restResponse.StatusCode = HttpStatusCode.OK;
             restResponse.Content = "false";
 
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
             var isUM = _maintenanceService.IsUnderMaintenance();
 
@@ -196,7 +193,7 @@
             restResponse.StatusCode = HttpStatusCode.OK;
             restResponse.Content = "true";
 
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
 
             _maintenanceService.IsUnderMaintenance();
 
@@ -211,7 +208,7 @@
             AssumeUMTime();
             _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
 
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(x => { throw new Exception(); });
+            restClient.Execute(Arg.Any<IRestRequest>()).Returns(x => { throw new Exception(); });
 
             var isUMActual = _maintenanceService.IsUnderMaintenance();
 

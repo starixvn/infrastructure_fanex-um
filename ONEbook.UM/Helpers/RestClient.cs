@@ -7,9 +7,5 @@
         Task<T> ExecuteGetAsync<T>(string endPoint, object data = null);
 
         Task<T> ExecutePostAsync<T>(string endPoint, object data = null);
-
-        void KeepTrackErrorService();
-
-        void InitSurvivedRestClient();
     }
 }

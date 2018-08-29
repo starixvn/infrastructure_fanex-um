@@ -11,6 +11,19 @@
 
     public class HmacAuthenticator : IAuthenticator
     {
+        private readonly IUMClientConfiguration configuration;
+        private readonly IPHelper ipHelper;
+
+        public HmacAuthenticator() : this(null, null)
+        {
+        }
+
+        public HmacAuthenticator(IUMClientConfiguration configuration, IPHelper ipHelper)
+        {
+            this.configuration = configuration ?? UMClientManager.UMClientConfigs;
+            this.ipHelper = ipHelper ?? new IPHelperImpl();
+        }
+
         public void Authenticate(RestSharp.IRestClient client, IRestRequest request)
         {
             if (client == null)
@@ -23,7 +36,7 @@
                 throw new ArgumentNullException("request", "Rest Request cannot be null");
             }
 
-            var machineIP = IPHelper.GetMachineIP();
+            var machineIP = ipHelper.GetMachineIP();
 
             string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
 
@@ -40,7 +53,7 @@
             // Creating the raw signature string
             string signatureRawData = string.Format("{0}{1}{2}{3}{4}", machineIP, requestHttpMethod, requestUri, requestTimeStamp, nonce);
 
-            var secretKeyByteArray = Convert.FromBase64String(UMClientConfiguration.Settings.SecretKey);
+            var secretKeyByteArray = Convert.FromBase64String(configuration.SecretKey);
 
             byte[] signature = Encoding.UTF8.GetBytes(signatureRawData);
 

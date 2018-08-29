@@ -9,17 +9,35 @@
     public sealed class CheckUMFilterAttribute : ActionFilterAttribute
     {
         private readonly IMaintenanceService maintenanceService;
+        private readonly IUMClientConfiguration configuration;
 
-        public CheckUMFilterAttribute() : this(null)
+        public CheckUMFilterAttribute() : this(null, null)
         {
         }
 
-        public CheckUMFilterAttribute(IMaintenanceService maintenanceService)
+        public CheckUMFilterAttribute(IMaintenanceService maintenanceService, IUMClientConfiguration configuration)
         {
-            this.maintenanceService = maintenanceService;
+            this.maintenanceService = maintenanceService ?? new MaintenanceService();
+            this.configuration = configuration ?? UMClientManager.UMClientConfigs;
         }
 
-        public static void UnderMaintenanceAction(ActionExecutingContext filterContext)
+        public override async void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance();
+
+            if (isUnderMaintenance)
+            {
+                UnderMaintenanceAction(filterContext);
+            }
+
+            if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl)
+                && (await maintenanceService.GetUnderMaintenanceTime()).ConnectionResult.IsNotOk)
+            {
+                ErrorUnderMaintenanceAction(filterContext);
+            }
+        }
+
+        public void UnderMaintenanceAction(ActionExecutingContext filterContext)
         {
             var response = filterContext.HttpContext.Response;
 
@@ -34,16 +52,16 @@
             }
             else
             {
-                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(UMClientConfiguration.Settings.UMPageUrl).ToLower();
+                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.UMPageUrl).ToLower();
                 var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLower();
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
-                    filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.UMPageUrl);
+                    filterContext.Result = new RedirectResult(configuration.UMPageUrl);
                 }
             }
         }
 
-        public static void ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
+        public void ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
         {
             HttpResponseBase response = filterContext.HttpContext.Response;
 
@@ -58,28 +76,12 @@
             }
             else
             {
-                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(UMClientConfiguration.Settings.ErrorUMPageUrl).ToLower();
+                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.ErrorUMPageUrl).ToLower();
                 var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLower();
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
-                    filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.ErrorUMPageUrl);
+                    filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl);
                 }
-            }
-        }
-
-        public override async void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance();
-
-            if (isUnderMaintenance)
-            {
-                UnderMaintenanceAction(filterContext);
-            }
-
-            if (!string.IsNullOrWhiteSpace(UMClientConfiguration.Settings.ErrorUMPageUrl)
-                && (await maintenanceService.GetUnderMaintenanceTime()).ConnectionResult.IsNotOk)
-            {
-                ErrorUnderMaintenanceAction(filterContext);
             }
         }
     }

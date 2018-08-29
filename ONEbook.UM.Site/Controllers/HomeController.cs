@@ -2,11 +2,7 @@
 {
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
     using ONEbook.UM.Services;
-    using ONEbook.UM.Services.Impl;
-    using ONEbook.UM.Transport;
     using UM.Filters;
 
     [AllowAnonymous]
@@ -22,7 +18,7 @@
         public HomeController(
             IMaintenanceService maintenanceService)
         {
-            _maintenanceService = maintenanceService ?? new MaintenanceService(new RestClient(), new HttpContextHelper());
+            _maintenanceService = maintenanceService ?? new MaintenanceService();
         }
 
         public async Task<ActionResult> Login()
@@ -34,12 +30,12 @@
             if (isUM)
             {
                 var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTime();
-                contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is in under maintenance "
+                contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
             else
             {
-                contentResult.Content = $"Site {UMClientConfiguration.Settings.SiteId} is not in under maintenance.";
+                contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is not in under maintenance.";
             }
 
             return contentResult;
@@ -86,7 +82,7 @@
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
                 "Site {0} {1} under maintenance on recheckin.",
-                UMClientConfiguration.Settings.SiteId,
+                UMClientManager.UMClientConfigs.SiteId,
                 isPassUM ? "passes" : "does not pass");
 
             return contentResult;

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ONEbook.UM.Helpers.Core\ONEbook.UM.AspNetCore.csproj" />
+    <ProjectReference Include="..\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj" />
+    <ProjectReference Include="..\ONEbook.UM\ONEbook.UM.csproj" />
+  </ItemGroup>
+
+</Project>

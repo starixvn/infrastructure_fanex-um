@@ -4,18 +4,24 @@
     using System.Threading.Tasks;
     using Configurations;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.AspNetCore.Http.Extensions;
     using Services;
 
     public sealed class CheckUMFilterAttribute : ActionFilterAttribute
     {
         private readonly IMaintenanceService maintenanceService;
+        private readonly IUMClientConfiguration configuration;
 
-        public CheckUMFilterAttribute(IMaintenanceService maintenanceService)
+        public CheckUMFilterAttribute() : this(null, null)
         {
-            this.maintenanceService = maintenanceService;
+        }
+
+        public CheckUMFilterAttribute(IMaintenanceService maintenanceService, IUMClientConfiguration configuration)
+        {
+            this.maintenanceService = maintenanceService ?? new MaintenanceService();
+            this.configuration = configuration ?? UMClientManager.UMClientConfigs;
         }
 
         public override async void OnActionExecuting(ActionExecutingContext context)
@@ -27,14 +33,14 @@
                 await UnderMaintenanceAction(context);
             }
 
-            if (!string.IsNullOrWhiteSpace(UMClientConfiguration.Settings.ErrorUMPageUrl)
+            if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl)
                 && (await maintenanceService.GetUnderMaintenanceTime()).ConnectionResult.IsNotOk)
             {
                 await ErrorUnderMaintenanceAction(context);
             }
         }
 
-        public static async Task UnderMaintenanceAction(ActionExecutingContext filterContext)
+        public async Task UnderMaintenanceAction(ActionExecutingContext filterContext)
         {
             var response = filterContext.HttpContext.Response;
 
@@ -48,18 +54,18 @@
             else
             {
                 var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
-                    UMClientConfiguration.Settings.UMPageUrl,
+                    configuration.UMPageUrl,
                     filterContext.HttpContext.Request.Host);
                 var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
 
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
-                    filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.UMPageUrl);
+                    filterContext.Result = new RedirectResult(configuration.UMPageUrl);
                 }
             }
         }
 
-        public static async Task ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
+        public async Task ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
         {
             var response = filterContext.HttpContext.Response;
 
@@ -73,13 +79,13 @@
             else
             {
                 var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
-                   UMClientConfiguration.Settings.ErrorUMPageUrl,
+                   configuration.ErrorUMPageUrl,
                    filterContext.HttpContext.Request.Host);
                 var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
 
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
-                    filterContext.Result = new RedirectResult(UMClientConfiguration.Settings.ErrorUMPageUrl);
+                    filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl);
                 }
             }
         }

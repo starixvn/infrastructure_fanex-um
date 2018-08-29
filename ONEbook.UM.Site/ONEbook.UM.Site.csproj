@@ -121,7 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="WhoAmI.aspx" />
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +153,9 @@
     <Folder Include="Views\Token\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ONEbook.UM.Helpers.MVC\ONEbook.UM.Helpers.MVC.csproj">
+    <ProjectReference Include="..\ONEbook.UM.Helpers.MVC\ONEbook.UM.AspNetMVC.csproj">
       <Project>{9f74a21f-4ed8-4943-b04b-210a3960d65b}</Project>
-      <Name>ONEbook.UM.Helpers.MVC</Name>
+      <Name>ONEbook.UM.AspNetMVC</Name>
     </ProjectReference>
     <ProjectReference Include="..\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj">
       <Project>{c82035ba-e3bd-4784-96b5-7b80457c6aa8}</Project>
@@ -190,13 +192,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
