@@ -2,6 +2,7 @@
 {
     using System.Net;
     using System.Net.Sockets;
+    using ONEbook.UM.Models;
 
     public interface IPHelper
     {
@@ -22,7 +23,7 @@
                 }
             }
 
-            return "127.0.0.1";
+            throw new UMClientException("No network adapters with an IPv4 address in the system!");
         }
     }
 }
