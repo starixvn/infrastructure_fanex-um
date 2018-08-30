@@ -1,11 +1,13 @@
 ﻿namespace ONEbook.UM.Filters
 {
+    using System;
     using System.Net;
     using System.Web;
     using System.Web.Mvc;
     using Configurations;
     using Services;
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public sealed class CheckUMFilterAttribute : ActionFilterAttribute
     {
         private readonly IMaintenanceService maintenanceService;
@@ -23,7 +25,7 @@
 
         public override async void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance();
+            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance().ConfigureAwait(false);
 
             if (isUnderMaintenance)
             {
@@ -31,7 +33,7 @@
             }
 
             if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl)
-                && (await maintenanceService.GetUnderMaintenanceTime()).ConnectionResult.IsNotOk)
+                && (await maintenanceService.GetUnderMaintenanceTime().ConfigureAwait(false)).ConnectionResult.IsNotOk)
             {
                 ErrorUnderMaintenanceAction(filterContext);
             }
@@ -52,8 +54,8 @@
             }
             else
             {
-                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.UMPageUrl).ToLower();
-                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLower();
+                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.UMPageUrl).ToLowerInvariant();
+                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLowerInvariant();
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
                     filterContext.Result = new RedirectResult(configuration.UMPageUrl);
@@ -76,8 +78,8 @@
             }
             else
             {
-                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.ErrorUMPageUrl).ToLower();
-                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLower();
+                var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.ErrorUMPageUrl).ToLowerInvariant();
+                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLowerInvariant();
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
                     filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl);

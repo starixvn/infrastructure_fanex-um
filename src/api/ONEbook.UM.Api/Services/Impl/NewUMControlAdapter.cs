@@ -3,7 +3,7 @@
     using System;
     using ONEbook.UM.Api.Models;
     using ONELab.UMService.UMClient;
-    using ONEbook.UM.Api.Extensions;
+    using System.Globalization;
 
     public class NewUMControlAdapter : IUMControlAdapter
     {
@@ -18,7 +18,11 @@
 
             var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime startTime, out DateTime endTime, out int errorCode);
 
-            return new UnderMaintenanceTime(isUnderUM, startTime.ToString(), endTime.ToString(), errorCode);
+            return new UnderMaintenanceTime(
+                isUnderUM,
+                startTime.ToString(CultureInfo.InvariantCulture),
+                endTime.ToString(CultureInfo.InvariantCulture),
+                errorCode);
         }
     }
 }

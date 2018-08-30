@@ -49,7 +49,7 @@
 
             if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
-                await Task.FromException(new Exception(response.Content));
+                await Task.FromException(new Exception(response.Content)).ConfigureAwait(false);
             }
 
             throw new InvalidOperationException(

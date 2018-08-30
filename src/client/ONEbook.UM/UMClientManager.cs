@@ -19,6 +19,8 @@
             return CurrentInstance;
         }
 
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+
         public UMClientManager UseRestClient(IRestClient restClient)
         {
             CurrentInstance.restClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
@@ -32,6 +34,8 @@
 
             return CurrentInstance;
         }
+
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
 
         public static IUMClientConfiguration UMClientConfigs
           => CurrentInstance.umClientConfig ?? throw new InvalidOperationException(nameof(CurrentInstance.umClientConfig));

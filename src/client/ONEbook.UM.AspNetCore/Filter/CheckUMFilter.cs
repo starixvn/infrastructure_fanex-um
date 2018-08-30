@@ -1,5 +1,6 @@
 ﻿namespace ONEbook.UM.Filters
 {
+    using System;
     using System.Net;
     using System.Threading.Tasks;
     using Configurations;
@@ -9,6 +10,7 @@
     using Microsoft.AspNetCore.Mvc.Filters;
     using Services;
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public sealed class CheckUMFilterAttribute : ActionFilterAttribute
     {
         private readonly IMaintenanceService maintenanceService;
@@ -26,17 +28,17 @@
 
         public override async void OnActionExecuting(ActionExecutingContext context)
         {
-            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance();
+            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance().ConfigureAwait(false);
 
             if (isUnderMaintenance)
             {
-                await UnderMaintenanceAction(context);
+                await UnderMaintenanceAction(context).ConfigureAwait(false);
             }
 
             if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl)
-                && (await maintenanceService.GetUnderMaintenanceTime()).ConnectionResult.IsNotOk)
+                && (await maintenanceService.GetUnderMaintenanceTime().ConfigureAwait(false)).ConnectionResult.IsNotOk)
             {
-                await ErrorUnderMaintenanceAction(context);
+                await ErrorUnderMaintenanceAction(context).ConfigureAwait(false);
             }
         }
 
@@ -47,9 +49,9 @@
             if (IsAjax(filterContext.HttpContext.Request))
             {
                 response.Clear();
-                await response.WriteAsync("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }");
+                await response.WriteAsync("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }").ConfigureAwait(false);
                 filterContext.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                await filterContext.Result.ExecuteResultAsync(filterContext);
+                await filterContext.Result.ExecuteResultAsync(filterContext).ConfigureAwait(false);
             }
             else
             {
@@ -72,9 +74,9 @@
             if (IsAjax(filterContext.HttpContext.Request))
             {
                 response.Clear();
-                await response.WriteAsync("{ \"code\": 999998, \"message\": \"UM Error\" }");
+                await response.WriteAsync("{ \"code\": 999998, \"message\": \"UM Error\" }").ConfigureAwait(false);
                 filterContext.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                await filterContext.Result.ExecuteResultAsync(filterContext);
+                await filterContext.Result.ExecuteResultAsync(filterContext).ConfigureAwait(false);
             }
             else
             {

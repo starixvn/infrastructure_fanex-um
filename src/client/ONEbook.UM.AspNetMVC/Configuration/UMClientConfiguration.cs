@@ -21,6 +21,7 @@
             ErrorUMPageUrl = GetValue<string>("ONEbook.UM:ErrorUMPageUrl");
         }
 
+#pragma warning disable S3996 // URI properties should not be strings
         public string ServiceUri { get; }
 
         public bool EnableCheckUM { get; }
@@ -42,8 +43,9 @@
         public string UMLoggingCategory { get; }
 
         public string ErrorUMPageUrl { get; }
+#pragma warning restore S3996 // URI properties should not be strings
 
-        private T GetValue<T>(string key, T defaultValue)
+        private static T GetValue<T>(string key, T defaultValue)
         {
             var value = ConfigurationManager.AppSettings[key];
 
@@ -55,7 +57,7 @@
             return GetValue<T>(key);
         }
 
-        private T GetValue<T>(string key)
+        private static T GetValue<T>(string key)
         {
             var value = ConfigurationManager.AppSettings[key];
 

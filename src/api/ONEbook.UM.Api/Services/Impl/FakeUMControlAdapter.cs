@@ -2,6 +2,7 @@
 {
     using System;
     using System.Configuration;
+    using System.Globalization;
     using System.Linq;
     using ONEbook.UM.Api.Models;
 
@@ -25,7 +26,11 @@
                 if (minute == now.Minute || (now.Minute > minute && ((now.Minute - minute) * 60 < umPeriod)))
                 {
                     var startFakeTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, minute, 0);
-                    return new UnderMaintenanceTime(true, startFakeTime.ToString(), startFakeTime.AddSeconds(umPeriod).ToString(), 0);
+                    return new UnderMaintenanceTime(
+                        true,
+                        startFakeTime.ToString(CultureInfo.InvariantCulture),
+                        startFakeTime.AddSeconds(umPeriod).ToString(CultureInfo.InvariantCulture),
+                        0);
                 }
             }
 

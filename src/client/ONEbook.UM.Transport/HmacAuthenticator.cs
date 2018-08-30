@@ -28,17 +28,17 @@
         {
             if (client == null)
             {
-                throw new ArgumentNullException("client", "Rest Client cannot be null");
+                throw new ArgumentNullException(nameof(client), "Rest Client cannot be null");
             }
 
             if (request == null)
             {
-                throw new ArgumentNullException("request", "Rest Request cannot be null");
+                throw new ArgumentNullException(nameof(request), "Rest Request cannot be null");
             }
 
             var machineIP = ipHelper.GetMachineIP();
 
-            string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLower());
+            string requestUri = HttpUtility.UrlEncode(client.BuildUri(request).OriginalString.ToLowerInvariant());
 
             string requestHttpMethod = request.Method.ToString();
 

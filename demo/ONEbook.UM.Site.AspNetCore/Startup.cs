@@ -23,6 +23,8 @@
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -51,5 +53,7 @@
                 .UseRestClient(new RestClient(umConfig))
                 .UseHttpContext(new HttpContextHelper(app.ApplicationServices.GetService<IHttpContextAccessor>()));
         }
+
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
     }
 }

@@ -8,7 +8,7 @@
     using ONEbook.UM.Api.Helpers;
 
     [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = false)]
-    public sealed class LogInfoFilter : ActionFilterAttribute
+    public sealed class LogInfoFilterAttribute : ActionFilterAttribute
     {
         [SuppressMessage("Microsoft.Globalization",
             "CA1303:Do not pass literals as localized parameters",

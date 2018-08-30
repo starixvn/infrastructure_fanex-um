@@ -2,6 +2,7 @@
 {
     public interface IUMClientConfiguration
     {
+#pragma warning disable S3996 // URI properties should not be strings
         string ServiceUri { get; }
 
         bool EnableCheckUM { get; }
@@ -23,5 +24,7 @@
         string UMLoggingCategory { get; }
 
         string ErrorUMPageUrl { get; }
+
+#pragma warning restore S3996 // URI properties should not be strings
     }
 }

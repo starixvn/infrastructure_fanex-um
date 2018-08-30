@@ -23,7 +23,9 @@
             return validToken.Equals(token, StringComparison.Ordinal);
         }
 
-        private string GenerateToken(Sites siteId)
+#pragma warning disable S2070 // SHA-1 and Message-Digest hash algorithms should not be used in secure contexts
+
+        private static string GenerateToken(Sites siteId)
         {
             var today = DateTime.UtcNow.ToShortDateString();
             var key = string.Format("{0}_{1}_{2}", siteId, today, UnderMaintenanceApiConfiguration.Settings.SecretKey);
@@ -35,6 +37,8 @@
                 return HttpServerUtility.UrlTokenEncode(hash);
             }
         }
+
+#pragma warning restore S2070 // SHA-1 and Message-Digest hash algorithms should not be used in secure contexts
 
         public string GetUMToken(Sites siteId)
         {

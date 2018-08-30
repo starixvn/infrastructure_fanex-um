@@ -12,7 +12,7 @@
             // Web API configuration and services
             if (config == null)
             {
-                throw new ArgumentNullException("config", "Configuration cannot be null.");
+                throw new ArgumentNullException(nameof(config), "Configuration cannot be null.");
             }
 
             // Web API routes
@@ -27,7 +27,7 @@
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional });
 
-            config.Filters.Add(new GlobalExceptionFilter());
+            config.Filters.Add(new GlobalExceptionFilterAttribute());
 
             var formaters = GlobalConfiguration.Configuration.Formatters;
             formaters.Clear();
@@ -35,9 +35,6 @@
 
             var jsonFormater = formaters.JsonFormatter;
             jsonFormater.Indent = true;
-            ////jsonFormater.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-
-            ////config.Filters.Add(new LogInfoFilter());
         }
     }
 }

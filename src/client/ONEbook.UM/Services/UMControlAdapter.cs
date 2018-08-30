@@ -43,7 +43,7 @@
 
                 if (umInfo == null)
                 {
-                    umInfo = await GetUnderMaintenance();
+                    umInfo = await GetUnderMaintenance().ConfigureAwait(false);
 
                     cacheService.Set(cacheKey, umInfo,
                         new CacheItemOptions()
@@ -60,8 +60,9 @@
         {
             try
             {
-                return await restClient.ExecuteGetAsync<UnderMaintenanceTime>(
-                    $"/NewUnderMaintenance/get?siteId={configuration.SiteId}");
+                return await restClient
+                    .ExecuteGetAsync<UnderMaintenanceTime>($"/NewUnderMaintenance/get?siteId={configuration.SiteId}")
+                    .ConfigureAwait(false);
             }
             catch (Exception ex)
             {

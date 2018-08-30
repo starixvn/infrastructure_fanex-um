@@ -15,11 +15,8 @@
     using Fanex.Logging;
     using ONEbook.UM.Api.Configurations;
 
-    /// <summary>
-    /// http://bitoftech.net/2014/12/15/secure-asp-net-web-api-using-api-key-authentication-hmac-authentication/
-    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
-    public sealed class HmacAuthorizationFilter : AuthorizationFilterAttribute
+    public sealed class HmacAuthorizationFilterAttribute : AuthorizationFilterAttribute
     {
         private const long RequestMaxAgeInSeconds = 300;
         private const string TokenAuthenticationScheme = "amx";
@@ -68,32 +65,26 @@
             }
         }
 
-        private void HandleUnauthorizedRequest(HttpActionContext actionContext)
+        private static void HandleUnauthorizedRequest(HttpActionContext actionContext)
         {
             actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized);
         }
 
-        private string[] GetAutherizationHeaderValues(string rawAuthzHeader)
+        private static string[] GetAutherizationHeaderValues(string rawAuthzHeader)
         {
             var credArray = rawAuthzHeader.Split(':');
 
-            if (credArray.Length == 4)
-            {
-                return credArray;
-            }
-            else
-            {
-                return null;
-            }
+            return credArray.Length == 4 ? credArray : null;
         }
 
-        [SuppressMessage("Microsoft.Globalization",
-            "CA1303:Do not pass literals as localized parameters",
-            MessageId = "Fanex.Logging.LogService.Info(System.String)",
-            Justification = "Reviewed")]
-        private bool IsValidRequest(HttpRequestMessage req, string siteId, string incomingBase64Signature, string nonce, string requestTimeStamp)
+        private static bool IsValidRequest(
+            HttpRequestMessage req,
+            string siteId,
+            string incomingBase64Signature,
+            string nonce,
+            string requestTimeStamp)
         {
-            string requestUri = HttpUtility.UrlEncode(req.RequestUri.AbsoluteUri.ToLower());
+            string requestUri = HttpUtility.UrlEncode(req.RequestUri.AbsoluteUri.ToLowerInvariant());
             LogService.Info("Request Uri: " + requestUri);
             string requestHttpMethod = req.Method.Method;
 
@@ -118,7 +109,7 @@
             }
         }
 
-        private bool IsReplayRequest(string nonce, string requestTimeStamp)
+        private static bool IsReplayRequest(string nonce, string requestTimeStamp)
         {
             if (MemoryCache.Default.Contains(nonce))
             {

@@ -67,7 +67,7 @@
 
         public async Task<bool> IsUnderMaintenance()
         {
-            var nowIsNotUnderMaintenance = await NowIsNotUnderMaintenance();
+            var nowIsNotUnderMaintenance = await NowIsNotUnderMaintenance().ConfigureAwait(false);
 
             if (nowIsNotUnderMaintenance || ByPassUM)
             {
@@ -88,7 +88,7 @@
 
         private async Task<bool> NowIsNotUnderMaintenance()
         {
-            var underMaintenanceTime = await underMaintenanceControlAdapter.GetUnderMaintenanceTime();
+            var underMaintenanceTime = await underMaintenanceControlAdapter.GetUnderMaintenanceTime().ConfigureAwait(false);
 
             return !underMaintenanceTime.IsUnderMaintenanceTime;
         }
