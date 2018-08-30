@@ -3,8 +3,6 @@
     using System;
     using System.Net.Http.Formatting;
     using System.Web.Http;
-    using Filters;
-    using Newtonsoft.Json.Serialization;
     using ONEbook.UM.Api.Helpers;
 
     public static class WebApiConfig
