@@ -19,7 +19,7 @@
         private readonly IRestClient restClient;
         private readonly IUMClientConfiguration configuration;
 
-        internal UMControlAdapter(
+        public UMControlAdapter(
             ICacheService cacheService,
             IRestClient restClient,
             IUMClientConfiguration configuration)
@@ -66,11 +66,6 @@
             }
             catch (Exception ex)
             {
-                if (ex is IndexOutOfRangeException)
-                {
-                    return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
-                }
-
                 return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
             }
         }

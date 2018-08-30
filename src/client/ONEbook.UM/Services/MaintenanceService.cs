@@ -75,8 +75,9 @@
             }
 
             var token = httpContextHelper.GetValueFromQueryString(TokenName);
+            bool isValidToken = !string.IsNullOrEmpty(token) && await IsTokenValid(token).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(token) && IsTokenValid(token))
+            if (isValidToken)
             {
                 ByPassUM = true;
 
@@ -93,13 +94,13 @@
             return !underMaintenanceTime.IsUnderMaintenanceTime;
         }
 
-        private bool IsTokenValid(string token)
+        private async Task<bool> IsTokenValid(string token)
         {
             var isTokenValid = false;
 
             try
             {
-                isTokenValid = restClient.ExecuteGetAsync<bool>("/token/validate", new { configuration.SiteId, token }).GetAwaiter().GetResult();
+                isTokenValid = await restClient.ExecuteGetAsync<bool>("/token/validate", new { configuration.SiteId, token }).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

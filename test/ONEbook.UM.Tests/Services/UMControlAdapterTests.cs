@@ -1,153 +1,123 @@
-﻿namespace ONEbook.UM.Tests.Services
+namespace ONEbook.UM.Tests.Services
 {
     using System;
-    using System.Collections.Generic;
-    using System.Net;
-    using Configurations;
+    using System.Threading.Tasks;
+    using Fanex.Caching;
+    using KellermanSoftware.CompareNetObjects;
     using NSubstitute;
-    using NUnit.Framework;
-    using RestSharp;
-    using UM.Services;
-    using UM.Services.Impl;
+    using NSubstitute.ExceptionExtensions;
+    using ONEbook.UM.Configurations;
+    using ONEbook.UM.Helpers;
+    using ONEbook.UM.Models;
+    using ONEbook.UM.Services;
+    using Xunit;
 
     public class UMControlAdapterTests
     {
-        private IRestClient _restClient;
-        private ILoggingService _loggingService;
-        private int _siteId;
-        private ICacheService _cachingService;
-        private UMControlAdapter _underMaintenanceControlAdapter;
+        private readonly ICacheService cacheService;
+        private readonly IRestClient restClient;
+        private readonly IUMClientConfiguration configuration;
+        private readonly IUMControlAdapter umControlAdapter;
+        private readonly CompareLogic comparer;
 
-        [SetUp]
-        public void SetUp()
+        public UMControlAdapterTests()
         {
-            _restClient = Substitute.For<IRestClient>();
-            _loggingService = Substitute.For<ILoggingService>();
-            _cachingService = Substitute.For<ICachingService>();
-            _siteId = 2000000;
+            cacheService = Substitute.For<ICacheService>();
+            restClient = Substitute.For<IRestClient>();
+            configuration = Substitute.For<IUMClientConfiguration>();
+            umControlAdapter = new UMControlAdapter(
+                cacheService,
+                restClient,
+                configuration);
 
-            UMClientManager.WhenError((message) => { });
-            _underMaintenanceControlAdapter = new UMControlAdapter(_siteId, _cachingService, _restClient, _loggingService);
+            comparer = new CompareLogic();
         }
 
-        [Test]
-        public void GetUnderMaintenance_Always_ExecuteRestClient()
+        [Fact]
+        public async Task GetUnderMaintenanceTime_EnableUnscheduleUM_ReturnExpectedUnscheduleUMInfo()
         {
             // Arrange
-            IRestResponse restResponse = Substitute.For<IRestResponse>();
-            restResponse.StatusCode.Returns(HttpStatusCode.OK);
-            restResponse.Content.Returns("{\"From\": null, \"To\": null, \"IsUnderMaintenanceTime\": true, \"ConnectionResult\": { \"IsOk\": true, \"Message\": null } }");
-
-            _underMaintenanceControlAdapter.GetUnderMaintenance();
-
-            _restClient.Received().Execute(Arg.Is<IRestRequest>(
-                request =>
-                    request.Resource == "/UnderMaintenance/get"
-                    && request.Method == Method.GET));
-        }
-
-        [Test]
-        public void GetUnderMaintenance_ConnectToUMServiceOK_ReturnUnderMaintenanceInfo()
-        {
-            // Arrange
-            IRestResponse restResponse = Substitute.For<IRestResponse>();
-            restResponse.StatusCode.Returns(HttpStatusCode.OK);
-            restResponse.Content.Returns("{\"From\": null, \"To\": null, \"IsUnderMaintenanceTime\": true, \"ConnectionResult\": { \"IsOk\": true, \"Message\": null } }");
-
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
+            configuration.EnableUnscheduledUM.Returns(true);
+            configuration.UMFrom.Returns("3:00");
+            configuration.UMTo.Returns("4:00");
 
             // Act
-            var underMaintenanceInfo = _underMaintenanceControlAdapter.GetUnderMaintenance();
+            var underMaintenanceTime = await umControlAdapter.GetUnderMaintenanceTime();
 
             // Assert
-            Assert.IsTrue(
-                underMaintenanceInfo.IsUnderMaintenanceTime
-                && underMaintenanceInfo.ConnectionResult.IsOk);
+
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
         }
 
-        [Test]
-        public void GetUnderMaintenance_ConnectToUMServiceFailed_ReturnUnderMaintenanceWithFailedMessage()
+        [Fact]
+        public async Task GetUnderMaintenanceTime_EnableCheckUM_CacheHasUMInfo_ReturnDataFromCache()
         {
             // Arrange
-            IRestResponse restResponse = Substitute.For<IRestResponse>();
-            restResponse.StatusCode.Returns(HttpStatusCode.NotFound);
-            restResponse.Content.Returns("Failed Message");
-
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
-            _restClient.BaseUrl.Returns(new Uri("http://demo.uri"));
-            UMClientConfiguration.ServiceUriList = new List<string>
-            {
-                "http://demo.uri"
-            };
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            configuration.EnableCheckUM.Returns(true);
+            configuration.SiteId.Returns(1);
+            cacheService.Get<UnderMaintenanceTime>("ONEbook.UM.Site.1").Returns(expectedUnderMaintenanceTime);
 
             // Act
-            var underMaintenanceInfo = _underMaintenanceControlAdapter.GetUnderMaintenance();
+            var underMaintenanceTime = await umControlAdapter.GetUnderMaintenanceTime();
 
             // Assert
-            Assert.IsTrue(
-                !underMaintenanceInfo.IsUnderMaintenanceTime
-                && !underMaintenanceInfo.ConnectionResult.IsOk
-                && underMaintenanceInfo.ConnectionResult.Message
-                == "Base Url: http://demo.uri/\r\nStatus Code: 404\r\nResponse Content: Failed Message\r\nResponse Error Message: ");
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
         }
 
-        [Test]
-        public void GetUnderMaintenance_ConnectToUMServiceFailed_LogErrorMessage()
+        [Fact]
+        public async Task GetUnderMaintenanceTime_EnableCheckUM_CacheHasNoUMInfo_GetAndReturnDataFromAPI()
         {
             // Arrange
-            IRestResponse restResponse = Substitute.For<IRestResponse>();
-            restResponse.StatusCode.Returns(HttpStatusCode.NotFound);
-            restResponse.Content.Returns("Failed Message");
-
-            _restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
-            _restClient.BaseUrl.Returns(new Uri("http://demo.uri"));
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            configuration.EnableCheckUM.Returns(true);
+            configuration.SiteId.Returns(1);
+            configuration.ResultCacheDuration.Returns(60);
+            restClient
+                .ExecuteGetAsync<UnderMaintenanceTime>("/NewUnderMaintenance/get?siteId=1")
+                .Returns(expectedUnderMaintenanceTime);
 
             // Act
-            _underMaintenanceControlAdapter.GetUnderMaintenance();
+            var underMaintenanceTime = await umControlAdapter.GetUnderMaintenanceTime();
 
             // Assert
-            _loggingService.Received().Error("Base Url: http://demo.uri/\r\nStatus Code: 404\r\nResponse Content: Failed Message\r\nResponse Error Message: ");
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
+            cacheService.Received().Set("ONEbook.UM.Site.1", Arg.Is(expectedUnderMaintenanceTime), Arg.Any<CacheItemOptions>());
         }
 
-        [Test]
-        public void GetUnderMaintenance_ThrowException_LogErrorMessage()
+        [Fact]
+        public async Task GetUnderMaintenanceTime_EnableCheckUM_GetDataThrowException_ReturnFailUMInfo()
         {
             // Arrange
-            var fakeException = new Exception("Fake Exception");
-            _restClient
-                .When(client => client.Execute(Arg.Any<IRestRequest>()))
-                .Do(call =>
-                {
-                    throw fakeException;
-                });
+            var expectedUnderMaintenanceTime = UnderMaintenanceTime.CreateFailedConnection("Error");
+            configuration.EnableCheckUM.Returns(true);
+            configuration.SiteId.Returns(1);
+            configuration.ResultCacheDuration.Returns(60);
+            var exception = new Exception("Error");
+            restClient
+                .ExecuteGetAsync<UnderMaintenanceTime>("/NewUnderMaintenance/get?siteId=1")
+                .Throws(exception);
 
             // Act
-            _underMaintenanceControlAdapter.GetUnderMaintenance();
+            var underMaintenanceTime = await umControlAdapter.GetUnderMaintenanceTime();
 
             // Assert
-            _loggingService.Received().Error("Fake Exception", fakeException);
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
         }
 
-        [Test]
-        public void GetUnderMaintenance_ThrowException_ReturnUnderMaintenanceWithFailedMessage()
+        [Fact]
+        public async Task GetUnderMaintenanceTime_NotEnableCheckUM_ReturnNotUMInfo()
         {
             // Arrange
-            var fakeException = new Exception("Fake Exception");
-            _restClient
-                .When(client => client.Execute(Arg.Any<IRestRequest>()))
-                .Do(call =>
-                {
-                    throw fakeException;
-                });
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "0:00", "0:00");
+            configuration.EnableCheckUM.Returns(false);
 
             // Act
-            var underMaintenanceInfo = _underMaintenanceControlAdapter.GetUnderMaintenance();
+            var underMaintenanceTime = await umControlAdapter.GetUnderMaintenanceTime();
 
             // Assert
-            Assert.IsTrue(
-                !underMaintenanceInfo.IsUnderMaintenanceTime
-                && !underMaintenanceInfo.ConnectionResult.IsOk
-                && underMaintenanceInfo.ConnectionResult.Message == "Fake Exception");
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
         }
     }
 }

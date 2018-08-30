@@ -1,261 +1,113 @@
-﻿namespace ONEbook.UM.Tests.Services
+namespace ONEbook.UM.Tests.Services
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Net;
-    using System.Reflection;
     using System.Threading.Tasks;
-    using System.Web;
-    using System.Web.Hosting;
-    using System.Web.SessionState;
-    using Fanex.Caching;
     using NSubstitute;
-    using NUnit.Framework;
+    using NSubstitute.ExceptionExtensions;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Models;
     using ONEbook.UM.Services;
-    using RestSharp;
+    using Xunit;
 
-    [TestFixture]
     public class MaintenanceServiceTests
     {
-        private MaintenanceService _maintenanceService;
-        private IUMControlAdapter _underMaintenanceControlAdapter;
-        private UM.Helpers.IRestClient restClient;
-        private string clientIP;
-        private ILoggingService loggingService;
-        private IHttpContextHelper httpContextHelper;
-        private IUMClientConfiguration configuration;
+        private readonly IUMControlAdapter umControlAdapter;
+        private readonly IRestClient restClient;
+        private readonly ILoggingService loggingService;
+        private readonly IHttpContextHelper httpContextHelper;
+        private readonly IUMClientConfiguration configuration;
+        private readonly IMaintenanceService maintenanceService;
 
-        [SetUp]
-        public void SetUp()
+        public MaintenanceServiceTests()
         {
-            _underMaintenanceControlAdapter = Substitute.For<IUMControlAdapter>();
-            restClient = Substitute.For<UM.Helpers.IRestClient>();
+            umControlAdapter = Substitute.For<IUMControlAdapter>();
+            restClient = Substitute.For<IRestClient>();
             loggingService = Substitute.For<ILoggingService>();
             httpContextHelper = Substitute.For<IHttpContextHelper>();
             configuration = Substitute.For<IUMClientConfiguration>();
-            clientIP = "10.18.200.209";
-
-            _maintenanceService = new MaintenanceService(
-                _underMaintenanceControlAdapter,
-                restClient,
-                clientIP,
-                loggingService,
-                httpContextHelper,
-                configuration);
+            maintenanceService = new MaintenanceService(
+                umControlAdapter, restClient, "10.10.10.10", loggingService, httpContextHelper, configuration);
         }
 
-        #region IsUnderMaintenance Test cases
-
-        [Test]
-        public async Task IsUnderMaintenance_ExecuteGetDowntime()
+        [Fact]
+        public async Task GetUnderMaintenanceTime_StateUnderTest_ExpectedBehavior()
         {
-            AssumeUMTime(isUMTime: false);
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
 
-            await _maintenanceService.IsUnderMaintenance();
+            // Act
+            var result = await maintenanceService.GetUnderMaintenanceTime();
 
-            await _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
+            // Assert
+            Assert.Equal(expectedUnderMaintenanceTime, result);
         }
 
-        private void AssumeUMTime(bool isUMTime = true)
+        [Fact]
+        public async Task IsUnderMaintenance_NowIsNotUnderMaintenance_ReturnFalse()
         {
-            _underMaintenanceControlAdapter.GetUnderMaintenanceTime().Returns(new UnderMaintenanceTime(isUMTime, string.Empty, string.Empty));
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
+            umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
+
+            // Act
+            var result = await maintenanceService.IsUnderMaintenance();
+
+            // Assert
+            Assert.False(result);
         }
 
-        [Test]
-        public async Task IsUnderMaintenance_NowIsNotUMTime_ReturnFalse()
+        [Fact]
+        public async Task IsUnderMaintenance_ByPassUM_ReturnFalse()
         {
-            AssumeUMTime(isUMTime: false);
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            httpContextHelper.GetSession("ONEbook.UM.ByPassUM").Returns("1");
+            umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
 
-            var isUM = await _maintenanceService.IsUnderMaintenance();
+            // Act
+            var result = await maintenanceService.IsUnderMaintenance();
 
-            Assert.IsFalse(isUM);
+            // Assert
+            Assert.False(result);
         }
 
-        private void FakeHttpContext(string queryString, bool setByPassUMToSession = false)
+        [Fact]
+        public async Task IsUnderMaintenance_IsValidToken_ReturnFalse()
         {
-            SimpleWorkerRequest request = new SimpleWorkerRequest(string.Empty, string.Empty, string.Empty, queryString, new StringWriter());
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            const string token = "1234556";
+            configuration.SiteId.Returns(1);
+            umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
+            httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
+            restClient.ExecuteGetAsync<bool>("/token/validate", Arg.Any<object>()).Returns(true);
 
-            HttpContext.Current = new HttpContext(request);
+            // Act
+            var result = await maintenanceService.IsUnderMaintenance();
 
-            var sessionContainer = new HttpSessionStateContainer(
-                                                "id",
-                                               new SessionStateItemCollection(),
-                                               new HttpStaticObjectsCollection(),
-                                               10,
-                                               true,
-                                               HttpCookieMode.AutoDetect,
-                                               SessionStateMode.InProc,
-                                               false);
-            HttpContext.Current.Items["AspSession"] = typeof(HttpSessionState).GetConstructor(
-                                    BindingFlags.NonPublic | BindingFlags.Instance,
-                                    null,
-                                    CallingConventions.Standard,
-                                    new[] { typeof(HttpSessionStateContainer) },
-                                    null)
-                .Invoke(new object[] { sessionContainer });
+            // Assert
+            Assert.False(result);
         }
 
-        [Test]
-        public void IsUnderMaintenance_RequestDoesNotContainSecretToken_ReturnTrue()
+        [Fact]
+        public async Task IsUnderMaintenance_IsValidToken_ThrowException_WriteErrorLog()
         {
-            FakeHttpContext(string.Empty);
-            AssumeUMTime();
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            const string token = "1234556";
+            configuration.SiteId.Returns(1);
+            umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
+            httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
+            var exception = new Exception("Exception");
+            restClient.ExecuteGetAsync<bool>("/token/validate", Arg.Any<object>()).Throws(exception);
 
-            var isUM = _maintenanceService.IsUnderMaintenance();
+            // Act
+            await maintenanceService.IsUnderMaintenance();
 
-            Assert.IsTrue(isUM);
+            // Assert
+            loggingService.Error(Arg.Is("Exception"), exception);
         }
-
-        [TestCase("10.18.200.210", "10.18.200.210")]
-        [TestCase("10.18.100.209", "10.18.100.235")]
-        public void IsUnderMaintenance_IPIsNotAllowedToAccess_ReturnTrue(string fromIP, string toIP)
-        {
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add(new Tuple<string, string>(fromIP, toIP));
-
-            RestResponse restResponse = new RestResponse();
-            restResponse.StatusCode = HttpStatusCode.OK;
-            restResponse.Content = "true";
-
-            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
-
-            var isUM = _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsTrue(isUM);
-        }
-
-        [Test]
-        public void IsUnderMaintenance_IPIsAllowedToAccess_ExecuteRestClient()
-        {
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
-
-            _maintenanceService.IsUnderMaintenance();
-
-            restClient.Received().Execute(Arg.Any<IRestRequest>());
-        }
-
-        [Test]
-        public void IsUnderMaintenance_SecretTokenIsValid_ReturnFalse()
-        {
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
-
-            RestResponse restResponse = new RestResponse();
-            restResponse.StatusCode = HttpStatusCode.OK;
-            restResponse.Content = "true";
-
-            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
-
-            var isUM = _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsFalse(isUM);
-        }
-
-        [Test]
-        public void IsUnderMaintenance_SecretTokenIsNotValid_ReturnTrue()
-        {
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
-
-            RestResponse restResponse = new RestResponse();
-            restResponse.StatusCode = HttpStatusCode.OK;
-            restResponse.Content = "false";
-
-            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
-
-            var isUM = _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsTrue(isUM);
-        }
-
-        [Test]
-        public void IsUnderMaintenance_SecretTokenIsValid_SetByPassUMToSession()
-        {
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
-
-            RestResponse restResponse = new RestResponse();
-            restResponse.StatusCode = HttpStatusCode.OK;
-            restResponse.Content = "true";
-
-            restClient.Execute(Arg.Any<IRestRequest>()).Returns(restResponse);
-
-            _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsTrue(_maintenanceService.ByPassUM);
-        }
-
-        [Test]
-        public void IsUnderMaintenance_TokenAPIThrowException_ReturnTrue()
-        {
-            var queryString = "UMToken=UMToken";
-            FakeHttpContext(queryString);
-            AssumeUMTime();
-            _allowIPs.Add(new Tuple<string, string>("10.18.200.209", "10.18.200.209"));
-
-            restClient.Execute(Arg.Any<IRestRequest>()).Returns(x => { throw new Exception(); });
-
-            var isUMActual = _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsTrue(isUMActual);
-        }
-
-        #endregion IsUnderMaintenance Test cases
-
-        #region IsUnderMaintenanceOnRecheckIn Test Cases
-
-        [Test]
-        public void IsPassUnderMaintenance_NowIsNotUMTime_ReturnTrue()
-        {
-            FakeHttpContext(string.Empty);
-            AssumeUMTime(false);
-
-            _maintenanceService.IsUnderMaintenance();
-
-            _underMaintenanceControlAdapter.Received().GetUnderMaintenanceTime();
-        }
-
-        [Test]
-        public void IsUnderMaintenance_NowIsUMTimeAndByPassM_ReturnFalse()
-        {
-            FakeHttpContext(string.Empty);
-            AssumeUMTime();
-
-            HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = true;
-
-            var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsFalse(isUnderMaintenance);
-        }
-
-        [Test]
-        public void IsUnderMaintenance_ByPassUMInSessionIsNull_ReturnTrue()
-        {
-            FakeHttpContext(string.Empty);
-            AssumeUMTime();
-
-            HttpContext.Current.Session["ONEbook.UM.ByPassUM"] = null;
-
-            var isUnderMaintenance = _maintenanceService.IsUnderMaintenance();
-
-            Assert.IsTrue(isUnderMaintenance);
-        }
-
-        #endregion IsUnderMaintenanceOnRecheckIn Test Cases
     }
 }

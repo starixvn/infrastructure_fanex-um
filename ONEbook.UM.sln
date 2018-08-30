@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Site", "demo\ONE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Site.AspNetCore", "demo\ONEbook.UM.Site.AspNetCore\ONEbook.UM.Site.AspNetCore.csproj", "{8E676835-6AF2-4A0D-86E9-A49988A1B658}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Tests", "test\ONEbook.UM.Tests\ONEbook.UM.Tests.csproj", "{E8CFE235-0F39-4F02-A49A-21643921EC3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{8E676835-6AF2-4A0D-86E9-A49988A1B658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E676835-6AF2-4A0D-86E9-A49988A1B658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E676835-6AF2-4A0D-86E9-A49988A1B658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,9 +81,10 @@ Global
 		{07C3F454-FA66-4709-A5A5-1B6DC273FD36} = {6570AC60-D386-4D67-BD08-37016EE729FA}
 		{9C3903D4-E06E-47E2-9323-ED883DB30913} = {AE8C06BA-F2B3-478B-82D0-9F28AA5D3EE8}
 		{8E676835-6AF2-4A0D-86E9-A49988A1B658} = {AE8C06BA-F2B3-478B-82D0-9F28AA5D3EE8}
+		{E8CFE235-0F39-4F02-A49A-21643921EC3B} = {F574615C-3A3D-4CFC-8682-BCE9E6246F21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
 	EndGlobalSection
 EndGlobal
