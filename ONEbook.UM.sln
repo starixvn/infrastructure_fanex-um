@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Site", "demo\ONE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Site.AspNetCore", "demo\ONEbook.UM.Site.AspNetCore\ONEbook.UM.Site.AspNetCore.csproj", "{8E676835-6AF2-4A0D-86E9-A49988A1B658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Tests", "test\ONEbook.UM.Tests\ONEbook.UM.Tests.csproj", "{E8CFE235-0F39-4F02-A49A-21643921EC3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Tests", "test\ONEbook.UM.Tests\ONEbook.UM.Tests.csproj", "{E8CFE235-0F39-4F02-A49A-21643921EC3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,7 +84,8 @@ Global
 		{E8CFE235-0F39-4F02-A49A-21643921EC3B} = {F574615C-3A3D-4CFC-8682-BCE9E6246F21}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

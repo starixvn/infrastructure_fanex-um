@@ -6,8 +6,6 @@
 
         void SetSession(string key, string value);
 
-        string GetIpAddress();
-
         string GetValueFromQueryString(string queryKey);
     }
 }

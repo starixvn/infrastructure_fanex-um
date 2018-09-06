@@ -35,6 +35,13 @@
             return CurrentInstance;
         }
 
+        public UMClientManager AddErrorHandler(Action<string> errorHandler)
+        {
+            ErrorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler), "Error handler can not be null");
+
+            return CurrentInstance;
+        }
+
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
 
         public static IUMClientConfiguration UMClientConfigs
@@ -45,5 +52,7 @@
 
         public static IHttpContextHelper HttpContext
             => CurrentInstance.httpContext ?? throw new InvalidOperationException(nameof(CurrentInstance.httpContext));
+
+        internal static Action<string> ErrorHandler { get; private set; }
     }
 }

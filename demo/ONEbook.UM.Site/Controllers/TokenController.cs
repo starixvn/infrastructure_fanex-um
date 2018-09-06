@@ -7,7 +7,6 @@
     using ONEbook.UM.Transport;
     using RestSharp;
 
-    [UMSiteAuthorization]
     public class TokenController : Controller
     {
         private readonly IRestClient _restClient;
@@ -35,7 +34,7 @@
         private IRestClient GetRestClient()
         {
             var restClient = new RestSharp.RestClient(UMSiteConfiguration.Settings.ServiceUri);
-            //restClient.Authenticator = new HmacAuthenticator();
+            restClient.Authenticator = new HmacAuthenticator();
 
             return restClient;
         }

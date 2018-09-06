@@ -2,9 +2,6 @@
 {
     public class ConnectionResult
     {
-        /// <summary>
-        /// Default constructor here for deserialize json.
-        /// </summary>
         public ConnectionResult() : this(true, string.Empty)
         {
         }
@@ -15,16 +12,10 @@
             Message = message;
         }
 
-        public bool IsOk { get; set; }
+        public bool IsOk { get; }
 
-        public bool IsNotOk
-        {
-            get
-            {
-                return !IsOk;
-            }
-        }
+        public bool IsNotOk => !IsOk;
 
-        public string Message { get; set; }
+        public string Message { get; }
     }
 }

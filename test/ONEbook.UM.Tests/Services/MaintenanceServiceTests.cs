@@ -82,7 +82,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.SiteId.Returns(1);
             umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
             httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
-            restClient.ExecuteGetAsync<bool>("/token/validate", Arg.Any<object>()).Returns(true);
+            restClient.ExecuteGetAsync<bool>("/token/validate?SiteId=1&Token=1234556", null).Returns(true);
 
             // Act
             var result = await maintenanceService.IsUnderMaintenance();

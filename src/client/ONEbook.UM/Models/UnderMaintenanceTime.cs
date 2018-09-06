@@ -2,9 +2,6 @@
 {
     public class UnderMaintenanceTime
     {
-        /// <summary>
-        /// Default constructor here for deserialize json.
-        /// </summary>
         public UnderMaintenanceTime()
         {
             ConnectionResult = new ConnectionResult();
@@ -31,12 +28,10 @@
         public ConnectionResult ConnectionResult { get; set; }
 
         public static UnderMaintenanceTime CreateFailedConnection(string message = "Connection Error")
-        {
-            return new UnderMaintenanceTime(
+            => new UnderMaintenanceTime(
                 false,
                 "0:00",
                 "0.00",
                 new ConnectionResult(false, message));
-        }
     }
 }

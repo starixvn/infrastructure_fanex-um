@@ -66,6 +66,8 @@
             }
             catch (Exception ex)
             {
+                UMClientManager.ErrorHandler?.Invoke(ex.Message);
+
                 return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
             }
         }

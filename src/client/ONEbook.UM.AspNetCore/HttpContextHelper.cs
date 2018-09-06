@@ -25,10 +25,5 @@
         {
             return httpContextAccessor.HttpContext.Request.Query[queryKey].ToString();
         }
-
-        public string GetIpAddress()
-        {
-            return httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-        }
     }
 }

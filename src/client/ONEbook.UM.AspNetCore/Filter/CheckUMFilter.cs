@@ -40,6 +40,8 @@
             {
                 await ErrorUnderMaintenanceAction(context).ConfigureAwait(false);
             }
+
+            base.OnActionExecuting(context);
         }
 
         public async Task UnderMaintenanceAction(ActionExecutingContext filterContext)
@@ -56,8 +58,9 @@
             else
             {
                 var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
-                    configuration.UMPageUrl,
-                    filterContext.HttpContext.Request.Host);
+                    filterContext.HttpContext.Request.Scheme,
+                    filterContext.HttpContext.Request.Host,
+                    configuration.UMPageUrl);
                 var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
 
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)

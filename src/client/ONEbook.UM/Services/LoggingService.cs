@@ -27,7 +27,7 @@
         {
         }
 
-        internal LoggingService(string clientIP, ILogger logger, IUMClientConfiguration configuration, IPHelper ipHelper = null)
+        public LoggingService(string clientIP, ILogger logger, IUMClientConfiguration configuration, IPHelper ipHelper = null)
         {
             this.clientIP = clientIP;
             siteId = configuration.SiteId;
@@ -40,13 +40,13 @@
 
         public void Error(string message, Exception exception) => logger.Error(BuildMessage(message), logCategory, exception);
 
+        public void Warning(string message) => logger.Warn(BuildMessage(message), logCategory);
+
         private string BuildMessage(string message)
             => string.Join(
                 "\r\n",
                 "Message: " + message,
                 "SiteId: " + siteId,
                 "ClientIP: " + (clientIP ?? ipHelper.GetMachineIP()));
-
-        public void Warning(string message) => logger.Warn(BuildMessage(message), logCategory);
     }
 }

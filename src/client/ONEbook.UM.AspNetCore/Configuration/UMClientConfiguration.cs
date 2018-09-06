@@ -19,7 +19,7 @@
             EnableUnscheduledUM = GetValue("ONEbook.UM:EnableUnscheduledUM", false);
             UMFrom = GetValue<string>("ONEbook.UM:UMFrom");
             UMTo = GetValue<string>("ONEbook.UM:UMTo");
-            UMPageUrl = GetValue("ONEbook.UM:UMPageUrl", "~/UserLogin/Common/Offline");
+            UMPageUrl = GetValue("ONEbook.UM:UMPageUrl", "/UserLogin/Common/Offline");
             SiteId = GetValue("ONEbook.UM:SiteId", 4120);
             ResultCacheDuration = GetValue("ONEbook.UM:ResultCacheDuration", 60);
             UMLoggingCategory = GetValue("ONEbook.UM:UMLoggingCategory", "ONEbook-UM");

@@ -29,6 +29,7 @@
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
+            services.AddSession();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -40,8 +41,9 @@
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseSession();
 
+            app.UseMvc();
             LogManager
                  .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
                  .Use(new RabbitMQLogging(Configuration["Fanex.Logging:RabbitMQConnectionStrings"]));

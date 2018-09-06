@@ -20,7 +20,7 @@
                {
                    BaseUrl = new Uri(configuration.ServiceUri),
                    Authenticator = new HmacAuthenticator(),
-                   Timeout = 15000
+                   Timeout = 10000
                };
 
         public Task<T> ExecuteGetAsync<T>(string endPoint, object data = null)

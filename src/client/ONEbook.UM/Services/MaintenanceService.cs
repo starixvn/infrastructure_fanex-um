@@ -100,11 +100,13 @@
 
             try
             {
-                isTokenValid = await restClient.ExecuteGetAsync<bool>("/token/validate", new { configuration.SiteId, token }).ConfigureAwait(false);
+                isTokenValid = await restClient.ExecuteGetAsync<bool>($"/token/validate?SiteId={configuration.SiteId}&Token={token}").ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 loggingService.Error(ex.Message, ex);
+
+                UMClientManager.ErrorHandler?.Invoke(ex.Message);
             }
 
             return isTokenValid;
