@@ -34,7 +34,7 @@
                 }
             }
 
-            return new UnderMaintenanceTime(false, string.Empty, string.Empty);
+            return new UnderMaintenanceTime(false, DateTime.MinValue.ToString(), DateTime.MinValue.ToString());
         }
     }
 }
