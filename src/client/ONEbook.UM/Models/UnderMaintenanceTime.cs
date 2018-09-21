@@ -31,7 +31,7 @@
             => new UnderMaintenanceTime(
                 false,
                 "0:00",
-                "0.00",
+                "0:00",
                 new ConnectionResult(false, message));
     }
 }
