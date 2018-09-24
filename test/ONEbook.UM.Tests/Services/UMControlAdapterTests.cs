@@ -75,7 +75,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.SiteId.Returns(1);
             configuration.ResultCacheDuration.Returns(60);
             restClient
-                .ExecuteGetAsync<UnderMaintenanceTime>("/NewUnderMaintenance/get?siteId=1")
+                .ExecuteGetAsync<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -96,7 +96,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.ResultCacheDuration.Returns(60);
             var exception = new Exception("Error");
             restClient
-                .ExecuteGetAsync<UnderMaintenanceTime>("/NewUnderMaintenance/get?siteId=1")
+                .ExecuteGetAsync<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
                 .Throws(exception);
 
             // Act

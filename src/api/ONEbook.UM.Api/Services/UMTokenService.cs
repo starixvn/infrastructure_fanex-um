@@ -1,4 +1,4 @@
-﻿namespace ONEbook.UM.Api.Services.Impl
+﻿namespace ONEbook.UM.Api.Services
 {
     using System;
     using System.Collections.Generic;
@@ -10,6 +10,15 @@
     using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Models;
     using Sunplus.UMControllerLibrary;
+
+    public interface IUMTokenService
+    {
+        bool IsValidUMToken(Sites siteId, string token);
+
+        string GetUMToken(Sites siteId);
+
+        IDictionary<Sites, SiteToken> GetAllUMTokens();
+    }
 
     public class UMTokenService : IUMTokenService
     {

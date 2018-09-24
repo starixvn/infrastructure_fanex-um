@@ -1,4 +1,4 @@
-﻿namespace ONEbook.UM.Api.Services.Impl
+﻿namespace ONEbook.UM.Api.Services
 {
     using System;
     using System.Configuration;

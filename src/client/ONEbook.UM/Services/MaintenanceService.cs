@@ -1,6 +1,7 @@
 ﻿namespace ONEbook.UM.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Logging;
@@ -13,6 +14,10 @@
         Task<bool> IsUnderMaintenance();
 
         Task<UnderMaintenanceTime> GetUnderMaintenanceTime();
+
+        Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime();
+
+        Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenance();
     }
 
     public class MaintenanceService : IMaintenanceService
@@ -86,6 +91,12 @@
 
             return true;
         }
+
+        public Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime()
+           => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetAll");
+
+        public Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenance()
+            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetScheduledUnderMaintenance");
 
         private async Task<bool> NowIsNotUnderMaintenance()
         {

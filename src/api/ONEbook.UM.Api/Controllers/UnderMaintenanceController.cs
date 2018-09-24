@@ -1,13 +1,13 @@
 ﻿namespace ONEbook.UM.Api.Controllers
 {
+    using System.Collections.Generic;
     using System.Web.Http;
     using Models;
     using Services;
-    using Services.Impl;
 
     public class UnderMaintenanceController : ApiController
     {
-        private readonly IUMControlAdapter _underMaintenanceControlAdapter;
+        private readonly IUMControlAdapter underMaintenanceControlAdapter;
 
         public UnderMaintenanceController()
             : this(null)
@@ -16,12 +16,16 @@
 
         public UnderMaintenanceController(IUMControlAdapter underMaintenanceControlAdapter)
         {
-            _underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
+            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
         }
 
         public UnderMaintenanceTime Get(int siteId)
-        {
-            return _underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
-        }
+            => underMaintenanceControlAdapter.GetUnderMaintenanceTime(siteId);
+
+        public Dictionary<int, UnderMaintenanceTime> GetAll()
+             => underMaintenanceControlAdapter.GetAllUnderMaintenanceTime();
+
+        public Dictionary<int, UnderMaintenanceTime> GetScheduledUnderMaintenance()
+            => underMaintenanceControlAdapter.GetScheduledUnderMaintenanceInformation();
     }
 }

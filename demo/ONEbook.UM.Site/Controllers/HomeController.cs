@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Newtonsoft.Json;
     using ONEbook.UM.Services;
     using UM.Filters;
 
@@ -93,6 +94,11 @@
             return Json(
                 _maintenanceService.GetUnderMaintenanceTime(),
                 JsonRequestBehavior.AllowGet);
+        }
+
+        public string GetScheduledUMInfo()
+        {
+            return JsonConvert.SerializeObject(_maintenanceService.GetScheduledUnderMaintenance().GetAwaiter().GetResult());
         }
 
         [CheckUMFilter]

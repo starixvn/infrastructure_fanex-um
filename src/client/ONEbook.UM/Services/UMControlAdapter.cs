@@ -1,6 +1,7 @@
 ﻿namespace ONEbook.UM.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Helpers;
@@ -61,7 +62,7 @@
             try
             {
                 return await restClient
-                    .ExecuteGetAsync<UnderMaintenanceTime>($"/NewUnderMaintenance/get?siteId={configuration.SiteId}")
+                    .ExecuteGetAsync<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId={configuration.SiteId}")
                     .ConfigureAwait(false);
             }
             catch (Exception ex)

@@ -6,12 +6,11 @@
     using ONEbook.UM.Api.Filters;
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
-    using ONEbook.UM.Api.Services.Impl;
 
     [HmacAuthorizationFilter]
     public class TokenController : ApiController
     {
-        private readonly IUMTokenService _underMaintenanceTokenService;
+        private readonly IUMTokenService underMaintenanceTokenService;
 
         public TokenController()
             : this(null)
@@ -20,7 +19,7 @@
 
         public TokenController(IUMTokenService underMaintenanceTokenService)
         {
-            _underMaintenanceTokenService = underMaintenanceTokenService ?? new UMTokenService();
+            this.underMaintenanceTokenService = underMaintenanceTokenService ?? new UMTokenService();
         }
 
         [HttpGet]
@@ -31,14 +30,14 @@
                 return Request.CreateErrorResponse(HttpStatusCode.PreconditionFailed, "Token Validation Request cannot be null!");
             }
 
-            var isValid = _underMaintenanceTokenService.IsValidUMToken(request.SiteId, request.Token);
+            var isValid = underMaintenanceTokenService.IsValidUMToken(request.SiteId, request.Token);
 
             return Request.CreateResponse(HttpStatusCode.OK, isValid);
         }
 
         public HttpResponseMessage GetAll()
         {
-            var siteTokens = _underMaintenanceTokenService.GetAllUMTokens();
+            var siteTokens = underMaintenanceTokenService.GetAllUMTokens();
 
             return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
         }
