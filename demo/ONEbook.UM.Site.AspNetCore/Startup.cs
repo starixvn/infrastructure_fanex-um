@@ -27,6 +27,11 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            LogManager
+                 .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
+                 .Use(new RabbitMQLogging(Configuration["Fanex.Logging:RabbitMQConnectionStrings"]));
+            services.AddSingleton(Logger.Log);
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
             services.AddSession();
@@ -44,9 +49,6 @@
             app.UseSession();
 
             app.UseMvc();
-            LogManager
-                 .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
-                 .Use(new RabbitMQLogging(Configuration["Fanex.Logging:RabbitMQConnectionStrings"]));
 
             var umConfig = new UMClientConfiguration(Configuration);
 
