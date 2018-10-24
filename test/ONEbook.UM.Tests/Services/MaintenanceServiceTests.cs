@@ -1,6 +1,7 @@
 namespace ONEbook.UM.Tests.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
@@ -108,6 +109,38 @@ namespace ONEbook.UM.Tests.Services
 
             // Assert
             loggingService.Error(Arg.Is("Exception"), exception);
+        }
+
+        [Fact]
+        public async Task GetAllUnderMaintenanceTime_Always_CallRestClient()
+        {
+            // Arrange
+            var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
+            restClient
+                .ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetAll"))
+                .Returns(underMaintenanceTime);
+
+            // Act
+            var actualUnderMaintenanceTime = await maintenanceService.GetAllUnderMaintenanceTime();
+
+            // Assert
+            Assert.Equal(underMaintenanceTime, actualUnderMaintenanceTime);
+        }
+
+        [Fact]
+        public async Task GetScheduledUnderMaintenance_Always_CallRestClient()
+        {
+            // Arrange
+            var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
+            restClient
+                .ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetScheduledUnderMaintenance"))
+                .Returns(underMaintenanceTime);
+
+            // Act
+            var actualUnderMaintenanceTime = await maintenanceService.GetScheduledUnderMaintenance();
+
+            // Assert
+            Assert.Equal(underMaintenanceTime, actualUnderMaintenanceTime);
         }
     }
 }

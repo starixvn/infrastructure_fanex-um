@@ -34,7 +34,10 @@
                 }
             }
 
-            return new UnderMaintenanceTime(false, DateTime.MinValue.ToString(), DateTime.MinValue.ToString());
+            return new UnderMaintenanceTime(
+                false,
+                DateTime.MinValue.ToString(CultureInfo.InvariantCulture),
+                DateTime.MinValue.ToString(CultureInfo.InvariantCulture));
         }
     }
 }
