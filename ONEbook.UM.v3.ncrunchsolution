@@ -5,6 +5,7 @@
       <Value>demo\ONEbook.UM.Site\ONEbook.UM.Site.csproj</Value>
       <Value>demo\ONEbook.UM.Site.AspNetCore\ONEbook.UM.Site.AspNetCore.csproj</Value>
       <Value>src\client\ONEbook.UM\ONEbook.UM.csproj:netstandard2.0</Value>
+      <Value>src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj:netstandard2.0</Value>
     </MetricsExclusionList>
     <SolutionConfigured>True</SolutionConfigured>
   </Settings>

@@ -53,6 +53,6 @@
         public static IHttpContextHelper HttpContext
             => CurrentInstance.httpContext ?? throw new InvalidOperationException(nameof(CurrentInstance.httpContext));
 
-        internal static Action<string> ErrorHandler { get; private set; }
+        public static Action<string> ErrorHandler { get; private set; }
     }
 }
