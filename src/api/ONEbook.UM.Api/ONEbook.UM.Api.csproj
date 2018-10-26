@@ -129,11 +129,9 @@
     <Compile Include="Configurations\UnderMaintenanceApiConfiguration.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\UnderMaintenanceController.cs" />
-    <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Filters\GlobalExceptionFilter.cs" />
     <Compile Include="Filters\HmacAuthorizationFilter.cs" />
     <Compile Include="Filters\HttpRequestMessageExtensions.cs" />
-    <Compile Include="Filters\LogInfoFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

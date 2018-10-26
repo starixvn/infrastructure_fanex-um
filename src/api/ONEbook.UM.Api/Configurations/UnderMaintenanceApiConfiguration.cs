@@ -11,16 +11,8 @@
         private const string EnableCheckUMName = "EnableCheckUM";
         private const string UMAddressName = "UMAddress";
 
-        private static UnderMaintenanceApiConfiguration settings
+        public static UnderMaintenanceApiConfiguration Settings { get; internal set; }
             = ConfigurationManager.GetSection("ONEbook.UM.Api") as UnderMaintenanceApiConfiguration;
-
-        public static UnderMaintenanceApiConfiguration Settings
-        {
-            get
-            {
-                return settings;
-            }
-        }
 
         [ConfigurationProperty(SecretKeyName, IsRequired = false, DefaultValue = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=")]
         public string SecretKey
