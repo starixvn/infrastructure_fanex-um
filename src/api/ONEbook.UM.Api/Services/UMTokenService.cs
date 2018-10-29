@@ -8,6 +8,7 @@
     using System.Web;
     using Fanex.Common.Helper;
     using ONEbook.UM.Api.Configurations;
+    using ONEbook.UM.Api.Helpers;
     using ONEbook.UM.Api.Models;
     using Sunplus.UMControllerLibrary;
 
@@ -22,6 +23,17 @@
 
     public class UMTokenService : IUMTokenService
     {
+        private readonly IDateTimeHelper dateTimeHelper;
+
+        public UMTokenService() : this(null)
+        {
+        }
+
+        public UMTokenService(IDateTimeHelper dateTimeHelper)
+        {
+            this.dateTimeHelper = dateTimeHelper ?? new DateTimeHelper();
+        }
+
         public bool IsValidUMToken(Sites siteId, string token)
         {
             Check.Argument.IsNotEmpty(token, "token");
@@ -34,9 +46,9 @@
 
 #pragma warning disable S2070 // SHA-1 and Message-Digest hash algorithms should not be used in secure contexts
 
-        private static string GenerateToken(Sites siteId)
+        private string GenerateToken(Sites siteId)
         {
-            var today = DateTime.UtcNow.ToShortDateString();
+            var today = dateTimeHelper.GetUtcNowShortDateString();
             var key = string.Format("{0}_{1}_{2}", siteId, today, UnderMaintenanceApiConfiguration.Settings.SecretKey);
 
             using (MD5 md5 = MD5.Create())

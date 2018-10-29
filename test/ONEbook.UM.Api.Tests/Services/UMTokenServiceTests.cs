@@ -1,19 +1,22 @@
-using NSubstitute;
-using ONEbook.UM.Api.Configurations;
-using ONEbook.UM.Api.Services;
-using Sunplus.UMControllerLibrary;
-using System;
-using Xunit;
-
 namespace ONEbook.UM.Api.Tests.Services
 {
+    using NSubstitute;
+    using ONEbook.UM.Api.Configurations;
+    using ONEbook.UM.Api.Helpers;
+    using ONEbook.UM.Api.Services;
+    using Sunplus.UMControllerLibrary;
+    using Xunit;
+
     public class UMTokenServiceTests
     {
         private readonly IUMTokenService umTokenService;
+        private readonly IDateTimeHelper dateTimeHelper;
 
         public UMTokenServiceTests()
         {
-            umTokenService = new UMTokenService();
+            dateTimeHelper = Substitute.For<IDateTimeHelper>();
+            dateTimeHelper.GetUtcNowShortDateString().Returns("2018/01/01");
+            umTokenService = new UMTokenService(dateTimeHelper);
             UnderMaintenanceApiConfiguration.Settings = new UnderMaintenanceApiConfiguration
             {
                 SecretKey = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss="
@@ -34,7 +37,7 @@ namespace ONEbook.UM.Api.Tests.Services
         public void IsValidUMToken_TokenIsValid_ReturnTrue()
         {
             // Act
-            var isValid = umTokenService.IsValidUMToken(Sites.ABB688, "m1LlAeG78SkWG_Yhe8-rTQ2");
+            var isValid = umTokenService.IsValidUMToken(Sites.ABB688, "dhgGhMKoWdcssjrdyo40QQ2");
 
             // Assert
             Assert.True(isValid);
@@ -47,7 +50,7 @@ namespace ONEbook.UM.Api.Tests.Services
             var actualToken = umTokenService.GetUMToken(Sites.ABB688);
 
             // Assert
-            Assert.Equal("m1LlAeG78SkWG_Yhe8-rTQ2", actualToken);
+            Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualToken);
         }
 
         [Fact]
@@ -57,8 +60,7 @@ namespace ONEbook.UM.Api.Tests.Services
             var actualTokens = umTokenService.GetAllUMTokens();
 
             // Assert
-            Assert.Equal("m1LlAeG78SkWG_Yhe8-rTQ2", actualTokens[Sites.ABB688].Token);
-            Assert.Equal("pWijipbAo67nlPGMptd_eQ2", actualTokens[Sites.ABcasino].Token);
+            Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualTokens[Sites.ABB688].Token);
             Assert.Equal(239, actualTokens.Count);
         }
     }

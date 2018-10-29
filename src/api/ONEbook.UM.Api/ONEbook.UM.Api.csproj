@@ -136,6 +136,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\DateTimeHelper.cs" />
     <Compile Include="Models\SiteToken.cs" />
     <Compile Include="Models\TokenValidationRequest.cs" />
     <Compile Include="Models\UnderMaintenanceTime.cs" />
