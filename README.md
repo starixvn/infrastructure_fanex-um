@@ -70,7 +70,8 @@ Please add these code lines to your *Startup.cs* file
         UMClientManager
             .UseConfig(umConfig)
             .UseRestClient(new RestClient(umConfig))
-            .UseHttpContext(new HttpContextHelper(app.ApplicationServices.GetService<IHttpContextAccessor>()));
+            .UseHttpContext(new HttpContextHelper(app.ApplicationServices.GetService<IHttpContextAccessor>()))
+            .AddErrorHandler(errorHandler);
     }
 ```
 
@@ -82,7 +83,8 @@ Please add these code lines to your *Global.asax* file
     UMClientManager
         .UseConfig(umConfig)
         .UseRestClient(new RestClient(umConfig))
-        .UseHttpContext(new HttpContextHelper());
+        .UseHttpContext(new HttpContextHelper())
+        .AddErrorHandler(errorHandler);
 ```
 
 #### Usage

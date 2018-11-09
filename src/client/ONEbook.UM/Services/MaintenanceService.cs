@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
-    using Fanex.Logging;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.Helpers;
     using ONEbook.UM.Models;
@@ -26,12 +25,11 @@
         private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
         private readonly IUMControlAdapter underMaintenanceControlAdapter;
         private readonly IRestClient restClient;
-        private readonly ILoggingService loggingService;
         private readonly IHttpContextHelper httpContextHelper;
         private readonly IUMClientConfiguration configuration;
 
         public MaintenanceService()
-         : this(null, null, null, null, null, null)
+         : this(null, null, null, null, null)
         {
         }
 
@@ -39,7 +37,6 @@
             IUMControlAdapter underMaintenanceControlAdapter,
             IRestClient restClient,
             string clientIP,
-            ILoggingService loggingService,
             IHttpContextHelper httpContextHelper,
             IUMClientConfiguration configuration)
         {
@@ -47,7 +44,6 @@
             this.restClient = restClient ?? UMClientManager.RestClient;
             this.httpContextHelper = httpContextHelper ?? UMClientManager.HttpContext;
 
-            this.loggingService = loggingService ?? new LoggingService(clientIP, Logger.Log, this.configuration);
             this.underMaintenanceControlAdapter = underMaintenanceControlAdapter
                ?? new UMControlAdapter(new CacheService(), this.restClient, this.configuration);
         }
@@ -115,9 +111,14 @@
             }
             catch (Exception ex)
             {
-                loggingService.Error(ex.Message, ex);
-
-                UMClientManager.ErrorHandler?.Invoke(ex.Message);
+                if (UMClientManager.ErrorHandler != null)
+                {
+                    UMClientManager.ErrorHandler.Invoke(ex.Message);
+                }
+                else
+                {
+                    throw;
+                }
             }
 
             return isTokenValid;

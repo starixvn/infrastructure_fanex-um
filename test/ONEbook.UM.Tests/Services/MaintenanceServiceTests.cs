@@ -15,7 +15,6 @@ namespace ONEbook.UM.Tests.Services
     {
         private readonly IUMControlAdapter umControlAdapter;
         private readonly IRestClient restClient;
-        private readonly ILoggingService loggingService;
         private readonly IHttpContextHelper httpContextHelper;
         private readonly IUMClientConfiguration configuration;
         private readonly IMaintenanceService maintenanceService;
@@ -24,11 +23,10 @@ namespace ONEbook.UM.Tests.Services
         {
             umControlAdapter = Substitute.For<IUMControlAdapter>();
             restClient = Substitute.For<IRestClient>();
-            loggingService = Substitute.For<ILoggingService>();
             httpContextHelper = Substitute.For<IHttpContextHelper>();
             configuration = Substitute.For<IUMClientConfiguration>();
             maintenanceService = new MaintenanceService(
-                umControlAdapter, restClient, "10.10.10.10", loggingService, httpContextHelper, configuration);
+                umControlAdapter, restClient, "10.10.10.10", httpContextHelper, configuration);
         }
 
         [Fact]
@@ -90,25 +88,6 @@ namespace ONEbook.UM.Tests.Services
 
             // Assert
             Assert.False(result);
-        }
-
-        [Fact]
-        public async Task IsUnderMaintenance_IsValidToken_ThrowException_WriteErrorLog()
-        {
-            // Arrange
-            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
-            const string token = "1234556";
-            configuration.SiteId.Returns(1);
-            umControlAdapter.GetUnderMaintenanceTime().Returns(expectedUnderMaintenanceTime);
-            httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
-            var exception = new Exception("Exception");
-            restClient.ExecuteGetAsync<bool>("/token/validate", Arg.Any<object>()).Throws(exception);
-
-            // Act
-            await maintenanceService.IsUnderMaintenance();
-
-            // Assert
-            loggingService.Error(Arg.Is("Exception"), exception);
         }
 
         [Fact]

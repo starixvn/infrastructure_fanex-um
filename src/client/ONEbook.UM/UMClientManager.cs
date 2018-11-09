@@ -9,6 +9,7 @@
         private IUMClientConfiguration umClientConfig;
         private IRestClient restClient;
         private IHttpContextHelper httpContext;
+        private Action<string> errorHandler;
 
         private static UMClientManager CurrentInstance = new UMClientManager();
 
@@ -37,7 +38,7 @@
 
         public UMClientManager AddErrorHandler(Action<string> errorHandler)
         {
-            ErrorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler), "Error handler can not be null");
+            CurrentInstance.errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler), "Error handler can not be null");
 
             return CurrentInstance;
         }
@@ -53,6 +54,6 @@
         public static IHttpContextHelper HttpContext
             => CurrentInstance.httpContext ?? throw new InvalidOperationException(nameof(CurrentInstance.httpContext));
 
-        public static Action<string> ErrorHandler { get; private set; }
+        public static Action<string> ErrorHandler => CurrentInstance.errorHandler;
     }
 }
