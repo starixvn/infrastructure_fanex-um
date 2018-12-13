@@ -96,13 +96,13 @@
 
             var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime startTime, out DateTime endTime, out int errorCode);
 
-            if (isUnderUM)
+            if (startTime.Date.Year != DateTime.MinValue.Year)
             {
                 return new UnderMaintenanceTime(
-                    isUnderUM,
-                    startTime.ToString(CultureInfo.InvariantCulture),
-                    endTime.ToString(CultureInfo.InvariantCulture),
-                    errorCode);
+                   isUnderUM,
+                   startTime.ToString(CultureInfo.InvariantCulture),
+                   endTime.ToString(CultureInfo.InvariantCulture),
+                   errorCode);
             }
 
             return new UnderMaintenanceTime(false, "0:00", "0:00");
