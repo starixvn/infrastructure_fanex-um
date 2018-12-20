@@ -24,9 +24,9 @@ namespace ONEbook.UM.Filters
             this.configuration = configuration ?? UMClientManager.UMClientConfigs;
         }
 
-        public override async void OnActionExecuting(ActionExecutingContext filterContext)
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance().ConfigureAwait(false);
+            var isUnderMaintenance = maintenanceService.IsUnderMaintenance().Result;
 
             if (isUnderMaintenance)
             {
@@ -34,7 +34,7 @@ namespace ONEbook.UM.Filters
             }
 
             if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl)
-                && (await maintenanceService.GetUnderMaintenanceTime().ConfigureAwait(false)).ConnectionResult.IsNotOk)
+                && maintenanceService.GetUnderMaintenanceTime().Result.ConnectionResult.IsNotOk)
             {
                 ErrorUnderMaintenanceAction(filterContext);
             }
