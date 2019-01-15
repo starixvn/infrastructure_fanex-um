@@ -27,34 +27,34 @@ namespace ONEbook.UM.Filters
             this.configuration = configuration ?? UMClientManager.UMClientConfigs;
         }
 
-        public override async void OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var isUnderMaintenance = await maintenanceService.IsUnderMaintenance().ConfigureAwait(false);
+            var isUnderMaintenance = maintenanceService.IsUnderMaintenance().GetAwaiter().GetResult();
 
             if (isUnderMaintenance)
             {
-                await UnderMaintenanceAction(context).ConfigureAwait(false);
+                UnderMaintenanceAction(context);
             }
 
             if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl)
-                && (await maintenanceService.GetUnderMaintenanceTime().ConfigureAwait(false)).ConnectionResult.IsNotOk)
+                && (maintenanceService.GetUnderMaintenanceTime().Result).ConnectionResult.IsNotOk)
             {
-                await ErrorUnderMaintenanceAction(context).ConfigureAwait(false);
+                ErrorUnderMaintenanceAction(context);
             }
 
             base.OnActionExecuting(context);
         }
 
-        public async Task UnderMaintenanceAction(ActionExecutingContext filterContext)
+        public void UnderMaintenanceAction(ActionExecutingContext filterContext)
         {
             var response = filterContext.HttpContext.Response;
 
             if (IsAjax(filterContext.HttpContext.Request))
             {
                 response.Clear();
-                await response.WriteAsync("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }").ConfigureAwait(false);
+                response.WriteAsync("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }").GetAwaiter().GetResult();
                 filterContext.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                await filterContext.Result.ExecuteResultAsync(filterContext).ConfigureAwait(false);
+                filterContext.Result.ExecuteResultAsync(filterContext).GetAwaiter().GetResult();
             }
             else
             {
@@ -66,21 +66,21 @@ namespace ONEbook.UM.Filters
 
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
-                    filterContext.Result = new RedirectResult(configuration.UMPageUrl);
+                    filterContext.Result = new RedirectResult(configuration.UMPageUrl, true);
                 }
             }
         }
 
-        public async Task ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
+        public void ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
         {
             var response = filterContext.HttpContext.Response;
 
             if (IsAjax(filterContext.HttpContext.Request))
             {
                 response.Clear();
-                await response.WriteAsync("{ \"code\": 999998, \"message\": \"UM Error\" }").ConfigureAwait(false);
+                response.WriteAsync("{ \"code\": 999998, \"message\": \"UM Error\" }").GetAwaiter().GetResult();
                 filterContext.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                await filterContext.Result.ExecuteResultAsync(filterContext).ConfigureAwait(false);
+                filterContext.Result.ExecuteResultAsync(filterContext).GetAwaiter().GetResult();
             }
             else
             {
@@ -91,7 +91,7 @@ namespace ONEbook.UM.Filters
 
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
-                    filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl);
+                    filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl, true);
                 }
             }
         }

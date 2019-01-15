@@ -57,6 +57,7 @@ namespace ONEbook.UM.Filters
             {
                 var underMaintenancePageAbsoluteUrl = VirtualPathUtility.ToAbsolute(configuration.UMPageUrl).ToLowerInvariant();
                 var currentPageAbsoluteUrl = filterContext.HttpContext.Request.Url.AbsolutePath.ToLowerInvariant();
+
                 if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
                 {
                     filterContext.Result = new RedirectResult(configuration.UMPageUrl);

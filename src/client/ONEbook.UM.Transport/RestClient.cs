@@ -25,12 +25,12 @@ namespace ONEbook.UM.Transport
                };
 
         public Task<T> ExecuteGetAsync<T>(string endPoint, object data = null)
-             => ExecuteSync<T>(endPoint, Method.GET, data);
+             => ExecuteAsync<T>(endPoint, Method.GET, data);
 
         public Task<T> ExecutePostAsync<T>(string endPoint, object data = null)
-            => ExecuteSync<T>(endPoint, Method.POST, data);
+            => ExecuteAsync<T>(endPoint, Method.POST, data);
 
-        private async Task<T> ExecuteSync<T>(string endPoint, Method method, object data)
+        private async Task<T> ExecuteAsync<T>(string endPoint, Method method, object data)
         {
             ValidateEndPoint(endPoint);
 
@@ -56,6 +56,7 @@ namespace ONEbook.UM.Transport
             throw new InvalidOperationException(
                 string.Join(
                     "\r\n",
+                    $"Status code: {response.StatusCode}",
                     $"Content: {response.Content}",
                     $"ErrorMessage: {response.ErrorMessage}"));
         }

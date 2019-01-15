@@ -7,6 +7,7 @@
     using ONEbook.UM.Transport;
     using RestSharp;
 
+    [UMSiteAuthorization]
     public class TokenController : Controller
     {
         private readonly IRestClient _restClient;
