@@ -5,6 +5,7 @@
     using System.Globalization;
     using System.Linq;
     using Configurations;
+    using Fanex.Logging;
     using Models;
     using ONELab.UMService.UMClient;
     using Sunplus.UMControllerLibrary;
@@ -63,6 +64,12 @@
 
                 if (isUnderMaintenanceTime)
                 {
+                    Logger.Log.Info(
+                        $"Site: {siteId} \r\n" +
+                        $"IsUM: {isUnderMaintenanceTime} \r\n" +
+                        $"From: {timeFrom} \r\n" +
+                        $"To: {timeTo}");
+
                     return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom, timeTo);
                 }
             }
