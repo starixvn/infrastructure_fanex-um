@@ -1,9 +1,8 @@
 namespace ONEbook.UM.AspNetMVC.Tests.Configuration
 {
-    using NSubstitute;
-    using ONEbook.UM.AspNetMVC.Configuration;
-    using System;
     using System.Configuration;
+    using AspNetMVC;
+    using Configurations;
     using Xunit;
 
     public class UMClientConfigurationTests
@@ -14,7 +13,7 @@ namespace ONEbook.UM.AspNetMVC.Tests.Configuration
 
         private UMClientConfiguration CreateUMClientConfiguration()
         {
-            return new UMClientConfiguration();
+            return new UMClientConfiguration().Initialize();
         }
 
         [Fact]

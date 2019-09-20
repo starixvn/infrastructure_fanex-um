@@ -1,17 +1,19 @@
 ﻿namespace ONEbook.UM.Site.AspNetCore
 {
+    using Configurations;
     using Fanex.Logging;
     using Fanex.Logging.RabbitMQ;
+    using Helpers;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using ONEbook.UM.AspNetCore.Configuration;
-    using ONEbook.UM.Helpers;
-    using ONEbook.UM.Services;
-    using ONEbook.UM.Transport;
+    using ONEbook.UM.AspNetCore;
+    using ONEbook.UM.AspNetCore.Filters;
+    using Services;
+    using Transport;
 
     public class Startup
     {
@@ -31,11 +33,16 @@
                  .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
                  .Use(new RabbitMQLogging(Configuration["Fanex.Logging:RabbitMQConnectionStrings"]));
             services.AddSingleton(Logger.Log);
-
+            services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
+            services.AddSingleton<CheckUMFilterAttribute>();
+            services.AddSingleton<IUMCacheService, UMCacheService>();
+            services.AddSingleton<IUMRestClient, UMRestClient>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
             services.AddSession();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,13 +56,6 @@
             app.UseSession();
 
             app.UseMvc();
-
-            var umConfig = new UMClientConfiguration(Configuration);
-
-            UMClientManager
-                .UseConfig(umConfig)
-                .UseRestClient(new RestClient(umConfig))
-                .UseHttpContext(new HttpContextHelper(app.ApplicationServices.GetService<IHttpContextAccessor>()));
         }
 
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static

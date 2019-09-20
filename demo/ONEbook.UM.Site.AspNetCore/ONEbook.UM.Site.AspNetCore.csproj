@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <SonarQubeExclude>True</SonarQubeExclude>
   </PropertyGroup>
 
@@ -26,7 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\client\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore.Filters\ONEbook.UM.AspNetCore.Filters.csproj" />
+    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj" />
     <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj" />
   </ItemGroup>
@@ -36,5 +37,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
 </Project>

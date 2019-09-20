@@ -2,9 +2,9 @@
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
-    using ONEbook.UM.Filters;
-    using ONEbook.UM.Models;
-    using ONEbook.UM.Services;
+    using Models;
+    using ONEbook.UM.AspNetCore.Filters;
+    using Services;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -18,11 +18,11 @@
         }
 
         // GET api/home
-        [CheckUMFilter]
+        [ServiceFilter(typeof(CheckUMFilterAttribute))]
         [HttpGet]
         public async Task<ActionResult<UnderMaintenanceTime>> Index()
         {
-            var underMaintenanceInfo = await maintenanceService.GetUnderMaintenanceTime();
+            var underMaintenanceInfo = await maintenanceService.GetUnderMaintenanceTimeAsync();
 
             return underMaintenanceInfo;
         }

@@ -1,19 +1,20 @@
 ﻿namespace ONEbook.UM
 {
     using System;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
+    using Configurations;
+    using Helpers;
 
     public class UMClientManager
     {
-        private IUMClientConfiguration umClientConfig;
-        private IRestClient restClient;
+        private UMClientConfiguration umClientConfig;
+        private IUMRestClient iumRestClient;
+        private IUMCacheService iumCacheService;
         private IHttpContextHelper httpContext;
         private Action<string> errorHandler;
 
-        private static UMClientManager CurrentInstance = new UMClientManager();
+        private static readonly UMClientManager CurrentInstance = new UMClientManager();
 
-        public static UMClientManager UseConfig(IUMClientConfiguration umClientConfig)
+        public static UMClientManager UseConfig(UMClientConfiguration umClientConfig)
         {
             CurrentInstance.umClientConfig = umClientConfig ?? throw new ArgumentNullException(nameof(umClientConfig));
 
@@ -22,9 +23,9 @@
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
 
-        public UMClientManager UseRestClient(IRestClient restClient)
+        public UMClientManager UseRestClient(IUMRestClient restClient)
         {
-            CurrentInstance.restClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
+            CurrentInstance.iumRestClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
 
             return CurrentInstance;
         }
@@ -32,6 +33,13 @@
         public UMClientManager UseHttpContext(IHttpContextHelper httpContext)
         {
             CurrentInstance.httpContext = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
+
+            return CurrentInstance;
+        }
+
+        public UMClientManager UseCacheService(IUMCacheService cacheService)
+        {
+            CurrentInstance.iumCacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
 
             return CurrentInstance;
         }
@@ -45,11 +53,14 @@
 
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
 
-        public static IUMClientConfiguration UMClientConfigs
+        public static UMClientConfiguration UMClientConfigs
           => CurrentInstance.umClientConfig ?? throw new InvalidOperationException(nameof(CurrentInstance.umClientConfig));
 
-        public static IRestClient RestClient
-            => CurrentInstance.restClient ?? throw new InvalidOperationException(nameof(CurrentInstance.restClient));
+        public static IUMRestClient RestClient
+            => CurrentInstance.iumRestClient ?? throw new InvalidOperationException(nameof(CurrentInstance.iumRestClient));
+
+        public static IUMCacheService CacheService
+            => CurrentInstance.iumCacheService ?? throw new InvalidOperationException(nameof(CurrentInstance.iumCacheService));
 
         public static IHttpContextHelper HttpContext
             => CurrentInstance.httpContext ?? throw new InvalidOperationException(nameof(CurrentInstance.httpContext));

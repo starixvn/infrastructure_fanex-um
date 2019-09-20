@@ -1,10 +1,11 @@
-﻿namespace ONEbook.UM.Site.Controllers
+﻿using ONEbook.UM.AspNetMVC.Filters;
+
+namespace ONEbook.UM.Site.Controllers
 {
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Newtonsoft.Json;
-    using ONEbook.UM.Services;
-    using UM.Filters;
+    using Services;
 
     [AllowAnonymous]
     public class HomeController : Controller
@@ -16,21 +17,25 @@
         {
         }
 
-        public HomeController(
-            IMaintenanceService maintenanceService)
+        public HomeController(IMaintenanceService maintenanceService)
         {
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
+            _maintenanceService = maintenanceService
+                  ?? new MaintenanceService(
+                      UMClientManager.RestClient,
+                      UMClientManager.CacheService,
+                      UMClientManager.HttpContext,
+                      UMClientManager.UMClientConfigs);
         }
 
         public async Task<ActionResult> Login()
         {
-            var isUM = await _maintenanceService.IsUnderMaintenance();
+            var isUM = await _maintenanceService.IsUnderMaintenanceAsync();
 
             var contentResult = new ContentResult();
 
             if (isUM)
             {
-                var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTime();
+                var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTimeAsync();
                 contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
@@ -78,7 +83,7 @@
 
         public async Task<ActionResult> RecheckIn()
         {
-            var isPassUM = !(await _maintenanceService.IsUnderMaintenance());
+            var isPassUM = !(await _maintenanceService.IsUnderMaintenanceAsync());
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
@@ -92,13 +97,13 @@
         public ActionResult GetUMInfo()
         {
             return Json(
-                _maintenanceService.GetUnderMaintenanceTime(),
+                _maintenanceService.GetUnderMaintenanceTimeAsync(),
                 JsonRequestBehavior.AllowGet);
         }
 
         public string GetScheduledUMInfo()
         {
-            return JsonConvert.SerializeObject(_maintenanceService.GetScheduledUnderMaintenance().GetAwaiter().GetResult());
+            return JsonConvert.SerializeObject(_maintenanceService.GetScheduledUnderMaintenanceAsync().GetAwaiter().GetResult());
         }
 
         [CheckUMFilter]

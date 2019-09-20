@@ -46,6 +46,10 @@
     <CodeAnalysisRuleSet>ONEbook.UM.Site.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fanex.Caching, Version=2.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\harrison.nguyen\.nuget\packages\fanex.caching\2.2.1\lib\net461\Fanex.Caching.dll</HintPath>
+    </Reference>
     <Reference Include="Fanex.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Fanex.Logging.1.0.0.0\lib\net40\Fanex.Logging.dll</HintPath>
     </Reference>
@@ -157,8 +161,8 @@
     <Folder Include="Views\Token\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\client\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj">
-      <Project>{672c317c-aeab-49f0-a3e9-6aee1c7e3e05}</Project>
+    <ProjectReference Include="..\..\src\client\AspNetMvc\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj">
+      <Project>{24c888db-8859-401e-ab53-d28bcc9ca943}</Project>
       <Name>ONEbook.UM.AspNetMVC</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj">

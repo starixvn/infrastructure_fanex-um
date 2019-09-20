@@ -34,8 +34,8 @@
 
         private IRestClient GetRestClient()
         {
-            var restClient = new RestSharp.RestClient(UMSiteConfiguration.Settings.ServiceUri);
-            restClient.Authenticator = new HmacAuthenticator();
+            var restClient = new RestClient(UMSiteConfiguration.Settings.ServiceUri);
+            restClient.Authenticator = new UMAuthenticator();
 
             return restClient;
         }

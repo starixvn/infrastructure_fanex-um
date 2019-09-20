@@ -1,11 +1,10 @@
-using Microsoft.Extensions.Configuration;
-using NSubstitute;
-using ONEbook.UM.AspNetCore.Configuration;
-using System;
-using Xunit;
-
 namespace ONEbook.UM.AspNetCore.Tests.Configuration
 {
+    using Microsoft.Extensions.Configuration;
+    using NSubstitute;
+    using Configurations;
+    using Xunit;
+
     public class UMClientConfigurationTests
     {
         private readonly IConfiguration subConfiguration;
@@ -17,7 +16,7 @@ namespace ONEbook.UM.AspNetCore.Tests.Configuration
 
         private UMClientConfiguration CreateUMClientConfiguration()
         {
-            return new UMClientConfiguration(subConfiguration);
+            return new UMClientConfiguration();
         }
 
         [Fact]
