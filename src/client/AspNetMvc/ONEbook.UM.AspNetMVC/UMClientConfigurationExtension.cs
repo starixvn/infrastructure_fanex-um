@@ -1,8 +1,8 @@
 ﻿namespace ONEbook.UM.AspNetMVC
 {
+    using System.ComponentModel;
     using System.Configuration;
     using Configurations;
-    using System.ComponentModel;
 
     public static class UMClientConfigurationExtension
     {

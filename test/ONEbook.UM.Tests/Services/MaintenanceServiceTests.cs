@@ -49,7 +49,22 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task IsUnderMaintenance_NowIsNotUnderMaintenance_ReturnFalse()
+        public void GetUnderMaintenanceTime_Always_GetExpectedUMInfo()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+                .Returns(expectedUnderMaintenanceTime);
+
+            // Act
+            var result = maintenanceService.GetUnderMaintenanceTime();
+
+            // Assert
+            Assert.Equal(expectedUnderMaintenanceTime, result);
+        }
+
+        [Fact]
+        public async Task IsUnderMaintenanceAsync_NowIsNotUnderMaintenance_ReturnFalse()
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
@@ -64,7 +79,22 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task IsUnderMaintenance_ByPassUM_ReturnFalse()
+        public void IsUnderMaintenance_NowIsNotUnderMaintenance_ReturnFalse()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
+            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+                .Returns(expectedUnderMaintenanceTime);
+
+            // Act
+            var result = maintenanceService.IsUnderMaintenance();
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task IsUnderMaintenanceAsync_ByPassUM_ReturnFalse()
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
@@ -80,7 +110,23 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task IsUnderMaintenance_IsValidToken_ReturnFalse()
+        public void IsUnderMaintenance_ByPassUM_ReturnFalse()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            httpContextHelper.GetSession("ONEbook.UM.ByPassUM").Returns("1");
+            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+                .Returns(expectedUnderMaintenanceTime);
+
+            // Act
+            var result = maintenanceService.IsUnderMaintenance();
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task IsUnderMaintenanceAsync_IsValidToken_ReturnFalse()
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
@@ -98,7 +144,25 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task GetAllUnderMaintenanceTime_Always_CallRestClient()
+        public void IsUnderMaintenance_IsValidToken_ReturnFalse()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            const string token = "1234556";
+            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+                .Returns(expectedUnderMaintenanceTime);
+            httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
+            restClient.ExecuteGet<bool>("/token/validate?SiteId=1&Token=1234556").Returns(true);
+
+            // Act
+            var result = maintenanceService.IsUnderMaintenance();
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task GetAllUnderMaintenanceTimeAsync_Always_CallRestClient()
         {
             // Arrange
             var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
@@ -114,7 +178,23 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task GetScheduledUnderMaintenance_Always_CallRestClient()
+        public void GetAllUnderMaintenanceTime_Always_CallRestClient()
+        {
+            // Arrange
+            var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
+            restClient
+                .ExecuteGet<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetAll"))
+                .Returns(underMaintenanceTime);
+
+            // Act
+            var actualUnderMaintenanceTime = maintenanceService.GetAllUnderMaintenanceTime();
+
+            // Assert
+            Assert.Equal(underMaintenanceTime, actualUnderMaintenanceTime);
+        }
+
+        [Fact]
+        public async Task GetScheduledUnderMaintenanceAsync_Always_CallRestClient()
         {
             // Arrange
             var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
@@ -130,6 +210,22 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
+        public void GetScheduledUnderMaintenance_Always_CallRestClient()
+        {
+            // Arrange
+            var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
+            restClient
+                .ExecuteGet<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetScheduledUnderMaintenance"))
+                .Returns(underMaintenanceTime);
+
+            // Act
+            var actualUnderMaintenanceTime = maintenanceService.GetScheduledUnderMaintenance();
+
+            // Assert
+            Assert.Equal(underMaintenanceTime, actualUnderMaintenanceTime);
+        }
+
+        [Fact]
         public async Task GetUnderMaintenanceTimeAsync_EnableUnscheduleUM_ReturnExpectedUnscheduleUMInfo()
         {
             // Arrange
@@ -139,6 +235,23 @@ namespace ONEbook.UM.Tests.Services
 
             // Act
             var underMaintenanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+
+            // Assert
+
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
+        }
+
+        [Fact]
+        public void GetUnderMaintenanceTime_EnableUnscheduleUM_ReturnExpectedUnscheduleUMInfo()
+        {
+            // Arrange
+            configuration.EnableUnscheduledUM = true;
+            configuration.UMFrom = "3:00";
+            configuration.UMTo = "4:00";
+
+            // Act
+            var underMaintenanceTime = maintenanceService.GetUnderMaintenanceTime();
 
             // Assert
 
@@ -163,7 +276,23 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task GetUnderMaintenanceTime_EnableCheckUM_CacheHasNoUMInfo_GetAndReturnDataFromAPI()
+        public void GetUnderMaintenanceTime_EnableCheckUM_CacheHasUMInfo_ReturnDataFromCache()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            configuration.EnableCheckUM = true;
+            configuration.SiteId = 1;
+            cacheService.Get<UnderMaintenanceTime>("ONEbook.UM.Site.1").Returns(expectedUnderMaintenanceTime);
+
+            // Act
+            var underMaintenanceTime = maintenanceService.GetUnderMaintenanceTime();
+
+            // Assert
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
+        }
+
+        [Fact]
+        public async Task GetUnderMaintenanceTimeAsync_EnableCheckUM_CacheHasNoUMInfo_GetAndReturnDataFromAPI()
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
@@ -184,7 +313,28 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task GetUnderMaintenanceTime_EnableCheckUM_GetDataThrowException_ReturnFailUMInfo()
+        public void GetUnderMaintenanceTime_EnableCheckUM_CacheHasNoUMInfo_GetAndReturnDataFromAPI()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            configuration.EnableCheckUM = true;
+            configuration.ResultCacheDuration = 60;
+            restClient
+                .ExecuteGet<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
+                .Returns(expectedUnderMaintenanceTime);
+
+            // Act
+            var underMaintenanceTime = maintenanceService.GetUnderMaintenanceTime();
+
+            // Assert
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
+            cacheService.Received().Set("ONEbook.UM.Site.1",
+                Arg.Is(expectedUnderMaintenanceTime),
+                TimeSpan.FromSeconds(60));
+        }
+
+        [Fact]
+        public async Task GetUnderMaintenanceTimeAsync_EnableCheckUM_GetDataThrowException_ReturnFailUMInfo()
         {
             // Arrange
             var expectedUnderMaintenanceTime = UnderMaintenanceTime.CreateFailedConnection("Error");
@@ -203,7 +353,26 @@ namespace ONEbook.UM.Tests.Services
         }
 
         [Fact]
-        public async Task GetUnderMaintenanceTime_NotEnableCheckUM_ReturnNotUMInfo()
+        public void GetUnderMaintenanceTime_EnableCheckUM_GetDataThrowException_ReturnFailUMInfo()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = UnderMaintenanceTime.CreateFailedConnection("Error");
+            configuration.EnableCheckUM = true;
+            configuration.ResultCacheDuration = 60;
+            var exception = new Exception("Error");
+            restClient
+                .ExecuteGet<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
+                .Throws(exception);
+
+            // Act
+            var underMaintenanceTime = maintenanceService.GetUnderMaintenanceTime();
+
+            // Assert
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
+        }
+
+        [Fact]
+        public async Task GetUnderMaintenanceTimeAsync_NotEnableCheckUM_ReturnNotUMInfo()
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "0:00", "0:00");
@@ -211,6 +380,20 @@ namespace ONEbook.UM.Tests.Services
 
             // Act
             var underMaintenanceTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
+
+            // Assert
+            Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);
+        }
+
+        [Fact]
+        public void GetUnderMaintenanceTime_NotEnableCheckUM_ReturnNotUMInfo()
+        {
+            // Arrange
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "0:00", "0:00");
+            configuration.EnableCheckUM = false;
+
+            // Act
+            var underMaintenanceTime = maintenanceService.GetUnderMaintenanceTime();
 
             // Assert
             Assert.True(comparer.Compare(expectedUnderMaintenanceTime, underMaintenanceTime).AreEqual);

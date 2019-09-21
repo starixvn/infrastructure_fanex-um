@@ -2,6 +2,8 @@
 {
     public sealed class UMClientConfiguration
     {
+        private const int DefaultResultCacheDuration = 60;
+
         public UMClientConfiguration()
         {
         }
@@ -48,7 +50,7 @@
 
         public int SiteId { get; set; }
 
-        public int ResultCacheDuration { get; set; } = 60;
+        public int ResultCacheDuration { get; set; } = DefaultResultCacheDuration;
 
         public string UMLoggingCategory { get; set; } = "ONEbook-UM";
 
