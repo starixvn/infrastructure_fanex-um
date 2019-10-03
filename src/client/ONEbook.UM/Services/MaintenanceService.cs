@@ -56,8 +56,7 @@
 
                 return !string.IsNullOrEmpty(isByPassUm) && isByPassUm == "1";
             }
-
-            private set => httpContextHelper.SetSession(ByPassUmSessionKey, value ? "1" : "0");
+            set => httpContextHelper.SetSession(ByPassUmSessionKey, value ? "1" : "0");
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
