@@ -146,9 +146,9 @@
     <Compile Include="Services\UMTokenService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
     <Content Include="ONEbook.UM.Api.Debug.ruleset" />
     <Content Include="ONEbook.UM.Api.ruleset" />
+    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\Server124.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
