@@ -9,14 +9,9 @@
     {
         private readonly IUMControlAdapter underMaintenanceControlAdapter;
 
-        public UnderMaintenanceController()
-            : this(null)
-        {
-        }
-
         public UnderMaintenanceController(IUMControlAdapter underMaintenanceControlAdapter)
         {
-            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
+            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter;
         }
 
         public UnderMaintenanceTime Get(int siteId)

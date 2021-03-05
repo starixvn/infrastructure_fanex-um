@@ -36,7 +36,12 @@
             { 4100100, 4100300 },
         };
 
-        private static readonly UMBusiness umBusiness = new UMBusiness();
+        private readonly UMBusiness umBusiness;
+
+        public UMControlAdapter(UMBusiness umBusiness)
+        {
+            this.umBusiness = umBusiness;
+        }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
         {

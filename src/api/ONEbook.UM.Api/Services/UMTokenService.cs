@@ -25,10 +25,6 @@
     {
         private readonly IDateTimeHelper dateTimeHelper;
 
-        public UMTokenService() : this(null)
-        {
-        }
-
         public UMTokenService(IDateTimeHelper dateTimeHelper)
         {
             this.dateTimeHelper = dateTimeHelper ?? new DateTimeHelper();
