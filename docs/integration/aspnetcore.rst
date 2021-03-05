@@ -55,8 +55,12 @@ Usage
 
 .. code:: csharp
 
-       var maintenanceService = new MaintenanceService(); 
-       var underMaintenanceInfo = await maintenanceService.GetUnderMaintenance
+        private readonly IMaintenanceService maintenanceService;
+
+        public HomeController(IMaintenanceService maintenanceService)
+        {
+            this.maintenanceService = maintenanceService;
+        }
 
 .. _ONEbook.UM.AspNetCore: http://nuget.nexdev.net/packages/ONEbook.UM.AspNetCore/
 .. _ONEbook.UM.Transport: http://nuget.nexdev.net/packages/ONEbook.UM.Transport/
