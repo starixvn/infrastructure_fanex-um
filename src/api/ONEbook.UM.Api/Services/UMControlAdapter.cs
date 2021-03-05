@@ -36,6 +36,8 @@
             { 4100100, 4100300 },
         };
 
+        private static readonly UMBusiness umBusiness = new UMBusiness();
+
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
         {
             var fakeUMInfo = FakeUMControlAdapter.GetUnderMaintenance();
@@ -54,9 +56,8 @@
             {
                 string timeFrom = string.Empty;
                 string timeTo = string.Empty;
-                var umctrl = new UMBusiness();
 
-                var isUnderMaintenanceTime = umctrl.isUnderMaintainence(
+                var isUnderMaintenanceTime = umBusiness.isUnderMaintainence(
                     (Sites)siteId,
                     UnderMaintenanceApiConfiguration.Settings.UMAddress,
                     ref timeFrom,
