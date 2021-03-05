@@ -40,19 +40,14 @@ Please add these code lines to your *Startup.cs* file
 .. code:: csharp
 
        public void ConfigureServices(IServiceCollection services){
-           ...
-           services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-           ...
-       }
-
-       public void Configure(IApplicationBuilder app, IHostingEnvironment env){
-           ...
-           var umConfig = new UMClientConfiguration(Configuration);
-           UMClientManager
-               .UseConfig(umConfig)
-               .UseRestClient(new RestClient(umConfig))
-               .UseHttpContext(new HttpContextHelper(app.ApplicationServices.GetService<IHttpContextAccessor>()))
-               .AddErrorHandler(errorHandler);
+            ...
+            services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
+            services.AddSingleton<IUMCacheService, UMCacheService>();
+            services.AddSingleton<IUMRestClient, UMRestClient>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
+            services.AddSingleton<IMaintenanceService, MaintenanceService>();
+            ...
        }
 
 Usage
