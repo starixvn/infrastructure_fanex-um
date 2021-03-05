@@ -41,6 +41,7 @@ Please add these code lines to your *Startup.cs* file
 
        public void ConfigureServices(IServiceCollection services){
             ...
+            services.AddSession();
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();
