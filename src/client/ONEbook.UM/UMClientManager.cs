@@ -6,17 +6,17 @@
 
     public class UMClientManager
     {
-        private UMClientConfiguration umClientConfig;
-        private IUMRestClient iumRestClient;
-        private IUMCacheService iumCacheService;
+        private UMClientConfiguration clientConfigs;
+        private IUMRestClient restClient;
+        private IUMCacheService cacheService;
         private IHttpContextHelper httpContext;
         private Action<string> errorHandler;
 
         private static readonly UMClientManager CurrentInstance = new UMClientManager();
 
-        public static UMClientManager UseConfig(UMClientConfiguration umClientConfig)
+        public static UMClientManager UseConfig(UMClientConfiguration clientConfigs)
         {
-            CurrentInstance.umClientConfig = umClientConfig ?? throw new ArgumentNullException(nameof(umClientConfig));
+            CurrentInstance.clientConfigs = clientConfigs ?? throw new ArgumentNullException(nameof(clientConfigs));
 
             return CurrentInstance;
         }
@@ -25,7 +25,7 @@
 
         public UMClientManager UseRestClient(IUMRestClient restClient)
         {
-            CurrentInstance.iumRestClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
+            CurrentInstance.restClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
 
             return CurrentInstance;
         }
@@ -39,7 +39,7 @@
 
         public UMClientManager UseCacheService(IUMCacheService cacheService)
         {
-            CurrentInstance.iumCacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
+            CurrentInstance.cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
 
             return CurrentInstance;
         }
@@ -54,16 +54,15 @@
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
 
         public static UMClientConfiguration UMClientConfigs
-          => CurrentInstance.umClientConfig ?? throw new InvalidOperationException(nameof(CurrentInstance.umClientConfig));
+          => CurrentInstance.clientConfigs ?? throw new InvalidOperationException(nameof(CurrentInstance.clientConfigs));
 
         public static IUMRestClient RestClient
-            => CurrentInstance.iumRestClient ?? throw new InvalidOperationException(nameof(CurrentInstance.iumRestClient));
+            => CurrentInstance.restClient ?? throw new InvalidOperationException(nameof(CurrentInstance.restClient));
 
         public static IUMCacheService CacheService
-            => CurrentInstance.iumCacheService ?? throw new InvalidOperationException(nameof(CurrentInstance.iumCacheService));
+            => CurrentInstance.cacheService ?? throw new InvalidOperationException(nameof(CurrentInstance.cacheService));
 
-        public static IHttpContextHelper HttpContext
-            => CurrentInstance.httpContext ?? throw new InvalidOperationException(nameof(CurrentInstance.httpContext));
+        public static IHttpContextHelper HttpContext => CurrentInstance.httpContext;
 
         public static Action<string> ErrorHandler => CurrentInstance.errorHandler;
     }

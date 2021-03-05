@@ -39,8 +39,8 @@
         public MaintenanceService(
             IUMRestClient restClient,
             IUMCacheService cacheService,
-            IHttpContextHelper httpContextHelper,
-            UMClientConfiguration configuration)
+            UMClientConfiguration configuration,
+            IHttpContextHelper httpContextHelper = null)
         {
             this.configuration = configuration ?? UMClientManager.UMClientConfigs;
             this.restClient = restClient ?? UMClientManager.RestClient;
@@ -52,11 +52,11 @@
         {
             get
             {
-                var isByPassUm = httpContextHelper.GetSession(ByPassUmSessionKey);
+                var isByPassUm = httpContextHelper?.GetSession(ByPassUmSessionKey);
 
                 return !string.IsNullOrEmpty(isByPassUm) && isByPassUm == "1";
             }
-            set => httpContextHelper.SetSession(ByPassUmSessionKey, value ? "1" : "0");
+            set => httpContextHelper?.SetSession(ByPassUmSessionKey, value ? "1" : "0");
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
@@ -110,39 +110,18 @@
         }
 
         public Dictionary<int, UnderMaintenanceTime> GetAllUnderMaintenanceTime()
-            => restClient.ExecuteGet<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetAll");
+            => restClient.ExecuteGet<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetAll");
 
         public Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTimeAsync()
-            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetAll");
+            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetAll");
 
         public Dictionary<int, UnderMaintenanceTime> GetScheduledUnderMaintenance()
-            => restClient.ExecuteGet<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetScheduledUnderMaintenance");
+            => restClient.ExecuteGet<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetScheduledUnderMaintenance");
 
         public Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenanceAsync()
-            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetScheduledUnderMaintenance");
+            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetScheduledUnderMaintenance");
 
-        public bool IsUnderMaintenance()
-        {
-            var underMaintenanceTime = GetUnderMaintenanceTime();
-            var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
-
-            if (nowIsNotUnderMaintenance || ByPassUm)
-            {
-                return false;
-            }
-
-            var token = httpContextHelper.GetValueFromQueryString(TokenName);
-            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
-
-            if (isValidToken)
-            {
-                ByPassUm = true;
-
-                return false;
-            }
-
-            return true;
-        }
+        public bool IsUnderMaintenance() => IsUnderMaintenanceAsync().Result;
 
         public async Task<bool> IsUnderMaintenanceAsync()
         {
@@ -168,23 +147,6 @@
             }
 
             return true;
-        }
-
-        private bool IsTokenValid(string token)
-        {
-            var isTokenValid = false;
-
-            try
-            {
-                isTokenValid = restClient
-                    .ExecuteGet<bool>($"/token/validate?SiteId={configuration.SiteId}&Token={token}");
-            }
-            catch (Exception ex)
-            {
-                HandleError(ex);
-            }
-
-            return isTokenValid;
         }
 
         private async Task<bool> IsTokenValidAsync(string token)
@@ -221,7 +183,7 @@
         {
             try
             {
-                return restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId={configuration.SiteId}");
+                return restClient.ExecuteGet<UnderMaintenanceTime>($"UnderMaintenance/get?siteId={configuration.SiteId}");
             }
             catch (Exception ex)
             {
@@ -236,7 +198,7 @@
             try
             {
                 return await restClient
-                    .ExecuteGetAsync<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId={configuration.SiteId}")
+                    .ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId={configuration.SiteId}")
                     .ConfigureAwait(false);
             }
             catch (Exception ex)

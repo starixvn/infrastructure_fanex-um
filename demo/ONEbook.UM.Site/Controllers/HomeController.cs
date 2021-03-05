@@ -23,8 +23,8 @@ namespace ONEbook.UM.Site.Controllers
                   ?? new MaintenanceService(
                       UMClientManager.RestClient,
                       UMClientManager.CacheService,
-                      UMClientManager.HttpContext,
-                      UMClientManager.UMClientConfigs);
+                      UMClientManager.UMClientConfigs,
+                      UMClientManager.HttpContext);
         }
 
         public async Task<ActionResult> Login()

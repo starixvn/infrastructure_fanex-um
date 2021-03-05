@@ -1,14 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
-    <Version>3.0.0-beta7</Version>
+    <TargetFrameworks>net461;netstandard2.0;net5</TargetFrameworks>
+    <Version>3.1.0-beta01</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>
       - Support synchronous methods
       - Support generate authorization token HttpClientHelper.GenerateAuthorizationHeader()
       - Public ByPassUM for outsider
+      - Support .NET 5
     </PackageReleaseNotes>
+    <PackageProjectUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</RepositoryUrl>
+    <RepositoryType>Core Libs</RepositoryType>
+    <Copyright>@nexcel.vn</Copyright>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <CodeAnalysisRuleSet>ONEbook.UM.ruleset</CodeAnalysisRuleSet>

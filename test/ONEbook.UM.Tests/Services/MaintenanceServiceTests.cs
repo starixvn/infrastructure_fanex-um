@@ -30,7 +30,7 @@ namespace ONEbook.UM.Tests.Services
             cacheService = Substitute.For<IUMCacheService>();
             configuration = new UMClientConfiguration { SiteId = 1 };
             maintenanceService = new MaintenanceService(
-                restClient, cacheService, httpContextHelper, configuration);
+                restClient, cacheService, configuration, httpContextHelper);
         }
 
         [Fact]
