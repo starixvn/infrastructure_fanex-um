@@ -44,34 +44,37 @@
         private async Task<T> ExecuteAsync<T>(string endPoint, HttpMethod method, object data)
         {
             ValidateEndPoint(endPoint);
-            var request = new HttpRequestMessage(method, new Uri(endPoint, UriKind.Relative));
+
             httpClient.DefaultRequestHeaders.Authorization = BuildAuthorizationHeader(new Uri(httpClient.BaseAddress + endPoint), method);
 
-            if (data != null)
+            using (var request = new HttpRequestMessage(method, new Uri(endPoint, UriKind.Relative)))
             {
-                var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-                request.Content = content;
+                if (data != null)
+                {
+                    var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+                    request.Content = content;
+                }
+
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonConvert.DeserializeObject<T>(result);
+                }
+
+                if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
+                {
+                    await Task.FromException(new Exception(result)).ConfigureAwait(false);
+                }
+
+                throw new InvalidOperationException(
+                    string.Join(
+                        "\r\n",
+                        $"Status code: {response.StatusCode}",
+                        $"Content: {result}",
+                        $"ErrorMessage: {response.ReasonPhrase}"));
             }
-
-            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-            var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<T>(result);
-            }
-
-            if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
-            {
-                await Task.FromException(new Exception(result)).ConfigureAwait(false);
-            }
-
-            throw new InvalidOperationException(
-                string.Join(
-                    "\r\n",
-                    $"Status code: {response.StatusCode}",
-                    $"Content: {result}",
-                    $"ErrorMessage: {response.ReasonPhrase}"));
         }
 
         private static void ValidateEndPoint(string endPoint)
