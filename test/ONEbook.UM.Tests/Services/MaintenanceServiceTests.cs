@@ -38,7 +38,7 @@ namespace ONEbook.UM.Tests.Services
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
-            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -53,7 +53,7 @@ namespace ONEbook.UM.Tests.Services
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
-            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGet<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -68,7 +68,7 @@ namespace ONEbook.UM.Tests.Services
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
-            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -83,7 +83,7 @@ namespace ONEbook.UM.Tests.Services
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
-            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -99,7 +99,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
             httpContextHelper.GetSession("ONEbook.UM.ByPassUM").Returns("1");
-            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -115,7 +115,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
             httpContextHelper.GetSession("ONEbook.UM.ByPassUM").Returns("1");
-            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -131,7 +131,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
             const string token = "1234556";
-            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
             httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
             restClient.ExecuteGetAsync<bool>("/token/validate?SiteId=1&Token=1234556").Returns(true);
@@ -149,10 +149,10 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
             const string token = "1234556";
-            restClient.ExecuteGet<UnderMaintenanceTime>($"/UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
             httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
-            restClient.ExecuteGet<bool>("/token/validate?SiteId=1&Token=1234556").Returns(true);
+            restClient.ExecuteGetAsync<bool>("/token/validate?SiteId=1&Token=1234556").Returns(true);
 
             // Act
             var result = maintenanceService.IsUnderMaintenance();
@@ -167,7 +167,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
             restClient
-                .ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetAll"))
+                .ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("UnderMaintenance/GetAll"))
                 .Returns(underMaintenanceTime);
 
             // Act
@@ -183,7 +183,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
             restClient
-                .ExecuteGet<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetAll"))
+                .ExecuteGet<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("UnderMaintenance/GetAll"))
                 .Returns(underMaintenanceTime);
 
             // Act
@@ -199,7 +199,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
             restClient
-                .ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetScheduledUnderMaintenance"))
+                .ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("UnderMaintenance/GetScheduledUnderMaintenance"))
                 .Returns(underMaintenanceTime);
 
             // Act
@@ -215,7 +215,7 @@ namespace ONEbook.UM.Tests.Services
             // Arrange
             var underMaintenanceTime = new Dictionary<int, UnderMaintenanceTime> { { 1, new UnderMaintenanceTime() } };
             restClient
-                .ExecuteGet<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("/UnderMaintenance/GetScheduledUnderMaintenance"))
+                .ExecuteGet<Dictionary<int, UnderMaintenanceTime>>(Arg.Is("UnderMaintenance/GetScheduledUnderMaintenance"))
                 .Returns(underMaintenanceTime);
 
             // Act
@@ -299,7 +299,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.EnableCheckUM = true;
             configuration.ResultCacheDuration = 60;
             restClient
-                .ExecuteGetAsync<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
+                .ExecuteGetAsync<UnderMaintenanceTime>("UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -320,7 +320,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.EnableCheckUM = true;
             configuration.ResultCacheDuration = 60;
             restClient
-                .ExecuteGet<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
+                .ExecuteGet<UnderMaintenanceTime>("UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -342,7 +342,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.ResultCacheDuration = 60;
             var exception = new Exception("Error");
             restClient
-                .ExecuteGetAsync<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
+                .ExecuteGetAsync<UnderMaintenanceTime>("UnderMaintenance/get?siteId=1")
                 .Throws(exception);
 
             // Act
@@ -361,7 +361,7 @@ namespace ONEbook.UM.Tests.Services
             configuration.ResultCacheDuration = 60;
             var exception = new Exception("Error");
             restClient
-                .ExecuteGet<UnderMaintenanceTime>("/UnderMaintenance/get?siteId=1")
+                .ExecuteGet<UnderMaintenanceTime>("UnderMaintenance/get?siteId=1")
                 .Throws(exception);
 
             // Act
