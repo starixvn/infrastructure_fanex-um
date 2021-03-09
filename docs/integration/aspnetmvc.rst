@@ -46,7 +46,11 @@ Usage
 
 .. code:: csharp
 
-       var maintenanceService = new MaintenanceService(); 
+       var maintenanceService = new MaintenanceService(
+                      UMClientManager.RestClient,
+                      UMClientManager.CacheService,
+                      UMClientManager.UMClientConfigs,
+                      UMClientManager.HttpContext);
        var underMaintenanceInfo = await maintenanceService.GetUnderMaintenance
 
 .. _ONEbook.UM.AspNetCore: http://nuget.nexdev.net/packages/ONEbook.UM.AspNetCore/
