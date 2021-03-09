@@ -7,8 +7,9 @@ namespace ONEbook.UM.Site
     using System.Web.Routing;
     using Fanex.Caching;
     using Helpers;
+    using ONEbook.UM.AspNetMVC.SimpleInjector;
     using ONEbook.UM.Configurations;
-    using ONEbook.UM.Services;
+    using ONEbook.UM.NETFramework;
     using SimpleInjector;
     using SimpleInjector.Integration.Web.Mvc;
     using Transport;
@@ -18,13 +19,14 @@ namespace ONEbook.UM.Site
         protected void Application_Start()
         {
             var container = new Container();
-            container.RegisterInstance(new UMClientConfiguration().Initialize());
-            container.RegisterInstance<ICacheService>(new CacheService());
-            container.RegisterSingleton<IUMCacheService, UMCacheService>();
-            container.RegisterSingleton<IPHelper, IPHelperImpl>();
-            container.RegisterSingleton<IUMRestClient, UMRestClient>();
-            container.RegisterSingleton<IHttpContextHelper, HttpContextHelper>();
-            container.RegisterSingleton<IMaintenanceService, MaintenanceService>();
+            //container.RegisterInstance(new UMClientConfiguration().Initialize());
+            //container.RegisterInstance<ICacheService>(new CacheService());
+            //container.RegisterSingleton<IUMCacheService, UMCacheService>();
+            //container.RegisterSingleton<IPHelper, IPHelperImpl>();
+            //container.RegisterSingleton<IUMRestClient, UMRestClient>();
+            //container.RegisterSingleton<IHttpContextHelper, HttpContextHelper>();
+            //container.RegisterSingleton<IMaintenanceService, MaintenanceService>();
+            container.RegisterONEbookUM();
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
             container.Verify();
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));

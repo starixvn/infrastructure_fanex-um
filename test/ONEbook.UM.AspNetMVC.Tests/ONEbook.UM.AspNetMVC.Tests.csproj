@@ -18,5 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\client\AspNetMvc\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj" />
+    <ProjectReference Include="..\..\src\client\AspNetMvc\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj" />
   </ItemGroup>
 </Project>

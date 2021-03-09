@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <Version>3.0.0</Version>
+    <Version>3.1.0-beta04</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <CodeAnalysisRuleSet>ONEbook.UM.AspNetMVC.ruleset</CodeAnalysisRuleSet>
@@ -15,10 +16,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ONEbook.UM\ONEbook.UM.csproj" />
+    <ProjectReference Include="..\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web" />

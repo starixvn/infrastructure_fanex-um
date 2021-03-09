@@ -18,7 +18,7 @@
         }
 
         // GET api/home
-        //[ServiceFilter(typeof(CheckUMFilterAttribute))]
+        [ServiceFilter(typeof(CheckUMFilterAttribute))]
         [HttpGet]
         public async Task<ActionResult<UnderMaintenanceTime>> Index()
         {

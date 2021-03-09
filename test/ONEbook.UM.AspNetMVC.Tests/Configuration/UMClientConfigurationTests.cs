@@ -1,8 +1,8 @@
 namespace ONEbook.UM.AspNetMVC.Tests.Configuration
 {
     using System.Configuration;
-    using AspNetMVC;
     using Configurations;
+    using ONEbook.UM.NETFramework;
     using Xunit;
 
     public class UMClientConfigurationTests

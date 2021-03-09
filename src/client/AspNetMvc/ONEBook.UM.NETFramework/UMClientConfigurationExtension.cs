@@ -1,4 +1,4 @@
-﻿namespace ONEbook.UM.AspNetMVC
+﻿namespace ONEbook.UM.NETFramework
 {
     using System.ComponentModel;
     using System.Configuration;

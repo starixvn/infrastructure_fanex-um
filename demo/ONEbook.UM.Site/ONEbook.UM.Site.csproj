@@ -178,9 +178,17 @@
     <Folder Include="Views\Token\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\client\AspNetMvc\ONEbook.UM.AspNetMVC.SimpleInjector\ONEbook.UM.AspNetMVC.SimpleInjector.csproj">
+      <Project>{43912bc8-5eb9-4bfa-8eb7-c02073f2e70f}</Project>
+      <Name>ONEbook.UM.AspNetMVC.SimpleInjector</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\client\AspNetMvc\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj">
       <Project>{24c888db-8859-401e-ab53-d28bcc9ca943}</Project>
       <Name>ONEbook.UM.AspNetMVC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\client\AspNetMvc\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj">
+      <Project>{2f9bc5ea-38ac-40b3-aef4-521dab077f65}</Project>
+      <Name>ONEBook.UM.NETFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj">
       <Project>{07c3f454-fa66-4709-a5a5-1b6dc273fd36}</Project>
