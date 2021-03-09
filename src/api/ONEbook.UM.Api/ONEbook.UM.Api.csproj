@@ -171,17 +171,14 @@
     <Content Include="Web.local.config" />
     <Content Include="Web.pro.config" />
     <Content Include="Web.backupMNL.config" />
+    <Content Include="Web.aws.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <Content Include="Web.sit.config" />
     <Content Include="Web.uat.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\..\packages\SonarAnalyzer.CSharp.7.8.0.7320\analyzers\Google.Protobuf.dll" />
-    <Analyzer Include="..\..\..\packages\SonarAnalyzer.CSharp.7.8.0.7320\analyzers\SonarAnalyzer.CSharp.dll" />
-    <Analyzer Include="..\..\..\packages\SonarAnalyzer.CSharp.7.8.0.7320\analyzers\SonarAnalyzer.dll" />
-    <Analyzer Include="..\..\..\packages\SonarAnalyzer.CSharp.8.19.0.28253\analyzers\SonarAnalyzer.CFG.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

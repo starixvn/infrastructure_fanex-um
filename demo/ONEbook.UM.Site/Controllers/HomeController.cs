@@ -12,11 +12,6 @@ namespace ONEbook.UM.Site.Controllers
     {
         private readonly IMaintenanceService _maintenanceService;
 
-        public HomeController()
-            : this(null)
-        {
-        }
-
         public HomeController(IMaintenanceService maintenanceService)
         {
             _maintenanceService = maintenanceService
