@@ -7,7 +7,7 @@
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
 
-    [HmacAuthorizationFilter]
+    //[HmacAuthorizationFilter]
     public class TokenController : ApiController
     {
         private readonly IUMTokenService underMaintenanceTokenService;

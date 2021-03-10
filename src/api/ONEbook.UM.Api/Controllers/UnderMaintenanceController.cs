@@ -6,7 +6,7 @@
     using ONEbook.UM.Api.Filters;
     using Services;
 
-    [HmacAuthorizationFilter]
+    //[HmacAuthorizationFilter]
     public class UnderMaintenanceController : ApiController
     {
         private readonly IUMControlAdapter underMaintenanceControlAdapter;
