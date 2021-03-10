@@ -31,12 +31,12 @@ namespace ONEbook.UM.Site.Controllers
             if (isUM)
             {
                 var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTimeAsync();
-                contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is in under maintenance "
+                contentResult.Content = $"Site is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
             else
             {
-                contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is not in under maintenance.";
+                contentResult.Content = $"Site is not in under maintenance.";
             }
 
             return contentResult;

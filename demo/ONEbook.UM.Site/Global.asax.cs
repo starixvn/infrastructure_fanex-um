@@ -7,6 +7,7 @@ namespace ONEbook.UM.Site
     using System.Web.Routing;
     using Fanex.Caching;
     using Helpers;
+    using ONEbook.UM.AspNetMVC.Filters;
     using ONEbook.UM.AspNetMVC.SimpleInjector;
     using ONEbook.UM.Configurations;
     using ONEbook.UM.NETFramework;
@@ -30,17 +31,16 @@ namespace ONEbook.UM.Site
             container.RegisterMvcControllers(Assembly.GetExecutingAssembly());
             container.Verify();
             DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
-
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            //var umConfig = new UMClientConfiguration().Initialize();
+            var umConfig = new UMClientConfiguration().Initialize();
 
-            //UMClientManager
-            //    .UseConfig(umConfig)
-            //    .UseCacheService(new UMCacheService(new CacheService()))
-            //    .UseRestClient(new UMRestClient(umConfig))
-            //    .UseHttpContext(new HttpContextHelper());
+            UMClientManager
+                .UseConfig(umConfig)
+                .UseCacheService(new UMCacheService(new CacheService()))
+                .UseRestClient(new UMRestClient(umConfig))
+                .UseHttpContext(new HttpContextHelper());
         }
     }
 }

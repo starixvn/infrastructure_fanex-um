@@ -3,8 +3,10 @@
     using System.Collections.Generic;
     using System.Web.Http;
     using Models;
+    using ONEbook.UM.Api.Filters;
     using Services;
 
+    [HmacAuthorizationFilter]
     public class UnderMaintenanceController : ApiController
     {
         private readonly IUMControlAdapter underMaintenanceControlAdapter;

@@ -91,7 +91,7 @@
             var requestHttpMethod = method.ToString();
             var authHeader = HttpClientHelper.GenerateAuthorizationHeader(configuration, requestUri, requestHttpMethod, ipHelper.GetMachineIP());
 
-            return new AuthenticationHeaderValue("Authorization", authHeader);
+            return new AuthenticationHeaderValue("amx", authHeader);
         }
 
         protected virtual void Dispose(bool disposing)

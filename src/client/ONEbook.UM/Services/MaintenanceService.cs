@@ -156,7 +156,7 @@
             try
             {
                 isTokenValid = await restClient
-                    .ExecuteGetAsync<bool>($"/token/validate?SiteId={configuration.SiteId}&Token={token}")
+                    .ExecuteGetAsync<bool>($"token/validate?SiteId={configuration.SiteId}&Token={token}")
                     .ConfigureAwait(false);
             }
             catch (Exception ex)

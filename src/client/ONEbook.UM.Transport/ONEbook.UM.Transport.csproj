@@ -3,7 +3,7 @@
   <PropertyGroup>
     <DependsOnNETStandard>true</DependsOnNETStandard>
     <TargetFrameworks>net461;netstandard2.0;net5</TargetFrameworks>
-    <Version>3.1.0-beta03</Version>
+    <Version>3.1.0-beta04</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>
       - Support UMCacheService for DI
