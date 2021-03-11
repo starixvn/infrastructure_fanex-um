@@ -17,6 +17,7 @@ namespace ONEbook.UM.AspNetMVC.SimpleInjector
             container.RegisterSingleton<IUMCacheService, UMCacheService>();
             container.RegisterSingleton<IPHelper, IPHelperImpl>();
             container.RegisterSingleton<IUMRestClient, UMRestClient>();
+            container.RegisterSingleton<IHttpContextHelper, EmptyHttpContextHelper>();
             container.RegisterSingleton<IMaintenanceService, MaintenanceService>();
         }
     }
