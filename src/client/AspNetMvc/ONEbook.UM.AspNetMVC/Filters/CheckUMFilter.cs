@@ -20,13 +20,18 @@ namespace ONEbook.UM.AspNetMVC.Filters
 
         public CheckUMFilterAttribute(IMaintenanceService maintenanceService, UMClientConfiguration configuration)
         {
-            this.maintenanceService = maintenanceService;
+            this.maintenanceService = maintenanceService ??
+                new MaintenanceService(
+                      UMClientManager.RestClient,
+                      UMClientManager.CacheService,
+                      UMClientManager.UMClientConfigs,
+                      UMClientManager.HttpContext);
             this.configuration = configuration ?? UMClientManager.UMClientConfigs;
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var isUnderMaintenance = maintenanceService.IsUnderMaintenanceAsync().Result;
+            var isUnderMaintenance = maintenanceService.IsUnderMaintenance();
 
             if (isUnderMaintenance)
             {

@@ -56,7 +56,10 @@
 
                 return !string.IsNullOrEmpty(isByPassUm) && isByPassUm == "1";
             }
-            set => httpContextHelper?.SetSession(ByPassUmSessionKey, value ? "1" : "0");
+            set
+            {
+                httpContextHelper?.SetSession(ByPassUmSessionKey, value ? "1" : "0");
+            }
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
@@ -125,19 +128,21 @@
 
         public async Task<bool> IsUnderMaintenanceAsync()
         {
-            var underMaintenanceTime = await GetUnderMaintenanceTimeAsync()
-                    .ConfigureAwait(false);
-
-            var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
-
-            if (nowIsNotUnderMaintenance || ByPassUm)
+            if (ByPassUm)
             {
                 return false;
             }
 
             var token = httpContextHelper.GetValueFromQueryString(TokenName);
-            bool isValidToken = !string.IsNullOrEmpty(token)
-                                && await IsTokenValidAsync(token).ConfigureAwait(false);
+            var underMaintenanceTime = await GetUnderMaintenanceTimeAsync().ConfigureAwait(false);
+            var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
+
+            if (nowIsNotUnderMaintenance)
+            {
+                return false;
+            }
+
+            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
 
             if (isValidToken)
             {
@@ -149,15 +154,14 @@
             return true;
         }
 
-        private async Task<bool> IsTokenValidAsync(string token)
+        private bool IsTokenValid(string token)
         {
             var isTokenValid = false;
 
             try
             {
-                isTokenValid = await restClient
-                    .ExecuteGetAsync<bool>($"token/validate?SiteId={configuration.SiteId}&Token={token}")
-                    .ConfigureAwait(false);
+                isTokenValid = restClient
+                    .ExecuteGet<bool>($"token/validate?SiteId={configuration.SiteId}&Token={token}");
             }
             catch (Exception ex)
             {

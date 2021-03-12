@@ -48,11 +48,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.AspNetMVC", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Site.AspNetCore5", "demo\ONEbook.UM.Site.AspNetCore5\ONEbook.UM.Site.AspNetCore5.csproj", "{D7030C46-A9E4-4E01-BB8B-24EBE4A63991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.AspNetMVC.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.AspNetMVC.SimpleInjector\ONEbook.UM.AspNetMVC.SimpleInjector.csproj", "{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.AspNetMVC.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.AspNetMVC.SimpleInjector\ONEbook.UM.AspNetMVC.SimpleInjector.csproj", "{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEBook.UM.NETFramework", "src\client\AspNetMvc\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj", "{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEBook.UM.NETFramework", "src\client\AspNetMvc\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj", "{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.NETFramework.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.NETFramework.SimpleInjector\ONEbook.UM.NETFramework.SimpleInjector.csproj", "{A0D04789-3726-4645-AAD2-009E6F58A8C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.NETFramework.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.NETFramework.SimpleInjector\ONEbook.UM.NETFramework.SimpleInjector.csproj", "{A0D04789-3726-4645-AAD2-009E6F58A8C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.ConsoleApp", "demo\ONEbook.UM.ConsoleApp\ONEbook.UM.ConsoleApp.csproj", "{3357CEEB-152B-45D4-A2C4-994683DBCF69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Transport.OldCaching", "src\client\ONEbook.UM.Transport.OldCaching\ONEbook.UM.Transport.OldCaching.csproj", "{D152566E-2060-42BC-90DE-CBE300200AF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +128,14 @@ Global
 		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3357CEEB-152B-45D4-A2C4-994683DBCF69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3357CEEB-152B-45D4-A2C4-994683DBCF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3357CEEB-152B-45D4-A2C4-994683DBCF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3357CEEB-152B-45D4-A2C4-994683DBCF69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D152566E-2060-42BC-90DE-CBE300200AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D152566E-2060-42BC-90DE-CBE300200AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D152566E-2060-42BC-90DE-CBE300200AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D152566E-2060-42BC-90DE-CBE300200AF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,10 +161,12 @@ Global
 		{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
 		{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
 		{A0D04789-3726-4645-AAD2-009E6F58A8C3} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
+		{3357CEEB-152B-45D4-A2C4-994683DBCF69} = {AE8C06BA-F2B3-478B-82D0-9F28AA5D3EE8}
+		{D152566E-2060-42BC-90DE-CBE300200AF1} = {6570AC60-D386-4D67-BD08-37016EE729FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
-		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 	EndGlobalSection
 EndGlobal

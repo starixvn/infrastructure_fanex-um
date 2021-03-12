@@ -22,6 +22,7 @@ namespace ONEbook.UM.Site.Controllers
                       UMClientManager.HttpContext);
         }
 
+        [CheckUMFilter]
         public async Task<ActionResult> Login()
         {
             var isUM = await _maintenanceService.IsUnderMaintenanceAsync();
