@@ -85,11 +85,11 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ONELab.UMService.Common, Version=1.0.17338.843, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\ONELab.UMService.1.0.17338.843\lib\net40\ONELab.UMService.Common.dll</HintPath>
+    <Reference Include="ONELab.UMService.Common, Version=1.0.21151.1321, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ONELab.UMService.1.0.21151.1321\lib\net40\ONELab.UMService.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ONELab.UMService.UMClient, Version=1.0.17338.843, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\ONELab.UMService.1.0.17338.843\lib\net40\ONELab.UMService.UMClient.dll</HintPath>
+    <Reference Include="ONELab.UMService.UMClient, Version=1.0.21151.1321, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\ONELab.UMService.1.0.21151.1321\lib\net40\ONELab.UMService.UMClient.dll</HintPath>
     </Reference>
     <Reference Include="SimpleInjector, Version=5.0.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\SimpleInjector.5.0.0\lib\net461\SimpleInjector.dll</HintPath>
