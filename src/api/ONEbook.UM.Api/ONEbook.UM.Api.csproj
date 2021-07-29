@@ -129,9 +129,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="UMControllerLibrary, Version=1.0.1872.836, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\UMControllerLibrary.1.0.1872.836\lib\net40\UMControllerLibrary.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -143,6 +140,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Configurations\UnderMaintenanceApiConfiguration.cs" />
+    <Compile Include="Constants\Sites.cs" />
     <Compile Include="Controllers\TokenController.cs" />
     <Compile Include="Controllers\UnderMaintenanceController.cs" />
     <Compile Include="Filters\GlobalExceptionFilter.cs" />

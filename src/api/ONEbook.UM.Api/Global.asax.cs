@@ -7,7 +7,6 @@
     using ONEbook.UM.Api.Services;
     using SimpleInjector;
     using SimpleInjector.Integration.WebApi;
-    using Sunplus.UMControllerLibrary;
 
     public class WebApiApplication : System.Web.HttpApplication
     {
@@ -21,7 +20,6 @@
             container.Register<IUMControlAdapter, UMControlAdapter>(Lifestyle.Singleton);
             container.Register<IUMTokenService, UMTokenService>(Lifestyle.Singleton);
             container.Register<IDateTimeHelper, DateTimeHelper>(Lifestyle.Singleton);
-            container.RegisterInstance(new UMBusiness());
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
             container.Verify();
             GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);

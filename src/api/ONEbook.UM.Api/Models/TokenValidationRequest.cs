@@ -1,7 +1,7 @@
-﻿namespace ONEbook.UM.Api.Models
-{
-    using Sunplus.UMControllerLibrary;
+﻿using ONEbook.UM.Api.Constants;
 
+namespace ONEbook.UM.Api.Models
+{
     public class TokenValidationRequest
     {
         public Sites SiteId { get; set; }

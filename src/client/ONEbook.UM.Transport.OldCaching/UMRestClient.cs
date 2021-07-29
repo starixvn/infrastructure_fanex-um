@@ -10,7 +10,6 @@
     using Configurations;
     using Helpers;
     using Newtonsoft.Json;
-    using ONEbook.UM.Helpers;
 
     public class UMRestClient : IUMRestClient, IDisposable
     {

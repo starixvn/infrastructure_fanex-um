@@ -5,7 +5,6 @@ namespace ONEbook.UM.Api.Tests.Services
     using System.Linq;
     using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Services;
-    using Sunplus.UMControllerLibrary;
     using Xunit;
 
     public class UMControlAdapterTests
@@ -26,7 +25,7 @@ namespace ONEbook.UM.Api.Tests.Services
 
         public UMControlAdapterTests()
         {
-            umControlAdapter = new UMControlAdapter(new UMBusiness());
+            umControlAdapter = new UMControlAdapter();
             ConfigurationManager.AppSettings["EnableFakeUM"] = "false";
             ConfigurationManager.AppSettings["MinutesCheckUM"] = "0,5,10,15,20,25,30,35,40,45,50,55";
         }

@@ -7,8 +7,8 @@
     using Configurations;
     using Fanex.Logging;
     using Models;
+    using ONEbook.UM.Api.Constants;
     using ONELab.UMService.UMClient;
-    using Sunplus.UMControllerLibrary;
 
     public interface IUMControlAdapter
     {
@@ -26,7 +26,7 @@
         /// </summary>
         private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
         {
-            { 8, 3000000 },
+            { 8, 3300000 },
             { 2000000, 2000000 },
             { 2000001, 2000001 },
             { 2000002, 2000002 },
@@ -35,13 +35,6 @@
             { 2000007, 2000007 },
             { 4100100, 4100300 },
         };
-
-        private readonly UMBusiness umBusiness;
-
-        public UMControlAdapter(UMBusiness umBusiness)
-        {
-            this.umBusiness = umBusiness;
-        }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
         {
@@ -59,24 +52,23 @@
 
             if (UnderMaintenanceApiConfiguration.Settings.EnableCheckUM)
             {
-                string timeFrom = string.Empty;
-                string timeTo = string.Empty;
-
-                var isUnderMaintenanceTime = umBusiness.isUnderMaintainence(
-                    (Sites)siteId,
-                    UnderMaintenanceApiConfiguration.Settings.UMAddress,
-                    ref timeFrom,
-                    ref timeTo);
-
-                if (isUnderMaintenanceTime)
+                var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime dateFrom, out DateTime dateTo, out int errorCode);
+                if (errorCode != 0)
                 {
+                    Logger.Log.Error($"Service error code: {errorCode}");
+                    return new UnderMaintenanceTime(false, "0:00", "0:00");
+                }
+
+                if (isUnderUM)
+                {
+                    var timeFrom = dateFrom.ToString("HH:mm");
+                    var timeTo = dateTo.ToString("HH:mm");
                     Logger.Log.Info(
                         $"Site: {siteId} \r\n" +
-                        $"IsUM: {isUnderMaintenanceTime} \r\n" +
                         $"From: {timeFrom} \r\n" +
                         $"To: {timeTo}");
 
-                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom, timeTo);
+                    return new UnderMaintenanceTime(isUnderUM, timeFrom, timeTo);
                 }
             }
 
