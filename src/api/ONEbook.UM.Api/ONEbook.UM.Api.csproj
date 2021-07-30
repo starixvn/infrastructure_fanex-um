@@ -162,6 +162,7 @@
   <ItemGroup>
     <Content Include="ONEbook.UM.Api.Debug.ruleset" />
     <Content Include="ONEbook.UM.Api.ruleset" />
+    <Content Include="deployment.ignore" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\Server124.pubxml" />
     <None Include="Web.Debug.config">
