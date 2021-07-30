@@ -26,14 +26,15 @@
         /// </summary>
         private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
         {
-            { 8, 3300000 },
-            { 2000000, 2000000 },
-            { 2000001, 2000001 },
-            { 2000002, 2000002 },
-            { 2000003, 2000003 },
-            { 2000005, 2000005 },
-            { 2000007, 2000007 },
-            { 4100100, 4100300 },
+            { (int)Sites.Agent, 3300000 },
+            { (int)Sites.AccountSite, (int)Sites.AccountSite },
+            { (int)Sites.LRF, (int)Sites.LRF },
+            { (int)Sites.OWA, (int)Sites.OWA },
+            { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
+            { (int)Sites.RMS, (int)Sites.RMS },
+            { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
+            { (int)Sites._789y, 4100300 },
+            { (int)Sites.Test, (int)Sites.Test },
         };
 
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)

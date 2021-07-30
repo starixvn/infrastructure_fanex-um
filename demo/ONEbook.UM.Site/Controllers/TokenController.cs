@@ -3,7 +3,6 @@
     using System;
     using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using ONEbook.UM.Site.Configurations;
@@ -12,12 +11,13 @@
     [UMSiteAuthorization]
     public class TokenController : Controller
     {
+        private const string Splash = "/";
         private static readonly HttpClient httpClient = CreateHttpClient();
 
         private static HttpClient CreateHttpClient()
         {
             var httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(UMSiteConfiguration.Settings.ServiceUri);
+            httpClient.BaseAddress = new Uri(UMSiteConfiguration.Settings.ServiceUri + Splash);
             httpClient.Timeout = TimeSpan.FromMinutes(10);
             return httpClient;
         }
@@ -25,7 +25,7 @@
         // GET: Token
         public async Task<ActionResult> Index()
         {
-            var endPoint = "api/token/GetAll";
+            var endPoint = "token/GetAll";
             var method = HttpMethod.Get;
             using (var request = new HttpRequestMessage(method, new Uri(endPoint, UriKind.Relative)))
             {

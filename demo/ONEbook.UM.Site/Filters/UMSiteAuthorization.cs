@@ -21,7 +21,7 @@
 
             if (currentUser.Identity.IsAuthenticated)
             {
-                var isUserAllowed = UMSiteConfiguration.AllowedLoginAccounts.Any<string>(accountName => currentUser.Identity.Name.Contains(accountName));
+                var isUserAllowed = UMSiteConfiguration.AllowedLoginAccounts.Any(accountName => currentUser.Identity.Name.Contains(accountName));
 
                 if (isUserAllowed)
                 {
