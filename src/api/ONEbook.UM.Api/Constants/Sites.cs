@@ -2,7 +2,6 @@
 {
     public enum Sites : int
     {
-        Agent = 8,
         AgentSite = 3300000,
         AccountSite = 2000000,
         LRF = 2000001,
