@@ -26,7 +26,8 @@
         /// </summary>
         private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
         {
-            { (int)Sites.Agent, 3300000 },
+            { (int)Sites.Agent, (int)Sites.AgentSite },
+            { (int)Sites.AgentSite, (int)Sites.AgentSite },
             { (int)Sites.AccountSite, (int)Sites.AccountSite },
             { (int)Sites.LRF, (int)Sites.LRF },
             { (int)Sites.OWA, (int)Sites.OWA },
