@@ -56,7 +56,7 @@
                 var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime dateFrom, out DateTime dateTo, out int errorCode);
                 if (errorCode != 0)
                 {
-                    Logger.Log.Error($"Service error code: {errorCode}");
+                    Logger.Log.Error($"Service errorCode: {errorCode}, siteId:{siteId}");
                     return new UnderMaintenanceTime(false, "0:00", "0:00");
                 }
 
