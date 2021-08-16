@@ -39,8 +39,8 @@ namespace ONEbook.UM.Api.Tests.Controllers
         public void Validate_RequestIsNotNull_ReturnIsValidTokenInfo()
         {
             // Arrange
-            var tokenRequest = new TokenValidationRequest { SiteId = Sites.Agent, Token = "1234" };
-            tokenService.IsValidUMToken(Arg.Is(Sites.Agent), Arg.Is("1234")).Returns(true);
+            var tokenRequest = new TokenValidationRequest { SiteId = Sites.AgentSite, Token = "1234" };
+            tokenService.IsValidUMToken(Arg.Is(Sites.AgentSite), Arg.Is("1234")).Returns(true);
 
             // Act
             var response = controller.Validate(tokenRequest);
@@ -54,7 +54,7 @@ namespace ONEbook.UM.Api.Tests.Controllers
         public void GetAll_Always_GetAllUMTokens()
         {
             // Arrange
-            var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.Agent, new SiteToken { SiteId = 3300000, Token = "1234" } } };
+            var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.AgentSite, new SiteToken { SiteId = 3300000, Token = "1234" } } };
             tokenService.GetAllUMTokens().Returns(siteTokens);
 
             // Act
