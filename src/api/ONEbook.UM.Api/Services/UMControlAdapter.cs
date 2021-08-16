@@ -54,7 +54,7 @@
             if (UnderMaintenanceApiConfiguration.Settings.EnableCheckUM)
             {
                 var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime dateFrom, out DateTime dateTo, out int errorCode);
-                if (errorCode != 0)
+                if (errorCode != Clients.SUCCESS_ECODE && errorCode != Clients.NO_FOUND_ECODE)
                 {
                     Logger.Log.Error($"Service errorCode: {errorCode}, siteId:{siteId}");
                     return new UnderMaintenanceTime(false, "0:00", "0:00");
