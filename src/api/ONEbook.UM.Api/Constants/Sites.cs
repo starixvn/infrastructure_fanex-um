@@ -2,7 +2,9 @@
 {
     public enum Sites : int
     {
-        AgentSite = 3300000,
+        MBCAgencySite = 3100000,
+        IndoAgencySite = 3200000,
+        _789yAgencySite = 3300000,
         AccountSite = 2000000,
         LRF = 2000001,
         OWA = 2000002,

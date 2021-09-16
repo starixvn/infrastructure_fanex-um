@@ -27,7 +27,7 @@ namespace ONEbook.UM.Api.Tests.Services
         public void IsValidUMToken_TokenIsNotValid_ReturnFalse()
         {
             // Act
-            var isValid = umTokenService.IsValidUMToken(Sites.AgentSite, "12345");
+            var isValid = umTokenService.IsValidUMToken(Sites._789yAgencySite, "12345");
 
             // Assert
             Assert.False(isValid);
@@ -37,7 +37,7 @@ namespace ONEbook.UM.Api.Tests.Services
         public void IsValidUMToken_TokenIsValid_ReturnTrue()
         {
             // Act
-            var isValid = umTokenService.IsValidUMToken(Sites.AgentSite, "dhgGhMKoWdcssjrdyo40QQ2");
+            var isValid = umTokenService.IsValidUMToken(Sites._789yAgencySite, "dhgGhMKoWdcssjrdyo40QQ2");
 
             // Assert
             Assert.True(isValid);
@@ -47,7 +47,7 @@ namespace ONEbook.UM.Api.Tests.Services
         public void GetUMToken_Alwasy_GenerateToken()
         {
             // Act
-            var actualToken = umTokenService.GetUMToken(Sites.AgentSite);
+            var actualToken = umTokenService.GetUMToken(Sites._789yAgencySite);
 
             // Assert
             Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualToken);
@@ -60,7 +60,7 @@ namespace ONEbook.UM.Api.Tests.Services
             var actualTokens = umTokenService.GetAllUMTokens();
 
             // Assert
-            Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualTokens[Sites.AgentSite].Token);
+            Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualTokens[Sites._789yAgencySite].Token);
             Assert.Equal(239, actualTokens.Count);
         }
     }
