@@ -36,6 +36,7 @@
             { (int)Sites.RMS, (int)Sites.RMS },
             { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
             { (int)Sites._789y, 4100300 },
+            { (int)Sites.Test, (int)Sites.Test },
         };
 
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
