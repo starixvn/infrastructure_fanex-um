@@ -124,7 +124,33 @@
         public Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenanceAsync()
             => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetScheduledUnderMaintenance");
 
-        public bool IsUnderMaintenance() => IsUnderMaintenanceAsync().Result;
+        public bool IsUnderMaintenance()
+        {
+            if (ByPassUm)
+            {
+                return false;
+            }
+
+            var token = httpContextHelper.GetValueFromQueryString(TokenName);
+            var underMaintenanceTime = GetUnderMaintenanceTime();
+            var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
+
+            if (nowIsNotUnderMaintenance)
+            {
+                return false;
+            }
+
+            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
+
+            if (isValidToken)
+            {
+                ByPassUm = true;
+
+                return false;
+            }
+
+            return true;
+        }
 
         public async Task<bool> IsUnderMaintenanceAsync()
         {
