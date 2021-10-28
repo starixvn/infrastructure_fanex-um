@@ -27,7 +27,7 @@ namespace ONEbook.UM.Api.Tests.Services
         public void IsValidUMToken_TokenIsNotValid_ReturnFalse()
         {
             // Act
-            var isValid = umTokenService.IsValidUMToken(Sites._789yAgencySite, "12345");
+            var isValid = umTokenService.IsValidUMToken(Sites.Test, "12345");
 
             // Assert
             Assert.False(isValid);
@@ -37,7 +37,7 @@ namespace ONEbook.UM.Api.Tests.Services
         public void IsValidUMToken_TokenIsValid_ReturnTrue()
         {
             // Act
-            var isValid = umTokenService.IsValidUMToken(Sites._789yAgencySite, "dhgGhMKoWdcssjrdyo40QQ2");
+            var isValid = umTokenService.IsValidUMToken(Sites.Test, "x3TsFOPGGunDZ8zlaCe--g2");
 
             // Assert
             Assert.True(isValid);
@@ -47,10 +47,10 @@ namespace ONEbook.UM.Api.Tests.Services
         public void GetUMToken_Alwasy_GenerateToken()
         {
             // Act
-            var actualToken = umTokenService.GetUMToken(Sites._789yAgencySite);
+            var actualToken = umTokenService.GetUMToken(Sites.Test);
 
             // Assert
-            Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualToken);
+            Assert.Equal("x3TsFOPGGunDZ8zlaCe--g2", actualToken);
         }
 
         [Fact]
@@ -60,8 +60,8 @@ namespace ONEbook.UM.Api.Tests.Services
             var actualTokens = umTokenService.GetAllUMTokens();
 
             // Assert
-            Assert.Equal("dhgGhMKoWdcssjrdyo40QQ2", actualTokens[Sites._789yAgencySite].Token);
-            Assert.Equal(239, actualTokens.Count);
+            Assert.Equal("x3TsFOPGGunDZ8zlaCe--g2", actualTokens[Sites.Test].Token);
+            Assert.Equal(14, actualTokens.Count);
         }
     }
 }

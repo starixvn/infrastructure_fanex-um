@@ -83,7 +83,7 @@ namespace ONEbook.UM.Tests.Services
         {
             // Arrange
             var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
-            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGet<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
 
             // Act
@@ -129,7 +129,7 @@ namespace ONEbook.UM.Tests.Services
         public async Task IsUnderMaintenanceAsync_IsValidToken_ReturnFalse()
         {
             // Arrange
-            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
             const string token = "1234556";
             restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
@@ -147,9 +147,9 @@ namespace ONEbook.UM.Tests.Services
         public void IsUnderMaintenance_IsValidToken_ReturnFalse()
         {
             // Arrange
-            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(true, "3:00", "4:00");
+            var expectedUnderMaintenanceTime = new UnderMaintenanceTime(false, "3:00", "4:00");
             const string token = "1234556";
-            restClient.ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
+            restClient.ExecuteGet<UnderMaintenanceTime>($"UnderMaintenance/get?siteId=1")
                 .Returns(expectedUnderMaintenanceTime);
             httpContextHelper.GetValueFromQueryString("UMToken").Returns(token);
             restClient.ExecuteGetAsync<bool>("/token/validate?SiteId=1&Token=1234556").Returns(true);

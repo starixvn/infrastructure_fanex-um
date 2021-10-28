@@ -54,7 +54,7 @@ namespace ONEbook.UM.Api.Tests.Controllers
         public void GetAll_Always_GetAllUMTokens()
         {
             // Arrange
-            var siteTokens = new Dictionary<Sites, SiteToken> { { Sites._789yAgencySite, new SiteToken { SiteId = 3300000, Token = "1234" } } };
+            var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.Test, new SiteToken { SiteId = 9999999, Token = "1234" } } };
             tokenService.GetAllUMTokens().Returns(siteTokens);
 
             // Act
@@ -62,7 +62,7 @@ namespace ONEbook.UM.Api.Tests.Controllers
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Contains("{\"ABB688\":{\"SiteId\":1,\"Token\":\"1234\"}}", response.Content.ReadAsStringAsync().Result);
+            Assert.Contains("{\"Test\":{\"SiteId\":9999999,\"Token\":\"1234\"}}", response.Content.ReadAsStringAsync().Result);
         }
     }
 }
