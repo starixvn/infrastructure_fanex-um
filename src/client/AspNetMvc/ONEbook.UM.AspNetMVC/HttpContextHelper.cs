@@ -7,32 +7,35 @@ namespace ONEbook.UM.Helpers
     {
         public string GetSession(string key)
         {
-            if (HttpContext.Current == null)
+            if (IsRequestInitialized())
             {
-                return string.Empty;
+                return HttpContext.Current.Session[key]?.ToString();
             }
 
-            return HttpContext.Current.Session[key]?.ToString();
+            return string.Empty;
         }
 
         public void SetSession(string key, string value)
         {
-            if (HttpContext.Current == null)
+            if (IsRequestInitialized())
             {
-                return;
+                HttpContext.Current.Session[key] = value;
             }
-
-            HttpContext.Current.Session[key] = value;
         }
 
         public string GetValueFromQueryString(string queryKey)
         {
-            if (HttpContext.Current == null)
+            if (IsRequestInitialized())
             {
-                return string.Empty;
+                return HttpContext.Current.Request.QueryString[queryKey];
             }
 
-            return HttpContext.Current.Request.QueryString[queryKey];
+            return string.Empty;
+        }
+
+        private bool IsRequestInitialized()
+        {
+            return HttpContext.Current != null && HttpContext.Current.Session != null;
         }
     }
 }
