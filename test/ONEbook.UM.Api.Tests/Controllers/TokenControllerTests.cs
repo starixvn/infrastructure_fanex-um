@@ -5,10 +5,10 @@ namespace ONEbook.UM.Api.Tests.Controllers
     using System.Net.Http;
     using System.Web.Http;
     using NSubstitute;
+    using ONEbook.UM.Api.Constants;
     using ONEbook.UM.Api.Controllers;
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
-    using Sunplus.UMControllerLibrary;
     using Xunit;
 
     public class TokenControllerTests
@@ -39,8 +39,8 @@ namespace ONEbook.UM.Api.Tests.Controllers
         public void Validate_RequestIsNotNull_ReturnIsValidTokenInfo()
         {
             // Arrange
-            var tokenRequest = new TokenValidationRequest { SiteId = Sites.ABB688, Token = "1234" };
-            tokenService.IsValidUMToken(Arg.Is(Sites.ABB688), Arg.Is("1234")).Returns(true);
+            var tokenRequest = new TokenValidationRequest { SiteId = Sites._789yAgencySite, Token = "1234" };
+            tokenService.IsValidUMToken(Arg.Is(Sites._789yAgencySite), Arg.Is("1234")).Returns(true);
 
             // Act
             var response = controller.Validate(tokenRequest);
@@ -54,7 +54,7 @@ namespace ONEbook.UM.Api.Tests.Controllers
         public void GetAll_Always_GetAllUMTokens()
         {
             // Arrange
-            var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.ABB688, new SiteToken { SiteId = 1, Token = "1234" } } };
+            var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.Test, new SiteToken { SiteId = 9999999, Token = "1234" } } };
             tokenService.GetAllUMTokens().Returns(siteTokens);
 
             // Act
@@ -62,7 +62,7 @@ namespace ONEbook.UM.Api.Tests.Controllers
 
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Contains("{\"ABB688\":{\"SiteId\":1,\"Token\":\"1234\"}}", response.Content.ReadAsStringAsync().Result);
+            Assert.Contains("{\"Test\":{\"SiteId\":9999999,\"Token\":\"1234\"}}", response.Content.ReadAsStringAsync().Result);
         }
     }
 }

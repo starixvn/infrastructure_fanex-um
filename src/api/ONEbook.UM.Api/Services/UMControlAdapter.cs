@@ -7,8 +7,8 @@
     using Configurations;
     using Fanex.Logging;
     using Models;
+    using ONEbook.UM.Api.Constants;
     using ONELab.UMService.UMClient;
-    using Sunplus.UMControllerLibrary;
 
     public interface IUMControlAdapter
     {
@@ -26,14 +26,17 @@
         /// </summary>
         private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
         {
-            { 8, 3000000 },
-            { 2000000, 2000000 },
-            { 2000001, 2000001 },
-            { 2000002, 2000002 },
-            { 2000003, 2000003 },
-            { 2000005, 2000005 },
-            { 2000007, 2000007 },
-            { 4100100, 4100300 },
+            { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
+            { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
+            { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
+            { (int)Sites.AccountSite, (int)Sites.AccountSite },
+            { (int)Sites.LRF, (int)Sites.LRF },
+            { (int)Sites.OWA, (int)Sites.OWA },
+            { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
+            { (int)Sites.RMS, (int)Sites.RMS },
+            { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
+            { (int)Sites._789y, 4100300 },
+            { (int)Sites.Test, (int)Sites.Test },
         };
 
         public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
@@ -52,25 +55,23 @@
 
             if (UnderMaintenanceApiConfiguration.Settings.EnableCheckUM)
             {
-                string timeFrom = string.Empty;
-                string timeTo = string.Empty;
-                var umctrl = new UMBusiness();
-
-                var isUnderMaintenanceTime = umctrl.isUnderMaintainence(
-                    (Sites)siteId,
-                    UnderMaintenanceApiConfiguration.Settings.UMAddress,
-                    ref timeFrom,
-                    ref timeTo);
-
-                if (isUnderMaintenanceTime)
+                var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime dateFrom, out DateTime dateTo, out int errorCode);
+                if (errorCode != Clients.SUCCESS_ECODE && errorCode != Clients.NO_FOUND_ECODE)
                 {
+                    Logger.Log.Error($"Service errorCode: {errorCode}, siteId:{siteId}");
+                    return new UnderMaintenanceTime(false, "0:00", "0:00");
+                }
+
+                if (isUnderUM)
+                {
+                    var timeFrom = dateFrom.ToString("HH:mm");
+                    var timeTo = dateTo.ToString("HH:mm");
                     Logger.Log.Info(
                         $"Site: {siteId} \r\n" +
-                        $"IsUM: {isUnderMaintenanceTime} \r\n" +
                         $"From: {timeFrom} \r\n" +
                         $"To: {timeTo}");
 
-                    return new UnderMaintenanceTime(isUnderMaintenanceTime, timeFrom, timeTo);
+                    return new UnderMaintenanceTime(isUnderUM, timeFrom, timeTo);
                 }
             }
 

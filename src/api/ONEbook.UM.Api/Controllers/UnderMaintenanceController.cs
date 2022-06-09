@@ -3,20 +3,17 @@
     using System.Collections.Generic;
     using System.Web.Http;
     using Models;
+    using ONEbook.UM.Api.Filters;
     using Services;
 
+    //[HmacAuthorizationFilter]
     public class UnderMaintenanceController : ApiController
     {
         private readonly IUMControlAdapter underMaintenanceControlAdapter;
 
-        public UnderMaintenanceController()
-            : this(null)
-        {
-        }
-
         public UnderMaintenanceController(IUMControlAdapter underMaintenanceControlAdapter)
         {
-            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter ?? new UMControlAdapter();
+            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter;
         }
 
         public UnderMaintenanceTime Get(int siteId)

@@ -1,28 +1,29 @@
 ﻿namespace ONEbook.UM
 {
     using System;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
+    using Configurations;
+    using Helpers;
 
     public class UMClientManager
     {
-        private IUMClientConfiguration umClientConfig;
-        private IRestClient restClient;
+        private UMClientConfiguration clientConfigs;
+        private IUMRestClient restClient;
+        private IUMCacheService cacheService;
         private IHttpContextHelper httpContext;
         private Action<string> errorHandler;
 
-        private static UMClientManager CurrentInstance = new UMClientManager();
+        private static readonly UMClientManager CurrentInstance = new UMClientManager();
 
-        public static UMClientManager UseConfig(IUMClientConfiguration umClientConfig)
+        public static UMClientManager UseConfig(UMClientConfiguration clientConfigs)
         {
-            CurrentInstance.umClientConfig = umClientConfig ?? throw new ArgumentNullException(nameof(umClientConfig));
+            CurrentInstance.clientConfigs = clientConfigs ?? throw new ArgumentNullException(nameof(clientConfigs));
 
             return CurrentInstance;
         }
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
 
-        public UMClientManager UseRestClient(IRestClient restClient)
+        public UMClientManager UseRestClient(IUMRestClient restClient)
         {
             CurrentInstance.restClient = restClient ?? throw new ArgumentNullException(nameof(restClient));
 
@@ -36,6 +37,13 @@
             return CurrentInstance;
         }
 
+        public UMClientManager UseCacheService(IUMCacheService cacheService)
+        {
+            CurrentInstance.cacheService = cacheService ?? throw new ArgumentNullException(nameof(cacheService));
+
+            return CurrentInstance;
+        }
+
         public UMClientManager AddErrorHandler(Action<string> errorHandler)
         {
             CurrentInstance.errorHandler = errorHandler ?? throw new ArgumentNullException(nameof(errorHandler), "Error handler can not be null");
@@ -45,14 +53,16 @@
 
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
 
-        public static IUMClientConfiguration UMClientConfigs
-          => CurrentInstance.umClientConfig ?? throw new InvalidOperationException(nameof(CurrentInstance.umClientConfig));
+        public static UMClientConfiguration UMClientConfigs
+          => CurrentInstance.clientConfigs ?? throw new InvalidOperationException(nameof(CurrentInstance.clientConfigs));
 
-        public static IRestClient RestClient
+        public static IUMRestClient RestClient
             => CurrentInstance.restClient ?? throw new InvalidOperationException(nameof(CurrentInstance.restClient));
 
-        public static IHttpContextHelper HttpContext
-            => CurrentInstance.httpContext ?? throw new InvalidOperationException(nameof(CurrentInstance.httpContext));
+        public static IUMCacheService CacheService
+            => CurrentInstance.cacheService ?? throw new InvalidOperationException(nameof(CurrentInstance.cacheService));
+
+        public static IHttpContextHelper HttpContext => CurrentInstance.httpContext;
 
         public static Action<string> ErrorHandler => CurrentInstance.errorHandler;
     }

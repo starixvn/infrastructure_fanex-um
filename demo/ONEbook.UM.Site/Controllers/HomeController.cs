@@ -1,42 +1,43 @@
-﻿namespace ONEbook.UM.Site.Controllers
+﻿using ONEbook.UM.AspNetMVC.Filters;
+
+namespace ONEbook.UM.Site.Controllers
 {
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Newtonsoft.Json;
-    using ONEbook.UM.Services;
-    using UM.Filters;
+    using Services;
 
     [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly IMaintenanceService _maintenanceService;
 
-        public HomeController()
-            : this(null)
+        public HomeController(IMaintenanceService maintenanceService)
         {
+            _maintenanceService = maintenanceService
+                  ?? new MaintenanceService(
+                      UMClientManager.RestClient,
+                      UMClientManager.CacheService,
+                      UMClientManager.UMClientConfigs,
+                      UMClientManager.HttpContext);
         }
 
-        public HomeController(
-            IMaintenanceService maintenanceService)
-        {
-            _maintenanceService = maintenanceService ?? new MaintenanceService();
-        }
-
+        [CheckUMFilter]
         public async Task<ActionResult> Login()
         {
-            var isUM = await _maintenanceService.IsUnderMaintenance();
+            var isUM = await _maintenanceService.IsUnderMaintenanceAsync();
 
             var contentResult = new ContentResult();
 
             if (isUM)
             {
-                var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTime();
-                contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is in under maintenance "
+                var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTimeAsync();
+                contentResult.Content = $"Site is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
             else
             {
-                contentResult.Content = $"Site {UMClientManager.UMClientConfigs.SiteId} is not in under maintenance.";
+                contentResult.Content = $"Site is not in under maintenance.";
             }
 
             return contentResult;
@@ -78,7 +79,7 @@
 
         public async Task<ActionResult> RecheckIn()
         {
-            var isPassUM = !(await _maintenanceService.IsUnderMaintenance());
+            var isPassUM = !(await _maintenanceService.IsUnderMaintenanceAsync());
 
             var contentResult = new ContentResult();
             contentResult.Content = string.Format(
@@ -92,13 +93,13 @@
         public ActionResult GetUMInfo()
         {
             return Json(
-                _maintenanceService.GetUnderMaintenanceTime(),
+                _maintenanceService.GetUnderMaintenanceTimeAsync(),
                 JsonRequestBehavior.AllowGet);
         }
 
         public string GetScheduledUMInfo()
         {
-            return JsonConvert.SerializeObject(_maintenanceService.GetScheduledUnderMaintenance().GetAwaiter().GetResult());
+            return JsonConvert.SerializeObject(_maintenanceService.GetScheduledUnderMaintenanceAsync().GetAwaiter().GetResult());
         }
 
         [CheckUMFilter]

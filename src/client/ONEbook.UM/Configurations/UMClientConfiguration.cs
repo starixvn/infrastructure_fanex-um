@@ -1,30 +1,59 @@
 ﻿namespace ONEbook.UM.Configurations
 {
-    public interface IUMClientConfiguration
+    public sealed class UMClientConfiguration
     {
-#pragma warning disable S3996 // URI properties should not be strings
-        string ServiceUri { get; }
+        private const int DefaultResultCacheDuration = 60;
 
-        bool EnableCheckUM { get; }
+        public UMClientConfiguration()
+        {
+        }
 
-        string SecretKey { get; }
+        public UMClientConfiguration(
+            string serviceUri,
+            bool enableCheckUm,
+            string secretKey,
+            bool enableUnscheduledUm,
+            string umFrom,
+            string umTo,
+            string umPageUrl,
+            int siteId,
+            int resultCacheDuration,
+            string umLoggingCategory,
+            string errorUmPageUrl)
+        {
+            ServiceUri = serviceUri;
+            EnableCheckUM = enableCheckUm;
+            SecretKey = secretKey;
+            EnableUnscheduledUM = enableUnscheduledUm;
+            UMFrom = umFrom;
+            UMTo = umTo;
+            UMPageUrl = umPageUrl;
+            SiteId = siteId;
+            ResultCacheDuration = resultCacheDuration;
+            UMLoggingCategory = umLoggingCategory;
+            ErrorUMPageUrl = errorUmPageUrl;
+        }
 
-        bool EnableUnscheduledUM { get; }
+        public string ServiceUri { get; set; }
 
-        string UMFrom { get; }
+        public bool EnableCheckUM { get; set; } = true;
 
-        string UMTo { get; }
+        public string SecretKey { get; set; } = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=";
 
-        string UMPageUrl { get; }
+        public bool EnableUnscheduledUM { get; set; }
 
-        int SiteId { get; }
+        public string UMFrom { get; set; }
 
-        int ResultCacheDuration { get; }
+        public string UMTo { get; set; }
 
-        string UMLoggingCategory { get; }
+        public string UMPageUrl { get; set; } = "~/UserLogin/Common/Offline";
 
-        string ErrorUMPageUrl { get; }
+        public int SiteId { get; set; }
 
-#pragma warning restore S3996 // URI properties should not be strings
+        public int ResultCacheDuration { get; set; } = DefaultResultCacheDuration;
+
+        public string UMLoggingCategory { get; set; } = "ONEbook-UM";
+
+        public string ErrorUMPageUrl { get; set; }
     }
 }

@@ -4,6 +4,7 @@ namespace ONEbook.UM.Api.Tests.Services
     using System.Configuration;
     using System.Linq;
     using ONEbook.UM.Api.Configurations;
+    using ONEbook.UM.Api.Constants;
     using ONEbook.UM.Api.Services;
     using Xunit;
 
@@ -11,14 +12,17 @@ namespace ONEbook.UM.Api.Tests.Services
     {
         private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
         {
-            { 8, 3000000 },
-            { 2000000, 2000000 },
-            { 2000001, 2000001 },
-            { 2000002, 2000002 },
-            { 2000003, 2000003 },
-            { 2000005, 2000005 },
-            { 2000007, 2000007 },
-            { 4100100, 4100300 },
+            { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
+            { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
+            { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
+            { (int)Sites.AccountSite, (int)Sites.AccountSite },
+            { (int)Sites.LRF, (int)Sites.LRF },
+            { (int)Sites.OWA, (int)Sites.OWA },
+            { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
+            { (int)Sites.RMS, (int)Sites.RMS },
+            { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
+            { (int)Sites._789y, 4100300 },
+            { (int)Sites.Test, (int)Sites.Test },
         };
 
         private readonly IUMControlAdapter umControlAdapter;
@@ -61,40 +65,6 @@ namespace ONEbook.UM.Api.Tests.Services
             Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
             Assert.Equal("3:00", actualUnderMaintenance.From);
             Assert.Equal("4:00", actualUnderMaintenance.To);
-        }
-
-        [Fact]
-        public void GetUnderMaintenanceTime_EnableUM_ReturnUM()
-        {
-            // Arrange
-            UnderMaintenanceApiConfiguration.Settings = new UnderMaintenanceApiConfiguration
-            {
-                EnableCheckUM = true
-            };
-
-            // Act
-            var actualUnderMaintenance = umControlAdapter.GetUnderMaintenanceTime(1);
-
-            // Assert
-            Assert.False(actualUnderMaintenance.IsUnderMaintenanceTime);
-            Assert.Equal("0:00", actualUnderMaintenance.From);
-            Assert.Equal("0:00", actualUnderMaintenance.To);
-        }
-
-        [Fact]
-        public void GetAllUnderMaintenanceTime_Always_ReturnAllUM()
-        {
-            // Arrange
-            UnderMaintenanceApiConfiguration.Settings = new UnderMaintenanceApiConfiguration
-            {
-                EnableCheckUM = true
-            };
-
-            // Act
-            var actualUnderMaintenances = umControlAdapter.GetAllUnderMaintenanceTime();
-
-            // Assert
-            Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
         }
 
         [Fact]

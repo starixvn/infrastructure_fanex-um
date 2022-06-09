@@ -1,44 +1,38 @@
-using Microsoft.Extensions.Configuration;
-using NSubstitute;
-using ONEbook.UM.AspNetCore.Configuration;
-using System;
-using Xunit;
-
 namespace ONEbook.UM.AspNetCore.Tests.Configuration
 {
+    using Configurations;
+    using Microsoft.Extensions.Configuration;
+    using Xunit;
+
     public class UMClientConfigurationTests
     {
         private readonly IConfiguration subConfiguration;
 
         public UMClientConfigurationTests()
         {
-            subConfiguration = Substitute.For<IConfiguration>();
+            subConfiguration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
         }
 
         private UMClientConfiguration CreateUMClientConfiguration()
         {
-            return new UMClientConfiguration(subConfiguration);
+            return new UMClientConfiguration().Initialize(subConfiguration);
         }
 
         [Fact]
         public void ServiceUri_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:ServiceUri"].Returns("http://www.google.com");
-
             // Act
             var serviceUrl = CreateUMClientConfiguration().ServiceUri;
 
             // Assert
-            Assert.Equal("http://www.google.com", serviceUrl);
+            Assert.Equal("http://ha.nexdev.net:8889/api", serviceUrl);
         }
 
         [Fact]
         public void EnableCheckUM_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:EnableCheckUM"].Returns("true");
-
             // Act
             var enableCheckUM = CreateUMClientConfiguration().EnableCheckUM;
 
@@ -49,35 +43,26 @@ namespace ONEbook.UM.AspNetCore.Tests.Configuration
         [Fact]
         public void SecretKey_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:SecretKey"].Returns("12345");
-
             // Act
             var secretKey = CreateUMClientConfiguration().SecretKey;
 
             // Assert
-            Assert.Equal("12345", secretKey);
+            Assert.Equal("9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=", secretKey);
         }
 
         [Fact]
         public void EnableUnscheduledUM_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:EnableUnscheduledUM"].Returns("true");
-
             // Act
             var actualValue = CreateUMClientConfiguration().EnableUnscheduledUM;
 
             // Assert
-            Assert.True(actualValue);
+            Assert.False(actualValue);
         }
 
         [Fact]
         public void UMFrom_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:UMFrom"].Returns("3:00");
-
             // Act
             var actualValue = CreateUMClientConfiguration().UMFrom;
 
@@ -88,48 +73,36 @@ namespace ONEbook.UM.AspNetCore.Tests.Configuration
         [Fact]
         public void UMTo_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:UMTo"].Returns("3:00");
-
             // Act
             var actualValue = CreateUMClientConfiguration().UMTo;
 
             // Assert
-            Assert.Equal("3:00", actualValue);
+            Assert.Equal("4:00", actualValue);
         }
 
         [Fact]
         public void UMPageUrl_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:UMPageUrl"].Returns("12345");
-
             // Act
             var actualValue = CreateUMClientConfiguration().UMPageUrl;
 
             // Assert
-            Assert.Equal("12345", actualValue);
+            Assert.Equal("/UserLogin/Common/Offline", actualValue);
         }
 
         [Fact]
         public void SiteId_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:SiteId"].Returns("12345");
-
             // Act
             var actualValue = CreateUMClientConfiguration().SiteId;
 
             // Assert
-            Assert.Equal(12345, actualValue);
+            Assert.Equal(2000000, actualValue);
         }
 
         [Fact]
         public void ResultCacheDuration_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:ResultCacheDuration"].Returns("60");
-
             // Act
             var actualValue = CreateUMClientConfiguration().ResultCacheDuration;
 
@@ -140,27 +113,21 @@ namespace ONEbook.UM.AspNetCore.Tests.Configuration
         [Fact]
         public void UMLoggingCategory_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:UMLoggingCategory"].Returns("UM");
-
             // Act
             var actualValue = CreateUMClientConfiguration().UMLoggingCategory;
 
             // Assert
-            Assert.Equal("UM", actualValue);
+            Assert.Equal("ONEbook-UM", actualValue);
         }
 
         [Fact]
         public void ErrorUMPageUrl_Always_GetValueFromConfig()
         {
-            // Arrange
-            subConfiguration["ONEbook.UM:ErrorUMPageUrl"].Returns("UM");
-
             // Act
             var actualValue = CreateUMClientConfiguration().ErrorUMPageUrl;
 
             // Assert
-            Assert.Equal("UM", actualValue);
+            Assert.Equal("/Error", actualValue);
         }
     }
 }

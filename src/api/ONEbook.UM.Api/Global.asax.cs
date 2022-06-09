@@ -3,6 +3,10 @@
     using System;
     using System.Web.Http;
     using Fanex.Logging;
+    using ONEbook.UM.Api.Helpers;
+    using ONEbook.UM.Api.Services;
+    using SimpleInjector;
+    using SimpleInjector.Integration.WebApi;
 
     public class WebApiApplication : System.Web.HttpApplication
     {
@@ -11,6 +15,14 @@
         protected void Application_Start()
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            var container = new Container();
+            container.Register<IUMControlAdapter, UMControlAdapter>(Lifestyle.Singleton);
+            container.Register<IUMTokenService, UMTokenService>(Lifestyle.Singleton);
+            container.Register<IDateTimeHelper, DateTimeHelper>(Lifestyle.Singleton);
+            container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
+            container.Verify();
+            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
         }
 
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static

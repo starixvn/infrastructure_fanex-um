@@ -7,23 +7,18 @@
     using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
 
-    [HmacAuthorizationFilter]
+    //[HmacAuthorizationFilter]
     public class TokenController : ApiController
     {
         private readonly IUMTokenService underMaintenanceTokenService;
 
-        public TokenController()
-            : this(null)
-        {
-        }
-
         public TokenController(IUMTokenService underMaintenanceTokenService)
         {
-            this.underMaintenanceTokenService = underMaintenanceTokenService ?? new UMTokenService();
+            this.underMaintenanceTokenService = underMaintenanceTokenService;
         }
 
         [HttpGet]
-        public HttpResponseMessage Validate([FromUri]TokenValidationRequest request)
+        public HttpResponseMessage Validate([FromUri] TokenValidationRequest request)
         {
             if (request == null)
             {

@@ -11,7 +11,19 @@
 
     public class IPHelperImpl : IPHelper
     {
+        private static string machineIP;
+
         public string GetMachineIP()
+        {
+            if (string.IsNullOrEmpty(machineIP))
+            {
+                machineIP = InternalGetMachineIP();
+            }
+
+            return machineIP;
+        }
+
+        private static string InternalGetMachineIP()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
 

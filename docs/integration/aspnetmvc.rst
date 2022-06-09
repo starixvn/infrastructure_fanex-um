@@ -33,19 +33,24 @@ Please add these code lines to your *Global.asax* file
 
 .. code:: csharp
 
-       var umConfig = new UMClientConfiguration();
-       UMClientManager
-           .UseConfig(umConfig)
-           .UseRestClient(new RestClient(umConfig))
-           .UseHttpContext(new HttpContextHelper())
-           .AddErrorHandler(errorHandler);
+        var umConfig = new UMClientConfiguration().Initialize();
+
+        UMClientManager
+            .UseConfig(umConfig)
+            .UseCacheService(new UMCacheService(new CacheService()))
+            .UseRestClient(new UMRestClient(umConfig))
+            .UseHttpContext(new HttpContextHelper());
 
 Usage
 ^^^^^
 
 .. code:: csharp
 
-       var maintenanceService = new MaintenanceService(); 
+       var maintenanceService = new MaintenanceService(
+                      UMClientManager.RestClient,
+                      UMClientManager.CacheService,
+                      UMClientManager.UMClientConfigs,
+                      UMClientManager.HttpContext);
        var underMaintenanceInfo = await maintenanceService.GetUnderMaintenance
 
 .. _ONEbook.UM.AspNetCore: http://nuget.nexdev.net/packages/ONEbook.UM.AspNetCore/

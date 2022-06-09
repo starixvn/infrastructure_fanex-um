@@ -1,10 +1,10 @@
 namespace ONEbook.UM.Tests
 {
-    using NSubstitute;
-    using ONEbook.UM;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
     using System;
+    using Configurations;
+    using NSubstitute;
+    using ONEbook.UM.Helpers;
+    using UM;
     using Xunit;
 
     public class UMClientManagerTests
@@ -20,7 +20,7 @@ namespace ONEbook.UM.Tests
         public void UseConfig_ConfigIsNotNull_SetToCurrentInstance()
         {
             // Act
-            var config = Substitute.For<IUMClientConfiguration>();
+            var config = new UMClientConfiguration();
             UMClientManager.UseConfig(config);
 
             // Assert
@@ -31,15 +31,16 @@ namespace ONEbook.UM.Tests
         public void UseRestClient_RestClientIsNull_ThrowException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => UMClientManager.UseConfig(Substitute.For<IUMClientConfiguration>()).UseRestClient(null));
+            Assert.Throws<ArgumentNullException>(()
+                => UMClientManager.UseConfig(new UMClientConfiguration()).UseRestClient(null));
         }
 
         [Fact]
         public void UseRestClient_RestClientIsNotNull_SetToCurrentInstance()
         {
             // Arrange
-            var client = Substitute.For<IRestClient>();
-            UMClientManager.UseConfig(Substitute.For<IUMClientConfiguration>()).UseRestClient(client);
+            var client = Substitute.For<IUMRestClient>();
+            UMClientManager.UseConfig(new UMClientConfiguration()).UseRestClient(client);
 
             // Assert
             Assert.Equal(client, UMClientManager.RestClient);
@@ -49,7 +50,8 @@ namespace ONEbook.UM.Tests
         public void UseHttpContext_HttpContextIsNull_ThrowException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => UMClientManager.UseConfig(Substitute.For<IUMClientConfiguration>()).UseHttpContext(null));
+            Assert.Throws<ArgumentNullException>(()
+                => UMClientManager.UseConfig(new UMClientConfiguration()).UseHttpContext(null));
         }
 
         [Fact]
@@ -57,7 +59,7 @@ namespace ONEbook.UM.Tests
         {
             // Arrange
             var httpContext = Substitute.For<IHttpContextHelper>();
-            UMClientManager.UseConfig(Substitute.For<IUMClientConfiguration>()).UseHttpContext(httpContext);
+            UMClientManager.UseConfig(new UMClientConfiguration()).UseHttpContext(httpContext);
 
             // Assert
             Assert.Equal(httpContext, UMClientManager.HttpContext);
@@ -67,14 +69,15 @@ namespace ONEbook.UM.Tests
         public void AddErrorHandler_ErrorHandlerIsNull_ThrowException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => UMClientManager.UseConfig(Substitute.For<IUMClientConfiguration>()).AddErrorHandler(null));
+            Assert.Throws<ArgumentNullException>(()
+                => UMClientManager.UseConfig(new UMClientConfiguration()).AddErrorHandler(null));
         }
 
         [Fact]
         public void AddErrorHandler_ErrorHandlerIsNotNull_SetToProperty()
         {
             // Arrange
-            UMClientManager.UseConfig(Substitute.For<IUMClientConfiguration>()).AddErrorHandler(HandleError);
+            UMClientManager.UseConfig(new UMClientConfiguration()).AddErrorHandler(HandleError);
 
             // Assert
             Assert.Equal(HandleError, UMClientManager.ErrorHandler);

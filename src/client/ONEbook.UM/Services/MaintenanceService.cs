@@ -3,84 +3,148 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Fanex.Caching;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
-    using ONEbook.UM.Models;
+    using Configurations;
+    using Helpers;
+    using Models;
 
     public interface IMaintenanceService
     {
-        Task<bool> IsUnderMaintenance();
+        UnderMaintenanceTime GetUnderMaintenanceTime();
 
-        Task<UnderMaintenanceTime> GetUnderMaintenanceTime();
+        Task<UnderMaintenanceTime> GetUnderMaintenanceTimeAsync();
 
-        Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime();
+        Dictionary<int, UnderMaintenanceTime> GetAllUnderMaintenanceTime();
 
-        Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenance();
+        Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTimeAsync();
+
+        Dictionary<int, UnderMaintenanceTime> GetScheduledUnderMaintenance();
+
+        Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenanceAsync();
+
+        bool IsUnderMaintenance();
+
+        Task<bool> IsUnderMaintenanceAsync();
     }
 
     public class MaintenanceService : IMaintenanceService
     {
         private const string TokenName = "UMToken";
-        private const string ByPassUMSessionKey = "ONEbook.UM.ByPassUM";
-        private readonly IUMControlAdapter underMaintenanceControlAdapter;
-        private readonly IRestClient restClient;
+        private const string ByPassUmSessionKey = "ONEbook.UM.ByPassUM";
+        private const string SiteUmCacheKey = "ONEbook.UM.Site.{0}";
+        private readonly IUMCacheService cacheService;
+        private readonly IUMRestClient restClient;
         private readonly IHttpContextHelper httpContextHelper;
-        private readonly IUMClientConfiguration configuration;
-
-        public MaintenanceService()
-         : this(null, null, null, null, null)
-        {
-        }
+        private readonly UMClientConfiguration configuration;
 
         public MaintenanceService(
-            IUMControlAdapter underMaintenanceControlAdapter,
-            IRestClient restClient,
-            string clientIP,
-            IHttpContextHelper httpContextHelper,
-            IUMClientConfiguration configuration)
+            IUMRestClient restClient,
+            IUMCacheService cacheService,
+            UMClientConfiguration configuration,
+            IHttpContextHelper httpContextHelper = null)
         {
             this.configuration = configuration ?? UMClientManager.UMClientConfigs;
             this.restClient = restClient ?? UMClientManager.RestClient;
             this.httpContextHelper = httpContextHelper ?? UMClientManager.HttpContext;
-
-            this.underMaintenanceControlAdapter = underMaintenanceControlAdapter
-               ?? new UMControlAdapter(new CacheService(), this.restClient, this.configuration);
+            this.cacheService = cacheService;
         }
 
-        public bool ByPassUM
+        public bool ByPassUm
         {
             get
             {
-                var isByPassUM = httpContextHelper.GetSession(ByPassUMSessionKey);
+                var isByPassUm = httpContextHelper?.GetSession(ByPassUmSessionKey);
 
-                return !string.IsNullOrEmpty(isByPassUM) && isByPassUM == "1";
+                return !string.IsNullOrEmpty(isByPassUm) && isByPassUm == "1";
             }
-
-            private set
+            set
             {
-                httpContextHelper.SetSession(ByPassUMSessionKey, value ? "1" : "0");
+                httpContextHelper?.SetSession(ByPassUmSessionKey, value ? "1" : "0");
             }
         }
 
-        public Task<UnderMaintenanceTime> GetUnderMaintenanceTime()
-           => underMaintenanceControlAdapter.GetUnderMaintenanceTime();
-
-        public async Task<bool> IsUnderMaintenance()
+        public UnderMaintenanceTime GetUnderMaintenanceTime()
         {
-            var nowIsNotUnderMaintenance = await NowIsNotUnderMaintenance().ConfigureAwait(false);
+            if (configuration.EnableUnscheduledUM)
+            {
+                return new UnderMaintenanceTime(true, configuration.UMFrom, configuration.UMTo);
+            }
 
-            if (nowIsNotUnderMaintenance || ByPassUM)
+            if (configuration.EnableCheckUM)
+            {
+                var cacheKey = string.Format(SiteUmCacheKey, configuration.SiteId);
+                var umInfo = cacheService.Get<UnderMaintenanceTime>(cacheKey);
+
+                if (umInfo == null)
+                {
+                    umInfo = GetUnderMaintenance();
+
+                    cacheService.Set(cacheKey, umInfo, TimeSpan.FromSeconds(configuration.ResultCacheDuration));
+                }
+
+                return umInfo;
+            }
+
+            return new UnderMaintenanceTime(false, "0:00", "0:00");
+        }
+
+        public async Task<UnderMaintenanceTime> GetUnderMaintenanceTimeAsync()
+        {
+            if (configuration.EnableUnscheduledUM)
+            {
+                return new UnderMaintenanceTime(true, configuration.UMFrom, configuration.UMTo);
+            }
+
+            if (configuration.EnableCheckUM)
+            {
+                var cacheKey = string.Format(SiteUmCacheKey, configuration.SiteId);
+                var umInfo = cacheService.Get<UnderMaintenanceTime>(cacheKey);
+
+                if (umInfo == null)
+                {
+                    umInfo = await GetUnderMaintenanceAsync().ConfigureAwait(false);
+
+                    cacheService.Set(cacheKey, umInfo, TimeSpan.FromSeconds(configuration.ResultCacheDuration));
+                }
+
+                return umInfo;
+            }
+
+            return new UnderMaintenanceTime(false, "0:00", "0:00");
+        }
+
+        public Dictionary<int, UnderMaintenanceTime> GetAllUnderMaintenanceTime()
+            => restClient.ExecuteGet<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetAll");
+
+        public Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTimeAsync()
+            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetAll");
+
+        public Dictionary<int, UnderMaintenanceTime> GetScheduledUnderMaintenance()
+            => restClient.ExecuteGet<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetScheduledUnderMaintenance");
+
+        public Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenanceAsync()
+            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("UnderMaintenance/GetScheduledUnderMaintenance");
+
+        public bool IsUnderMaintenance()
+        {
+            if (ByPassUm)
             {
                 return false;
             }
 
             var token = httpContextHelper.GetValueFromQueryString(TokenName);
-            bool isValidToken = !string.IsNullOrEmpty(token) && await IsTokenValid(token).ConfigureAwait(false);
+            var underMaintenanceTime = GetUnderMaintenanceTime();
+            var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
+
+            if (nowIsNotUnderMaintenance)
+            {
+                return false;
+            }
+
+            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
 
             if (isValidToken)
             {
-                ByPassUM = true;
+                ByPassUm = true;
 
                 return false;
             }
@@ -88,40 +152,91 @@
             return true;
         }
 
-        public Task<Dictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime()
-           => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetAll");
-
-        public Task<Dictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenance()
-            => restClient.ExecuteGetAsync<Dictionary<int, UnderMaintenanceTime>>("/UnderMaintenance/GetScheduledUnderMaintenance");
-
-        private async Task<bool> NowIsNotUnderMaintenance()
+        public async Task<bool> IsUnderMaintenanceAsync()
         {
-            var underMaintenanceTime = await underMaintenanceControlAdapter.GetUnderMaintenanceTime().ConfigureAwait(false);
+            if (ByPassUm)
+            {
+                return false;
+            }
 
-            return !underMaintenanceTime.IsUnderMaintenanceTime;
+            var token = httpContextHelper.GetValueFromQueryString(TokenName);
+            var underMaintenanceTime = await GetUnderMaintenanceTimeAsync().ConfigureAwait(false);
+            var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
+
+            if (nowIsNotUnderMaintenance)
+            {
+                return false;
+            }
+
+            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
+
+            if (isValidToken)
+            {
+                ByPassUm = true;
+
+                return false;
+            }
+
+            return true;
         }
 
-        private async Task<bool> IsTokenValid(string token)
+        private bool IsTokenValid(string token)
         {
             var isTokenValid = false;
 
             try
             {
-                isTokenValid = await restClient.ExecuteGetAsync<bool>($"/token/validate?SiteId={configuration.SiteId}&Token={token}").ConfigureAwait(false);
+                isTokenValid = restClient
+                    .ExecuteGet<bool>($"token/validate?SiteId={configuration.SiteId}&Token={token}");
             }
             catch (Exception ex)
             {
-                if (UMClientManager.ErrorHandler != null)
-                {
-                    UMClientManager.ErrorHandler.Invoke(ex.Message);
-                }
-                else
-                {
-                    throw;
-                }
+                HandleError(ex);
             }
 
             return isTokenValid;
+        }
+
+        private static void HandleError(Exception ex)
+        {
+            if (UMClientManager.ErrorHandler != null)
+            {
+                UMClientManager.ErrorHandler.Invoke(ex.Message);
+            }
+            else
+            {
+                throw ex;
+            }
+        }
+
+        internal UnderMaintenanceTime GetUnderMaintenance()
+        {
+            try
+            {
+                return restClient.ExecuteGet<UnderMaintenanceTime>($"UnderMaintenance/get?siteId={configuration.SiteId}");
+            }
+            catch (Exception ex)
+            {
+                UMClientManager.ErrorHandler?.Invoke(ex.Message);
+
+                return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
+            }
+        }
+
+        internal async Task<UnderMaintenanceTime> GetUnderMaintenanceAsync()
+        {
+            try
+            {
+                return await restClient
+                    .ExecuteGetAsync<UnderMaintenanceTime>($"UnderMaintenance/get?siteId={configuration.SiteId}")
+                    .ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                UMClientManager.ErrorHandler?.Invoke(ex.Message);
+
+                return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
+            }
         }
     }
 }

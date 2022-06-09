@@ -8,9 +8,9 @@
     using System.Web;
     using Fanex.Common.Helper;
     using ONEbook.UM.Api.Configurations;
+    using ONEbook.UM.Api.Constants;
     using ONEbook.UM.Api.Helpers;
     using ONEbook.UM.Api.Models;
-    using Sunplus.UMControllerLibrary;
 
     public interface IUMTokenService
     {
@@ -24,10 +24,6 @@
     public class UMTokenService : IUMTokenService
     {
         private readonly IDateTimeHelper dateTimeHelper;
-
-        public UMTokenService() : this(null)
-        {
-        }
 
         public UMTokenService(IDateTimeHelper dateTimeHelper)
         {
