@@ -1,8 +1,13 @@
 ﻿namespace ONEbook.UM.Api
 {
     using System;
+    using System.Configuration;
+    using System.Reflection;
     using System.Web.Http;
     using Fanex.Logging;
+    using Fanex.Logging.Extensions;
+    using Fanex.Logging.Extensions.Web;
+    using Fanex.Logging.RabbitMQ;
     using ONEbook.UM.Api.Helpers;
     using ONEbook.UM.Api.Services;
     using SimpleInjector;
@@ -14,15 +19,25 @@
 
         protected void Application_Start()
         {
+            var appSettings = ConfigurationManager.AppSettings;
+            LogManager
+                .SetDefaultLogCategory(appSettings["Fanex.Logging:DefaultCategory"])
+                .Use(new RabbitMQLogging(appSettings["Fanex.Logging:RabbitMQConnectionStrings"]));
+
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
             var container = new Container();
             container.Register<IUMControlAdapter, UMControlAdapter>(Lifestyle.Singleton);
             container.Register<IUMTokenService, UMTokenService>(Lifestyle.Singleton);
             container.Register<IDateTimeHelper, DateTimeHelper>(Lifestyle.Singleton);
+            container.RegisterInstance(Logger.Log);
             container.RegisterWebApiControllers(GlobalConfiguration.Configuration);
             container.Verify();
             GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+
+            ExceptionHandler.UseConfig(new LoggingConfiguration().GetHttpHeaderInfo());
+
+            Logger.Log.Info($"{Assembly.GetExecutingAssembly().GetName().Name} started");
         }
 
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
@@ -34,20 +49,7 @@
         /// <param name="e">Event arguments.</param>
         protected void Application_Error(object sender, EventArgs e)
         {
-            // Logging
-            if (Server != null)
-            {
-                Exception ex = Server.GetLastError().GetBaseException();
-
-                // Get base exception data
-                string message = ex.Message +
-                    "\r\nType: " + ex.GetType() +
-                    "\r\nSource: " + ex.Source +
-                    "\r\nTarget Site: " + ex.TargetSite +
-                    "\r\nStack Trace: " + ex.StackTrace;
-
-                LogService.Error(message);
-            }
+            ExceptionHandler.Handle(Server.GetLastError());
         }
     }
 }
