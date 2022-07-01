@@ -1,43 +1,49 @@
-﻿namespace ONEbook.UM.Api.Services
+﻿using System.Globalization;
+using Microsoft.Extensions.Options;
+using ONEbook.UM.Api.Configurations;
+using ONEbook.UM.Api.Models;
+
+namespace ONEbook.UM.Api.Services;
+
+public interface IFakeUMControlAdapter
 {
-    using System;
-    using System.Configuration;
-    using System.Globalization;
-    using System.Linq;
-    using ONEbook.UM.Api.Models;
+    UnderMaintenanceTime GetUnderMaintenance();
+}
 
-    public static class FakeUMControlAdapter
+public class FakeUMControlAdapter : IFakeUMControlAdapter
+{
+    private readonly FakeUMConfiguration options;
+
+    public FakeUMControlAdapter(IOptions<FakeUMConfiguration> options)
     {
-        public static UnderMaintenanceTime GetUnderMaintenance()
+        this.options = options.Value;
+    }
+
+    public UnderMaintenanceTime GetUnderMaintenance()
+    {
+        var now = DateTime.UtcNow.AddHours(8);
+
+        if (!options.Enable)
         {
-            bool enableFakeUM = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableFakeUM"] ?? "false");
-            int umPeriod = Convert.ToInt32(ConfigurationManager.AppSettings["UMPeriod"] ?? "300");
-            var minutesCheckUM = (ConfigurationManager.AppSettings["MinutesCheckUM"] ?? "15,45").Split(',').Select(int.Parse).ToList();
-
-            var now = DateTime.UtcNow.AddHours(8);
-
-            if (!enableFakeUM)
-            {
-                return null;
-            }
-
-            foreach (var minute in minutesCheckUM)
-            {
-                if (minute == now.Minute || (now.Minute > minute && ((now.Minute - minute) * 60 < umPeriod)))
-                {
-                    var startFakeTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, minute, 0);
-                    return new UnderMaintenanceTime(
-                        true,
-                        startFakeTime.ToString(CultureInfo.InvariantCulture),
-                        startFakeTime.AddSeconds(umPeriod).ToString(CultureInfo.InvariantCulture),
-                        0);
-                }
-            }
-
-            return new UnderMaintenanceTime(
-                false,
-                DateTime.MinValue.ToString(CultureInfo.InvariantCulture),
-                DateTime.MinValue.ToString(CultureInfo.InvariantCulture));
+            return null;
         }
+
+        foreach (var minute in options.MinutesCheck)
+        {
+            if (minute == now.Minute || (now.Minute > minute && ((now.Minute - minute) * 60 < options.Period)))
+            {
+                var startFakeTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, minute, 0);
+                return new UnderMaintenanceTime(
+                    true,
+                    startFakeTime.ToString(CultureInfo.InvariantCulture),
+                    startFakeTime.AddSeconds(options.Period).ToString(CultureInfo.InvariantCulture),
+                    0);
+            }
+        }
+
+        return new UnderMaintenanceTime(
+            false,
+            DateTime.MinValue.ToString(CultureInfo.InvariantCulture),
+            DateTime.MinValue.ToString(CultureInfo.InvariantCulture));
     }
 }

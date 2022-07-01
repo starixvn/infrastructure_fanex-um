@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ONEbook.UM\ONEbook.UM.csproj" />
+    <ProjectReference Include="..\..\ONEbook.UM\ONEbook.UM.csproj"/>
   </ItemGroup>
-</Project>
+  <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../../../.sonarlint/telegrambotcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>

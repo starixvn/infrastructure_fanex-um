@@ -1,59 +1,14 @@
 ﻿namespace ONEbook.UM.Api.Configurations
 {
-    using System.Configuration;
-
-    public class UnderMaintenanceApiConfiguration : ConfigurationSection
+    public class UnderMaintenanceApiConfiguration
     {
-        private const string EnableUnscheduledUMName = "EnableUnscheduledUM";
-        private const string UMFromName = "UMFrom";
-        private const string UMToName = "UMTo";
-        private const string SecretKeyName = "SecretKey";
-        private const string EnableCheckUMName = "EnableCheckUM";
-        private const string UMAddressName = "UMAddress";
+        public const string UnderMaintenanceApi = "ONEbook.UM.Api";
 
-        public static UnderMaintenanceApiConfiguration Settings { get; internal set; }
-            = ConfigurationManager.GetSection("ONEbook.UM.Api") as UnderMaintenanceApiConfiguration;
-
-        [ConfigurationProperty(SecretKeyName, IsRequired = false, DefaultValue = "9yBNYA5Fnv2V58+pKLvYpFwV5BMkIh9NNTxPQk6Sbss=")]
-        public string SecretKey
-        {
-            get { return (string)this[SecretKeyName]; }
-            set { this[SecretKeyName] = value; }
-        }
-
-        [ConfigurationProperty(EnableCheckUMName, IsRequired = false, DefaultValue = true)]
-        public bool EnableCheckUM
-        {
-            get { return (bool)this[EnableCheckUMName]; }
-            set { this[EnableCheckUMName] = value; }
-        }
-
-        [ConfigurationProperty(EnableUnscheduledUMName, IsRequired = false, DefaultValue = false)]
-        public bool EnableUnscheduledUM
-        {
-            get { return (bool)this[EnableUnscheduledUMName]; }
-            set { this[EnableUnscheduledUMName] = value; }
-        }
-
-        [ConfigurationProperty(UMFromName, IsRequired = false)]
-        public string UMFrom
-        {
-            get { return (string)this[UMFromName]; }
-            set { this[UMFromName] = value; }
-        }
-
-        [ConfigurationProperty(UMToName, IsRequired = false)]
-        public string UMTo
-        {
-            get { return (string)this[UMToName]; }
-            set { this[UMToName] = value; }
-        }
-
-        [ConfigurationProperty(UMAddressName, IsRequired = false)]
-        public string UMAddress
-        {
-            get { return (string)this[UMAddressName]; }
-            set { this[UMAddressName] = value; }
-        }
+        public string SecretKey { get; set; } = string.Empty;
+        public bool EnableCheckUM { get; set; } = true;
+        public bool EnableUnscheduledUM { get; set; } = false;
+        public string UMFrom { get; set; } = string.Empty;
+        public string UMTo { get; set; } = string.Empty;
+        public string[] UMServiceURL { get; set; } = Array.Empty<string>();
     }
 }

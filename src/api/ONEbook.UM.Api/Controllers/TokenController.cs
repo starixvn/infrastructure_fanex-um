@@ -1,40 +1,34 @@
-﻿namespace ONEbook.UM.Api.Controllers
+﻿using ONEbook.UM.Api.Services;
+using Microsoft.AspNetCore.Mvc;
+using ONEbook.UM.Api.Constants;
+
+namespace ONEbook.UM.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class TokenController : ControllerBase
 {
-    using System.Net;
-    using System.Net.Http;
-    using System.Web.Http;
-    using ONEbook.UM.Api.Filters;
-    using ONEbook.UM.Api.Models;
-    using ONEbook.UM.Api.Services;
+    private readonly IUMTokenService underMaintenanceTokenService;
 
-    //[HmacAuthorizationFilter]
-    public class TokenController : ApiController
+    public TokenController(IUMTokenService underMaintenanceTokenService)
     {
-        private readonly IUMTokenService underMaintenanceTokenService;
+        this.underMaintenanceTokenService = underMaintenanceTokenService;
+    }
 
-        public TokenController(IUMTokenService underMaintenanceTokenService)
-        {
-            this.underMaintenanceTokenService = underMaintenanceTokenService;
-        }
+    [HttpGet("validate")]
+    public IActionResult Validate(int siteId, string token)
+    {
 
-        [HttpGet]
-        public HttpResponseMessage Validate([FromUri] TokenValidationRequest request)
-        {
-            if (request == null)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.PreconditionFailed, "Token Validation Request cannot be null!");
-            }
+        var isValid = underMaintenanceTokenService.IsValidUMToken((Sites)siteId, token);
 
-            var isValid = underMaintenanceTokenService.IsValidUMToken(request.SiteId, request.Token);
+        return Ok(isValid);
+    }
 
-            return Request.CreateResponse(HttpStatusCode.OK, isValid);
-        }
+    [HttpGet]
+    public IActionResult Index()
+    {
+        var siteTokens = underMaintenanceTokenService.GetAllUMTokens();
 
-        public HttpResponseMessage GetAll()
-        {
-            var siteTokens = underMaintenanceTokenService.GetAllUMTokens();
-
-            return Request.CreateResponse(HttpStatusCode.OK, siteTokens);
-        }
+        return Ok(siteTokens);
     }
 }

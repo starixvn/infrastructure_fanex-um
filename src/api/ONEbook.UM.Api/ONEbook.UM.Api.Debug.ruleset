@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="SonarQube - R&amp;D / ONEbook.UM Nexcel CSharp" ToolsVersion="15.0">
-  <Include Path="..\..\..\.sonarlint\onebook.umcsharp.ruleset" Action="Default" />
-  <Include Path="fanexrules.ruleset" Action="Default" />
-</RuleSet>

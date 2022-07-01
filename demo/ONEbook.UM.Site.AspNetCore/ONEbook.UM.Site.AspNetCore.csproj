@@ -14,22 +14,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="wwwroot\**" />
+    <Compile Remove="wwwroot\**"/>
+    <Content Remove="wwwroot\**"/>
+    <EmbeddedResource Remove="wwwroot\**"/>
+    <None Remove="wwwroot\**"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fanex.Logging.RabbitMQ" Version="1.0.0-beta81" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Fanex.Logging.RabbitMQ" Version="1.0.0-beta81"/>
+    <PackageReference Include="Microsoft.AspNetCore.App"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore.Filters\ONEbook.UM.AspNetCore.Filters.csproj" />
-    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj" />
-    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj" />
+    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore.Filters\ONEbook.UM.AspNetCore.Filters.csproj"/>
+    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj"/>
+    <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj"/>
+    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,4 +37,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-</Project>
+  <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../.sonarlint/telegrambotcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>

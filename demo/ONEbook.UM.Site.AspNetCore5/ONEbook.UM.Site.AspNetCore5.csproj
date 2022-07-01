@@ -6,14 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.App"/>
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.0.7"/>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj" />
-    <ProjectReference Include="..\ONEbook.UM.Site.AspNetCore\ONEbook.UM.Site.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj"/>
+    <ProjectReference Include="..\ONEbook.UM.Site.AspNetCore\ONEbook.UM.Site.AspNetCore.csproj"/>
   </ItemGroup>
 
-</Project>
+  <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../.sonarlint/telegrambotcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>

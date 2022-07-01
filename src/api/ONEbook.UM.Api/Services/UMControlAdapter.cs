@@ -1,30 +1,48 @@
-﻿namespace ONEbook.UM.Api.Services
+﻿using System.Globalization;
+using System.Text;
+using System.Xml.Serialization;
+using Microsoft.Extensions.Options;
+using ONEbook.UM.Api.Configurations;
+using ONEbook.UM.Api.Constants;
+using ONEbook.UM.Api.Models;
+
+namespace ONEbook.UM.Api.Services;
+
+public interface IUMControlAdapter
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
-    using Configurations;
-    using Fanex.Logging;
-    using Models;
-    using ONEbook.UM.Api.Constants;
-    using ONELab.UMService.UMClient;
+    Task<UnderMaintenanceTime> GetUnderMaintenanceTime(int siteId);
 
-    public interface IUMControlAdapter
+    Task<IDictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenanceInformation();
+
+    Task<IDictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime();
+}
+
+public class UMControlAdapter : IUMControlAdapter
+{
+    private readonly UnderMaintenanceApiConfiguration options;
+    private readonly IFakeUMControlAdapter fakeUMControlAdapter;
+    private readonly HttpClient httpClient;
+    private readonly Fanex.Logging.ILogger logger;
+    public const int SUCCESS_ECODE = 0;
+    public const int NO_FOUND_ECODE = 1;
+    public const int NO_CONNECTION_ECODE = 2;
+
+    public UMControlAdapter(
+        IOptions<UnderMaintenanceApiConfiguration> options,
+        IFakeUMControlAdapter fakeUMControlAdapter,
+        HttpClient httpClient,
+        Fanex.Logging.ILogger logger)
     {
-        UnderMaintenanceTime GetUnderMaintenanceTime(int siteId);
-
-        Dictionary<int, UnderMaintenanceTime> GetScheduledUnderMaintenanceInformation();
-
-        Dictionary<int, UnderMaintenanceTime> GetAllUnderMaintenanceTime();
+        this.options = options.Value;
+        this.fakeUMControlAdapter = fakeUMControlAdapter;
+        this.httpClient = httpClient;
+        this.logger = logger;
     }
 
-    public class UMControlAdapter : IUMControlAdapter
-    {
-        /// <summary>
-        /// Old and New SiteID for UM Tool
-        /// </summary>
-        private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
+    /// <summary>
+    /// Old and New SiteID for UM Tool
+    /// </summary>
+    private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
         {
             { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
             { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
@@ -39,81 +57,122 @@
             { (int)Sites.Test, (int)Sites.Test },
         };
 
-        public UnderMaintenanceTime GetUnderMaintenanceTime(int siteId)
+    public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime(int siteId)
+    {
+        var fakeUMInfo = fakeUMControlAdapter.GetUnderMaintenance();
+
+        if (fakeUMInfo != null)
         {
-            var fakeUMInfo = FakeUMControlAdapter.GetUnderMaintenance();
+            return fakeUMInfo;
+        }
 
-            if (fakeUMInfo != null)
-            {
-                return fakeUMInfo;
-            }
+        if (options.EnableUnscheduledUM)
+        {
+            return new UnderMaintenanceTime(true, options.UMFrom, options.UMTo);
+        }
 
-            if (UnderMaintenanceApiConfiguration.Settings.EnableUnscheduledUM)
-            {
-                return new UnderMaintenanceTime(true, UnderMaintenanceApiConfiguration.Settings.UMFrom, UnderMaintenanceApiConfiguration.Settings.UMTo);
-            }
+        if (options.EnableCheckUM)
+        {
+            var (isUnderUM, startTime, endTime, errorCode) = await FetchUMInformation(siteId);
+            return new UnderMaintenanceTime(isUnderUM, startTime.ToString("HH:mm"), endTime.ToString("HH:mm"), errorCode);
+        }
 
-            if (UnderMaintenanceApiConfiguration.Settings.EnableCheckUM)
+        return new UnderMaintenanceTime(false, "0:00", "0:00");
+    }
+
+    public async Task<IDictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime()
+    {
+        var result = new Dictionary<int, UnderMaintenanceTime>();
+        foreach (var siteId in OldNewSiteIdMappers.Keys)
+        {
+            result.Add(siteId, await GetUnderMaintenanceTime(siteId));
+        }
+        return result;
+    }
+
+    public async Task<IDictionary<int, UnderMaintenanceTime>> GetScheduledUnderMaintenanceInformation()
+    {
+        var siteIds = OldNewSiteIdMappers.Keys;
+
+        var fakeUMInfo = fakeUMControlAdapter.GetUnderMaintenance();
+
+        if (fakeUMInfo != null)
+        {
+            return siteIds.ToDictionary(siteId => siteId, _ => fakeUMInfo);
+        }
+
+        var result = new Dictionary<int, UnderMaintenanceTime>();
+        foreach (var siteId in siteIds)
+        {
+            result.Add(siteId, await GetScheduledUnderMaintenance(siteId));
+        }
+
+        return result;
+    }
+
+    private async Task<UnderMaintenanceTime> GetScheduledUnderMaintenance(int siteId)
+    {
+        if (options.EnableUnscheduledUM)
+        {
+            return new UnderMaintenanceTime(true, options.UMFrom, options.UMTo);
+        }
+
+
+        var (isUnderUM, startTime, endTime, errorCode) = await FetchUMInformation(siteId);
+
+        if (startTime.Date.Year != DateTime.MinValue.Year)
+        {
+            return new UnderMaintenanceTime(
+               isUnderUM,
+               startTime.ToString(CultureInfo.InvariantCulture),
+               endTime.ToString(CultureInfo.InvariantCulture),
+               errorCode);
+        }
+
+        return new UnderMaintenanceTime(false, "0:00", "0:00");
+    }
+
+    private async Task<(bool, DateTime, DateTime, int)> FetchUMInformation(int siteId)
+    {
+        var isUM = false;
+        var startTime = new DateTime();
+        var endTime = new DateTime();
+        var errorCode = NO_CONNECTION_ECODE;
+
+        foreach (var url in options.UMServiceURL)
+        {
+            errorCode = NO_FOUND_ECODE;
+            var uriString = Path.Combine(url, siteId.ToString());
+            try
             {
-                var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime dateFrom, out DateTime dateTo, out int errorCode);
-                if (errorCode != Clients.SUCCESS_ECODE && errorCode != Clients.NO_FOUND_ECODE)
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri(uriString))
+                { Headers = { { "UMClientVersion", "1.0.21151.1321" } } };
+                var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+                if (httpResponseMessage.IsSuccessStatusCode)
                 {
-                    Logger.Log.Error($"Service errorCode: {errorCode}, siteId:{siteId}");
-                    return new UnderMaintenanceTime(false, "0:00", "0:00");
+                    using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                    var responseString = new StreamReader(contentStream, Encoding.UTF8).ReadToEnd();
+                    if (!string.IsNullOrEmpty(responseString))
+                    {
+                        var serializer = new XmlSerializer(typeof(UMStageMessageSite));
+                        var stageMessageSite = (UMStageMessageSite)serializer.Deserialize(new StringReader(responseString));
+                        var messageSite = stageMessageSite.MessageSites[0];
+                        isUM = true;
+                        startTime = messageSite.StartTime;
+                        endTime = messageSite.EndTime;
+                        errorCode = SUCCESS_ECODE;
+                        break;
+                    }
+
                 }
-
-                if (isUnderUM)
-                {
-                    var timeFrom = dateFrom.ToString("HH:mm");
-                    var timeTo = dateTo.ToString("HH:mm");
-                    Logger.Log.Info(
-                        $"Site: {siteId} \r\n" +
-                        $"From: {timeFrom} \r\n" +
-                        $"To: {timeTo}");
-
-                    return new UnderMaintenanceTime(isUnderUM, timeFrom, timeTo);
-                }
             }
-
-            return new UnderMaintenanceTime(false, "0:00", "0:00");
+            catch (Exception ex)
+            {
+                var message = string.Join("\r\n", $"Checking {uriString} failed!", ex.Message);
+                await logger.ErrorAsync(message, ex);
+            }
         }
 
-        public Dictionary<int, UnderMaintenanceTime> GetAllUnderMaintenanceTime()
-            => OldNewSiteIdMappers.Keys.ToDictionary(siteId => siteId, GetUnderMaintenanceTime);
-
-        public Dictionary<int, UnderMaintenanceTime> GetScheduledUnderMaintenanceInformation()
-        {
-            var siteIds = OldNewSiteIdMappers.Keys;
-
-            var fakeUMInfo = FakeUMControlAdapter.GetUnderMaintenance();
-
-            if (fakeUMInfo != null)
-            {
-                return siteIds.ToDictionary(siteId => siteId, _ => fakeUMInfo);
-            }
-
-            return siteIds.ToDictionary(siteId => siteId, siteId => GetScheduledUnderMaintenance(OldNewSiteIdMappers[siteId]));
-        }
-
-        private static UnderMaintenanceTime GetScheduledUnderMaintenance(int siteId)
-        {
-            if (UnderMaintenanceApiConfiguration.Settings.EnableUnscheduledUM)
-            {
-                return new UnderMaintenanceTime(true, UnderMaintenanceApiConfiguration.Settings.UMFrom, UnderMaintenanceApiConfiguration.Settings.UMTo);
-            }
-
-            var isUnderUM = ServiceClient.IsUnderUM(siteId.ToString(), out DateTime startTime, out DateTime endTime, out int errorCode);
-
-            if (startTime.Date.Year != DateTime.MinValue.Year)
-            {
-                return new UnderMaintenanceTime(
-                   isUnderUM,
-                   startTime.ToString(CultureInfo.InvariantCulture),
-                   endTime.ToString(CultureInfo.InvariantCulture),
-                   errorCode);
-            }
-
-            return new UnderMaintenanceTime(false, "0:00", "0:00");
-        }
+        return (isUM, startTime, endTime, errorCode);
     }
 }

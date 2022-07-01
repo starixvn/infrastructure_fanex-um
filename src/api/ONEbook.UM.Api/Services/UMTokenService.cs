@@ -1,86 +1,88 @@
-﻿namespace ONEbook.UM.Api.Services
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using ONEbook.UM.Api.Configurations;
+using ONEbook.UM.Api.Constants;
+using ONEbook.UM.Api.Helpers;
+using ONEbook.UM.Api.Models;
+
+namespace ONEbook.UM.Api.Services;
+
+public interface IUMTokenService
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Web;
-    using Fanex.Common.Helper;
-    using ONEbook.UM.Api.Configurations;
-    using ONEbook.UM.Api.Constants;
-    using ONEbook.UM.Api.Helpers;
-    using ONEbook.UM.Api.Models;
+    bool IsValidUMToken(Sites siteId, string token);
 
-    public interface IUMTokenService
+    string GetUMToken(Sites siteId);
+
+    IDictionary<Sites, SiteToken> GetAllUMTokens();
+}
+
+public class UMTokenService : IUMTokenService
+{
+    private readonly IDateTimeHelper dateTimeHelper;
+    private readonly UnderMaintenanceApiConfiguration options;
+
+    public UMTokenService(IDateTimeHelper dateTimeHelper, IOptions<UnderMaintenanceApiConfiguration> options)
     {
-        bool IsValidUMToken(Sites siteId, string token);
-
-        string GetUMToken(Sites siteId);
-
-        IDictionary<Sites, SiteToken> GetAllUMTokens();
+        this.dateTimeHelper = dateTimeHelper ?? new DateTimeHelper();
+        this.options = options.Value;
     }
 
-    public class UMTokenService : IUMTokenService
+    public bool IsValidUMToken(Sites siteId, string token)
     {
-        private readonly IDateTimeHelper dateTimeHelper;
-
-        public UMTokenService(IDateTimeHelper dateTimeHelper)
+        if (string.IsNullOrEmpty(token))
         {
-            this.dateTimeHelper = dateTimeHelper ?? new DateTimeHelper();
+            throw new ArgumentNullException(nameof(token));
         }
 
-        public bool IsValidUMToken(Sites siteId, string token)
+        if (siteId <= 0)
         {
-            Check.Argument.IsNotEmpty(token, "token");
-            Check.Argument.IsNotNegativeOrZero((int)siteId, "siteId");
-
-            var validToken = GenerateToken(siteId);
-
-            return validToken.Equals(token, StringComparison.Ordinal);
+            throw new ArgumentNullException(nameof(siteId));
         }
 
-#pragma warning disable S2070 // SHA-1 and Message-Digest hash algorithms should not be used in secure contexts
+        var validToken = GenerateToken(siteId);
 
-        private string GenerateToken(Sites siteId)
+        return validToken.Equals(token, StringComparison.Ordinal);
+    }
+
+    private string GenerateToken(Sites siteId)
+    {
+        var today = dateTimeHelper.GetUtcNowShortDateString();
+        var key = string.Format("{0}_{1}_{2}", siteId, today, options.SecretKey);
+
+        using MD5 md5 = MD5.Create();
+        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(key));
+
+        return WebEncoders.Base64UrlEncode(hash);
+    }
+
+    public string GetUMToken(Sites siteId)
+    {
+        if (siteId <= 0)
         {
-            var today = dateTimeHelper.GetUtcNowShortDateString();
-            var key = string.Format("{0}_{1}_{2}", siteId, today, UnderMaintenanceApiConfiguration.Settings.SecretKey);
-
-            using (MD5 md5 = MD5.Create())
-            {
-                var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(key));
-
-                return HttpServerUtility.UrlTokenEncode(hash);
-            }
+            throw new ArgumentNullException(nameof(siteId));
         }
 
-#pragma warning restore S2070 // SHA-1 and Message-Digest hash algorithms should not be used in secure contexts
+        return GenerateToken(siteId);
+    }
 
-        public string GetUMToken(Sites siteId)
+    public IDictionary<Sites, SiteToken> GetAllUMTokens()
+    {
+        var siteIds = Enum.GetValues(typeof(Sites)).Cast<Sites>();
+        var siteTokens = new Dictionary<Sites, SiteToken>();
+
+        foreach (Sites siteId in siteIds)
         {
-            Check.Argument.IsNotNegativeOrZero((int)siteId, "siteId");
-
-            return GenerateToken(siteId);
+            siteTokens.Add(
+                siteId,
+                new SiteToken
+                {
+                    SiteId = (int)siteId,
+                    Token = GenerateToken(siteId)
+                });
         }
 
-        public IDictionary<Sites, SiteToken> GetAllUMTokens()
-        {
-            var siteIds = Enum.GetValues(typeof(Sites)).Cast<Sites>();
-            var siteTokens = new Dictionary<Sites, SiteToken>();
-
-            foreach (Sites siteId in siteIds)
-            {
-                siteTokens.Add(
-                    siteId,
-                    new SiteToken
-                    {
-                        SiteId = (int)siteId,
-                        Token = GenerateToken(siteId)
-                    });
-            }
-
-            return siteTokens;
-        }
+        return siteTokens;
     }
 }

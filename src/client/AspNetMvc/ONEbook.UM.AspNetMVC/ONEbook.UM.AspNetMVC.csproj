@@ -12,16 +12,18 @@
     <CodeAnalysisRuleSet>ONEbook.UM.AspNetMVC.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.6" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.6"/>
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj" />
+    <ProjectReference Include="..\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Web" />
+    <Reference Include="System.Web"/>
   </ItemGroup>
-</Project>
+  <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../../../.sonarlint/telegrambotcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>
