@@ -20,6 +20,4 @@
     </Reference>
     <Reference Include="System.Web"/>
   </ItemGroup>
-  <PropertyGroup Label="sonarqube-rules-synchronizer">
-    <CodeAnalysisRuleSet>../../../.sonarlint/telegrambotcsharp.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup></Project>
+</Project>
