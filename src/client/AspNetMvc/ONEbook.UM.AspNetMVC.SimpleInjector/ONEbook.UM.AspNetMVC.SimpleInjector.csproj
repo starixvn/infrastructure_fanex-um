@@ -14,4 +14,6 @@
     <ProjectReference Include="..\..\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj"/>
     <ProjectReference Include="..\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj"/>
   </ItemGroup>
-</Project>
+    <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>

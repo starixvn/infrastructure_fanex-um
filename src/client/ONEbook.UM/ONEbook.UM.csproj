@@ -30,4 +30,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-</Project>
+    <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>

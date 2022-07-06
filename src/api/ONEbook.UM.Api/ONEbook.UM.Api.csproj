@@ -15,4 +15,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0"/>
     <!-- <PackageReference Include="ONELab.UMService" Version="1.0.21151.1321" /> -->
   </ItemGroup>
-</Project>
+    <PropertyGroup Label="sonarqube-rules-synchronizer">
+    <CodeAnalysisRuleSet>../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup></Project>

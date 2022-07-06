@@ -1,3 +1,4 @@
 {
-    "omnisharp.enableRoslynAnalyzers": true
+    "omnisharp.enableRoslynAnalyzers": true,
+    "sonarqube-rules-synchroniser.Sonarqube-projectkey": "ONEbook.UM"
 }

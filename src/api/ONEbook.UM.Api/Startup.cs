@@ -22,11 +22,14 @@ namespace ONEbook.UM.Api
             services.Configure<UnderMaintenanceApiConfiguration>(Configuration.GetSection(UnderMaintenanceApiConfiguration.UnderMaintenanceApi));
 
             services.AddControllers();
+            services.AddSingleton<IFakeUMControlAdapter, FakeUMControlAdapter>();
             services.AddSingleton<IUMControlAdapter, UMControlAdapter>();
             services.AddSingleton<IUMTokenService, UMTokenService>();
             services.AddSingleton<IDateTimeHelper, DateTimeHelper>();
             services.AddSingleton(Logger.Log);
+
             services.AddHttpClient<IUMControlAdapter, UMControlAdapter>();
+
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
