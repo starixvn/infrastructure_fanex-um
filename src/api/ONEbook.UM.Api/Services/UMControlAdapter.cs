@@ -158,8 +158,8 @@ public class UMControlAdapter : IUMControlAdapter
                         var stageMessageSite = (UMStageMessageSite)serializer.Deserialize(new StringReader(responseString));
                         var messageSite = stageMessageSite.MessageSites[0];
                         isUM = true;
-                        startTime = messageSite.StartTime;
-                        endTime = messageSite.EndTime;
+                        startTime = messageSite.StartTime.AddHours(8.0);
+                        endTime = messageSite.EndTime.AddHours(8.0);
                         errorCode = SUCCESS_ECODE;
                         break;
                     }

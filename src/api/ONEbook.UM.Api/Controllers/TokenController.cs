@@ -24,8 +24,8 @@ public class TokenController : ControllerBase
         return Ok(isValid);
     }
 
-    [HttpGet]
-    public IActionResult Index()
+    [HttpGet("GetAll")]
+    public IActionResult GetAll()
     {
         var siteTokens = underMaintenanceTokenService.GetAllUMTokens();
 
