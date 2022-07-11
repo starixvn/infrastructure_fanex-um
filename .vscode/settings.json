@@ -1,4 +1,6 @@
 {
     "omnisharp.enableRoslynAnalyzers": true,
-    "sonarqube-rules-synchroniser.Sonarqube-projectkey": "ONEbook.UM"
+    "sonarqube-rules-synchroniser.Sonarqube-projectkey": "ONEbook.UM",
+    "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj",
+    "dotnet-test-explorer.testArguments": "/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./lcov.info"
 }

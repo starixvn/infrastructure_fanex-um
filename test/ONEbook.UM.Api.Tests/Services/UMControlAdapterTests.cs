@@ -3,8 +3,14 @@ namespace ONEbook.UM.Api.Tests.Services
     using System.Collections.Generic;
     using System.Configuration;
     using System.Linq;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using Fanex.Logging;
+    using Microsoft.Extensions.Options;
+    using NSubstitute;
     using ONEbook.UM.Api.Configurations;
     using ONEbook.UM.Api.Constants;
+    using ONEbook.UM.Api.Models;
     using ONEbook.UM.Api.Services;
     using Xunit;
 
@@ -26,40 +32,46 @@ namespace ONEbook.UM.Api.Tests.Services
         };
 
         private readonly IUMControlAdapter umControlAdapter;
+        private readonly IOptions<UnderMaintenanceApiConfiguration> options;
+        private readonly IFakeUMControlAdapter fakeUMControlAdapter;
+        private readonly HttpClient httpClient;
+        private readonly ILogger logger;
 
         public UMControlAdapterTests()
         {
-            umControlAdapter = new UMControlAdapter();
-            ConfigurationManager.AppSettings["EnableFakeUM"] = "false";
-            ConfigurationManager.AppSettings["MinutesCheckUM"] = "0,5,10,15,20,25,30,35,40,45,50,55";
+            options = Substitute.For<IOptions<UnderMaintenanceApiConfiguration>>();
+            fakeUMControlAdapter = Substitute.For<IFakeUMControlAdapter>();
+            httpClient = Substitute.For<HttpClient>();
+            logger = Substitute.For<ILogger>();
+            umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
         }
 
         [Fact]
-        public void GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()
+        public async Task GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()
         {
             // Arrange
-            ConfigurationManager.AppSettings["EnableFakeUM"] = "true";
+            fakeUMControlAdapter.GetUnderMaintenance().Returns(new UnderMaintenanceTime(true, "3:00", "4:00"));
 
             // Act
-            var actualUnderMaintenance = umControlAdapter.GetUnderMaintenanceTime(1);
+            var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
 
             // Assert
             Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
         }
 
         [Fact]
-        public void GetUnderMaintenanceTime_EnableUnscheduleUM_ReturnUnscheduleUM()
+        public async Task GetUnderMaintenanceTime_EnableUnscheduleUM_ReturnUnscheduleUM()
         {
             // Arrange
-            UnderMaintenanceApiConfiguration.Settings = new UnderMaintenanceApiConfiguration
+            options.Value.Returns(new UnderMaintenanceApiConfiguration
             {
                 EnableUnscheduledUM = true,
                 UMFrom = "3:00",
                 UMTo = "4:00"
-            };
+            });
 
             // Act
-            var actualUnderMaintenance = umControlAdapter.GetUnderMaintenanceTime(1);
+            var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
 
             // Assert
             Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
@@ -68,13 +80,13 @@ namespace ONEbook.UM.Api.Tests.Services
         }
 
         [Fact]
-        public void GetScheduledUnderMaintenanceInformation_HasFakeUMInfo_ReturnFakeUM()
+        public async Task GetScheduledUnderMaintenanceInformation_HasFakeUMInfo_ReturnFakeUM()
         {
             // Arrange
             ConfigurationManager.AppSettings["EnableFakeUM"] = "true";
 
             // Act
-            var actualUnderMaintenances = umControlAdapter.GetScheduledUnderMaintenanceInformation();
+            var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
 
             // Assert
             Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
@@ -82,18 +94,18 @@ namespace ONEbook.UM.Api.Tests.Services
         }
 
         [Fact]
-        public void GetScheduledUnderMaintenanceInformation_EnableUnscheduleUM_ReturnUnscheduledUM()
+        public async Task GetScheduledUnderMaintenanceInformation_EnableUnscheduleUM_ReturnUnscheduledUM()
         {
             // Arrange
-            UnderMaintenanceApiConfiguration.Settings = new UnderMaintenanceApiConfiguration
+            options.Value.Returns(new UnderMaintenanceApiConfiguration
             {
                 EnableUnscheduledUM = true,
                 UMFrom = "3:00",
                 UMTo = "4:00"
-            };
+            });
 
             // Act
-            var actualUnderMaintenances = umControlAdapter.GetScheduledUnderMaintenanceInformation();
+            var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
 
             // Assert
             Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
@@ -103,16 +115,16 @@ namespace ONEbook.UM.Api.Tests.Services
         }
 
         [Fact]
-        public void GetScheduledUnderMaintenanceInformation_EnableCheckUM_ReturnRealUM()
+        public async Task GetScheduledUnderMaintenanceInformation_EnableCheckUM_ReturnRealUM()
         {
             // Arrange
-            UnderMaintenanceApiConfiguration.Settings = new UnderMaintenanceApiConfiguration
+            options.Value.Returns(new UnderMaintenanceApiConfiguration
             {
                 EnableCheckUM = true
-            };
+            });
 
             // Act
-            var actualUnderMaintenances = umControlAdapter.GetScheduledUnderMaintenanceInformation();
+            var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
 
             // Assert
             Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
