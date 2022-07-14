@@ -135,13 +135,11 @@ public class UMControlAdapter : IUMControlAdapter
     private async Task<(bool, DateTime, DateTime, int)> FetchUMInformation(int siteId)
     {
         var isUM = false;
-        var startTime = new DateTime();
-        var endTime = new DateTime();
-        var errorCode = NO_CONNECTION_ECODE;
+        var serviceHealth = new Dictionary<string, bool>();
+        var responseString = string.Empty;
 
         foreach (var url in options.UMServiceURL)
         {
-            errorCode = NO_FOUND_ECODE;
             var uriString = Path.Combine(url, siteId.ToString());
             try
             {
@@ -150,29 +148,39 @@ public class UMControlAdapter : IUMControlAdapter
                 var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
+                    serviceHealth.Add(url, true);
                     using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                    var responseString = new StreamReader(contentStream, Encoding.UTF8).ReadToEnd();
+                    responseString = new StreamReader(contentStream, Encoding.UTF8).ReadToEnd();
                     if (!string.IsNullOrEmpty(responseString))
                     {
-                        var serializer = new XmlSerializer(typeof(UMStageMessageSite));
-                        var stageMessageSite = (UMStageMessageSite)serializer.Deserialize(new StringReader(responseString));
-                        var messageSite = stageMessageSite.MessageSites[0];
                         isUM = true;
-                        startTime = messageSite.StartTime.AddHours(8.0);
-                        endTime = messageSite.EndTime.AddHours(8.0);
-                        errorCode = SUCCESS_ECODE;
                         break;
                     }
-
+                }
+                else
+                {
+                    serviceHealth.Add(url, false);
                 }
             }
             catch (Exception ex)
             {
+                serviceHealth.Add(url, false);
                 var message = string.Join("\r\n", $"Checking {uriString} failed!", ex.Message);
                 await logger.ErrorAsync(message, ex);
             }
         }
 
-        return (isUM, startTime, endTime, errorCode);
+        if (!isUM)
+        {
+            return (false, new DateTime(), new DateTime(), serviceHealth.ContainsValue(true) ? NO_FOUND_ECODE : NO_CONNECTION_ECODE);
+        }
+
+        var serializer = new XmlSerializer(typeof(UMStageMessageSite));
+        var stageMessageSite = (UMStageMessageSite)serializer.Deserialize(new StringReader(responseString));
+        var messageSite = stageMessageSite.MessageSites[0];
+        var startTime = messageSite.StartTime.AddHours(8.0);
+        var endTime = messageSite.EndTime.AddHours(8.0);
+
+        return (true, startTime, endTime, SUCCESS_ECODE);
     }
 }
