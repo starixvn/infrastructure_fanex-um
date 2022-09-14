@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net5</TargetFrameworks>
-    <Version>3.1.0-beta05</Version>
+    <Version>3.1.0-beta06</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ONEbook.UM\ONEbook.UM.csproj"/>
   </ItemGroup>
-    <PropertyGroup Label="sonarqube-rules-synchronizer">
+  <PropertyGroup Label="sonarqube-rules-synchronizer">
     <CodeAnalysisRuleSet>../../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup></Project>
+  </PropertyGroup>
+</Project>

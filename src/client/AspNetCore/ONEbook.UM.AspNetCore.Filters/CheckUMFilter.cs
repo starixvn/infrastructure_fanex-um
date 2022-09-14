@@ -47,6 +47,7 @@ namespace ONEbook.UM.AspNetCore.Filters
             if (isUnderMaintenance)
             {
                 UnderMaintenanceAction(context);
+                return;
             }
 
             var umTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
@@ -54,6 +55,7 @@ namespace ONEbook.UM.AspNetCore.Filters
             if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl) && umTime.ConnectionResult.IsNotOk)
             {
                 ErrorUnderMaintenanceAction(context);
+                return;
             }
 
             await next();
