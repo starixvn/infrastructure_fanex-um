@@ -38,6 +38,8 @@ namespace ONEbook.UM.AspNetCore.Filters
             {
                 ErrorUnderMaintenanceAction(context);
             }
+
+            base.OnActionExecuting(context);
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -47,7 +49,6 @@ namespace ONEbook.UM.AspNetCore.Filters
             if (isUnderMaintenance)
             {
                 UnderMaintenanceAction(context);
-                return;
             }
 
             var umTime = await maintenanceService.GetUnderMaintenanceTimeAsync();
@@ -55,10 +56,9 @@ namespace ONEbook.UM.AspNetCore.Filters
             if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl) && umTime.ConnectionResult.IsNotOk)
             {
                 ErrorUnderMaintenanceAction(context);
-                return;
             }
 
-            await next();
+            await base.OnActionExecutionAsync(context, next);
         }
 
         public void UnderMaintenanceAction(ActionExecutingContext filterContext)
