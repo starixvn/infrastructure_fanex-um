@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{6B6BA5C2-DF7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{6570AC60-D386-4D67-BD08-37016EE729FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Api", "src\api\ONEbook.UM.Api\ONEbook.UM.Api.csproj", "{38C7544E-D774-4162-A809-5BBE281CE5D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Api", "src\api\ONEbook.UM.Api\ONEbook.UM.Api.csproj", "{38C7544E-D774-4162-A809-5BBE281CE5D5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM", "src\client\ONEbook.UM\ONEbook.UM.csproj", "{63C48884-D79F-458A-8B26-66ED6D9BEE31}"
 EndProject
@@ -54,9 +54,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEBook.UM.NETFramework", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.NETFramework.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.NETFramework.SimpleInjector\ONEbook.UM.NETFramework.SimpleInjector.csproj", "{A0D04789-3726-4645-AAD2-009E6F58A8C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.ConsoleApp", "demo\ONEbook.UM.ConsoleApp\ONEbook.UM.ConsoleApp.csproj", "{3357CEEB-152B-45D4-A2C4-994683DBCF69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.ConsoleApp", "demo\ONEbook.UM.ConsoleApp\ONEbook.UM.ConsoleApp.csproj", "{3357CEEB-152B-45D4-A2C4-994683DBCF69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONEbook.UM.Transport.OldCaching", "src\client\ONEbook.UM.Transport.OldCaching\ONEbook.UM.Transport.OldCaching.csproj", "{D152566E-2060-42BC-90DE-CBE300200AF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Transport.OldCaching", "src\client\ONEbook.UM.Transport.OldCaching\ONEbook.UM.Transport.OldCaching.csproj", "{D152566E-2060-42BC-90DE-CBE300200AF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

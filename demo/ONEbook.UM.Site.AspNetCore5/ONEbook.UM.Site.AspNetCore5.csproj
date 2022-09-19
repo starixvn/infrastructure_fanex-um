@@ -2,19 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App"/>
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.0.7"/>
+    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore.Filters\ONEbook.UM.AspNetCore.Filters.csproj" />
+    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\client\ONEbook.UM.Transport\ONEbook.UM.Transport.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj"/>
-    <ProjectReference Include="..\ONEbook.UM.Site.AspNetCore\ONEbook.UM.Site.AspNetCore.csproj"/>
+    <Folder Include="Properties\" />
   </ItemGroup>
-    <PropertyGroup Label="sonarqube-rules-synchronizer">
-    <CodeAnalysisRuleSet>../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup></Project>
+
+</Project>
