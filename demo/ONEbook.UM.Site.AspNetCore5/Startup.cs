@@ -31,14 +31,15 @@ namespace ONEbook.UM.Site.AspNetCore5
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(new UMClientConfiguration().Initialize(Configuration));
-            services.AddSingleton<CheckUMFilterAttribute>();
+            services.AddScoped<CheckUMFilterAttribute>();
+            services.AddScoped<SkipUMFilterAttribute>();
             services.AddSingleton<IUMCacheService, UMCacheService>();
             services.AddSingleton<IUMRestClient, UMRestClient>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
             services.AddSingleton<IMaintenanceService, MaintenanceService>();
             services.AddSession();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(o=>o.Filters.Add<CheckUMFilterAttribute>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,12 +2,14 @@
 namespace ONEbook.UM.AspNetCore.Filters
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
     using Configurations;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Filters;
     using Newtonsoft.Json;
     using Services;
@@ -26,6 +28,13 @@ namespace ONEbook.UM.AspNetCore.Filters
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            var actionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+            var attributes = actionDescriptor.MethodInfo.CustomAttributes;
+            if (attributes.Any(a => a.AttributeType == typeof(SkipUMFilterAttribute)))
+            {
+                await base.OnActionExecutionAsync(context, next);
+            }
+
             var isUnderMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
 
             if (isUnderMaintenance)
@@ -78,7 +87,6 @@ namespace ONEbook.UM.AspNetCore.Filters
             {
                 filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl, true);
             }
-            
         }
 
         private static bool IsAjax(HttpRequest request)

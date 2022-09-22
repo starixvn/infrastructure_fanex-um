@@ -19,10 +19,10 @@ namespace ONEbook.UM.Site.AspNetCore5.Controllers
             _logger = logger;
         }
 
-        [ServiceFilter(typeof(CheckUMFilterAttribute))]
-        public IActionResult Index()
+        [SkipUMFilter]
+        public string Index()
         {
-            return View();
+            return "Home";
         }
 
         public IActionResult Privacy()
