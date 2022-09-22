@@ -5,6 +5,7 @@
         MBCAgencySite = 3100000,
         IndoAgencySite = 3200000,
         _789yAgencySite = 3300000,
+        Chatbot = 3400000,
         AccountSite = 2000000,
         LRF = 2000001,
         OWA = 2000002,

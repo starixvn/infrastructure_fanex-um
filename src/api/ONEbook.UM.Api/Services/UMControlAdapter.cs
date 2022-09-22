@@ -47,6 +47,7 @@ public class UMControlAdapter : IUMControlAdapter
             { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
             { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
             { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
+            { (int)Sites.Chatbot, (int)Sites.Chatbot },
             { (int)Sites.AccountSite, (int)Sites.AccountSite },
             { (int)Sites.LRF, (int)Sites.LRF },
             { (int)Sites.OWA, (int)Sites.OWA },
@@ -178,14 +179,14 @@ public class UMControlAdapter : IUMControlAdapter
         var serializer = new XmlSerializer(typeof(UMStageMessageSite));
         var stageMessageSite = (UMStageMessageSite)serializer.Deserialize(new StringReader(responseString));
         var messageSite = stageMessageSite.MessageSites[0];
-        var startTime = messageSite.StartTime.AddHours(8.0);
-        var endTime = messageSite.EndTime.AddHours(8.0);
+        var startTime = messageSite.StartTime;
+        var endTime = messageSite.EndTime;
         DateTime utcNow = DateTime.UtcNow;
         if (utcNow.Subtract(startTime).TotalSeconds >= 0.0 && endTime.Subtract(utcNow).TotalSeconds >= 0.0)
         {
-            return (true, startTime, endTime, SUCCESS_ECODE);
+            return (true, startTime.AddHours(8.0), endTime.AddHours(8.0), SUCCESS_ECODE);
         }
 
-        return (false, startTime, endTime, SUCCESS_ECODE);
+        return (false, startTime.AddHours(8.0), endTime.AddHours(8.0), SUCCESS_ECODE);
     }
 }
