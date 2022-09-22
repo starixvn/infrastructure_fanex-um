@@ -180,7 +180,12 @@ public class UMControlAdapter : IUMControlAdapter
         var messageSite = stageMessageSite.MessageSites[0];
         var startTime = messageSite.StartTime.AddHours(8.0);
         var endTime = messageSite.EndTime.AddHours(8.0);
+        DateTime utcNow = DateTime.UtcNow;
+        if (utcNow.Subtract(startTime).TotalSeconds >= 0.0 && endTime.Subtract(utcNow).TotalSeconds >= 0.0)
+        {
+            return (true, startTime, endTime, SUCCESS_ECODE);
+        }
 
-        return (true, startTime, endTime, SUCCESS_ECODE);
+        return (false, startTime, endTime, SUCCESS_ECODE);
     }
 }
