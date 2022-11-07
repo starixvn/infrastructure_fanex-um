@@ -15,6 +15,8 @@
 
         public T Get<T>(string key) => cacheService.Get<T>(key);
 
+        public void Remove(string key) => cacheService.Remove(key);
+
         public void Set<T>(string key, T value, TimeSpan absoluteExpiration)
            => cacheService.Set(key, value, new CacheItemOptions().SetAbsoluteExpiration(absoluteExpiration));
     }

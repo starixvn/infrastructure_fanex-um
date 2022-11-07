@@ -24,6 +24,8 @@
         bool IsUnderMaintenance();
 
         Task<bool> IsUnderMaintenanceAsync();
+
+        void RemoveUnderMaintenanceTimeCache();
     }
 
     public class MaintenanceService : IMaintenanceService
@@ -237,6 +239,12 @@
 
                 return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
             }
+        }
+
+        public void RemoveUnderMaintenanceTimeCache()
+        {
+            var cacheKey = string.Format(SiteUmCacheKey, configuration.SiteId);
+            cacheService.Remove(cacheKey);
         }
     }
 }

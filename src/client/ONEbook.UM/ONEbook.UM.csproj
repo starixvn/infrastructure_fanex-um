@@ -2,15 +2,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0;net5</TargetFrameworks>
-    <Version>3.1.3</Version>
+    <Version>3.1.4-beta0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Caching local machine IP</PackageReleaseNotes>
+    <PackageReleaseNotes>Support clear cache</PackageReleaseNotes>
     <PackageProjectUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</RepositoryUrl>
     <RepositoryType>Core Libs</RepositoryType>
     <Copyright>@nexcel.vn</Copyright>
-    <AssemblyVersion>3.1.3.0</AssemblyVersion>
-    <FileVersion>3.1.3.0</FileVersion>
+    <AssemblyVersion>3.1.4.0</AssemblyVersion>
+    <FileVersion>3.1.4.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <CodeAnalysisRuleSet>ONEbook.UM.ruleset</CodeAnalysisRuleSet>
