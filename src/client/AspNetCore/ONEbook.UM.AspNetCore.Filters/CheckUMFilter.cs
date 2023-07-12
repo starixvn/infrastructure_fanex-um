@@ -2,13 +2,16 @@
 namespace ONEbook.UM.AspNetCore.Filters
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
     using Configurations;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Extensions;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Filters;
+    using Newtonsoft.Json;
     using Services;
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
@@ -23,29 +26,29 @@ namespace ONEbook.UM.AspNetCore.Filters
             this.configuration = configuration ?? UMClientManager.UMClientConfigs;
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            var isUnderMaintenance = maintenanceService.IsUnderMaintenance();
-
-            if (isUnderMaintenance)
-            {
-                UnderMaintenanceAction(context);
-            }
-
-            var umTime = maintenanceService.GetUnderMaintenanceTime();
-
-            if (!string.IsNullOrWhiteSpace(configuration.ErrorUMPageUrl) && umTime.ConnectionResult.IsNotOk)
-            {
-                ErrorUnderMaintenanceAction(context);
-            }
-        }
-
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
+            var actionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+            var attributes = actionDescriptor.MethodInfo.CustomAttributes;
+            if (attributes.Any(a => a.AttributeType == typeof(SkipUMFilterAttribute)))
+            {
+                await base.OnActionExecutionAsync(context, next);
+            }
+
             var isUnderMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
 
             if (isUnderMaintenance)
             {
+                if (IsAjax(context.HttpContext.Request))
+                {
+                    var response = context.HttpContext.Response;
+                    response.ContentType = "application/json";
+                    response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
+                    var result = JsonConvert.SerializeObject(new { code = 999999, message = "Under maintenance time." });
+                    await response.WriteAsync(result);
+                    return;
+                }
+
                 UnderMaintenanceAction(context);
             }
 
@@ -56,57 +59,33 @@ namespace ONEbook.UM.AspNetCore.Filters
                 ErrorUnderMaintenanceAction(context);
             }
 
-            await next();
+            await base.OnActionExecutionAsync(context, next);
         }
 
         public void UnderMaintenanceAction(ActionExecutingContext filterContext)
         {
-            var response = filterContext.HttpContext.Response;
+            var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
+                filterContext.HttpContext.Request.Scheme,
+                filterContext.HttpContext.Request.Host,
+                configuration.UMPageUrl);
+            var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
 
-            if (IsAjax(filterContext.HttpContext.Request))
+            if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
             {
-                response.Clear();
-                response.WriteAsync("{ \"code\": 999999, \"message\": \"Under maintenance time.\" }").GetAwaiter().GetResult();
-                filterContext.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                filterContext.Result.ExecuteResultAsync(filterContext).GetAwaiter().GetResult();
-            }
-            else
-            {
-                var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
-                    filterContext.HttpContext.Request.Scheme,
-                    filterContext.HttpContext.Request.Host,
-                    configuration.UMPageUrl);
-                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
-
-                if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
-                {
-                    filterContext.Result = new RedirectResult(configuration.UMPageUrl, true);
-                }
+                filterContext.Result = new RedirectResult(configuration.UMPageUrl, true);
             }
         }
 
         public void ErrorUnderMaintenanceAction(ActionExecutingContext filterContext)
         {
-            var response = filterContext.HttpContext.Response;
+            var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
+                configuration.ErrorUMPageUrl,
+                filterContext.HttpContext.Request.Host);
+            var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
 
-            if (IsAjax(filterContext.HttpContext.Request))
+            if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
             {
-                response.Clear();
-                response.WriteAsync("{ \"code\": 999998, \"message\": \"UM Error\" }").GetAwaiter().GetResult();
-                filterContext.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                filterContext.Result.ExecuteResultAsync(filterContext).GetAwaiter().GetResult();
-            }
-            else
-            {
-                var underMaintenancePageAbsoluteUrl = UriHelper.BuildAbsolute(
-                   configuration.ErrorUMPageUrl,
-                   filterContext.HttpContext.Request.Host);
-                var currentPageAbsoluteUrl = filterContext.HttpContext.Request.GetDisplayUrl();
-
-                if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
-                {
-                    filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl, true);
-                }
+                filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl, true);
             }
         }
 

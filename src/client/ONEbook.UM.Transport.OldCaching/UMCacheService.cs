@@ -17,5 +17,7 @@
 
         public void Set<T>(string key, T value, TimeSpan absoluteExpiration)
            => cacheService.Set(key, value, absoluteExpiration);
+
+        public void Remove(string key) => cacheService.Remove(key);
     }
 }
