@@ -1,0 +1,1166 @@
+{
+  "ONEbook.UM.Api.dll": {
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Program.cs": {
+      "ONEbook.UM.Api.Program": {
+        "System.Void ONEbook.UM.Api.Program::Main(System.String[])": {
+          "Lines": {
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0
+          },
+          "Branches": []
+        },
+        "Microsoft.Extensions.Hosting.IHostBuilder ONEbook.UM.Api.Program::CreateHostBuilder(Microsoft.Extensions.Configuration.IConfiguration,System.String[])": {
+          "Lines": {
+            "29": 0,
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0
+          },
+          "Branches": []
+        },
+        "System.Void ONEbook.UM.Api.Program::InitFanexLogger(Microsoft.Extensions.Configuration.IConfiguration)": {
+          "Lines": {
+            "38": 0,
+            "39": 0,
+            "40": 0,
+            "41": 0,
+            "43": 0,
+            "44": 0,
+            "45": 0
+          },
+          "Branches": []
+        },
+        "Microsoft.Extensions.Configuration.IConfiguration ONEbook.UM.Api.Program::GetConfiguration()": {
+          "Lines": {
+            "48": 0,
+            "49": 0,
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "54": 0,
+            "55": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Startup.cs": {
+      "ONEbook.UM.Api.Startup": {
+        "Microsoft.Extensions.Configuration.IConfiguration ONEbook.UM.Api.Startup::get_Configuration()": {
+          "Lines": {
+            "17": 0
+          },
+          "Branches": []
+        },
+        "System.Void ONEbook.UM.Api.Startup::ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)": {
+          "Lines": {
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "31": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "39": 0,
+            "40": 0,
+            "41": 0
+          },
+          "Branches": []
+        },
+        "System.Void ONEbook.UM.Api.Startup::Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)": {
+          "Lines": {
+            "44": 0,
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0,
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "53": 0,
+            "55": 0,
+            "56": 0,
+            "57": 0,
+            "58": 0,
+            "59": 0,
+            "60": 0,
+            "61": 0,
+            "62": 0,
+            "63": 0,
+            "64": 0,
+            "66": 0,
+            "67": 0,
+            "68": 0
+          },
+          "Branches": [
+            {
+              "Line": 45,
+              "Offset": 9,
+              "EndOffset": 11,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 45,
+              "Offset": 9,
+              "EndOffset": 22,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.Void ONEbook.UM.Api.Startup::.ctor(Microsoft.Extensions.Configuration.IConfiguration)": {
+          "Lines": {
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Services\\FakeUMControlAdapter.cs": {
+      "ONEbook.UM.Api.Services.FakeUMControlAdapter": {
+        "ONEbook.UM.Api.Models.UnderMaintenanceTime ONEbook.UM.Api.Services.FakeUMControlAdapter::GetUnderMaintenance()": {
+          "Lines": {
+            "23": 0,
+            "24": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "39": 0,
+            "40": 0,
+            "42": 0,
+            "44": 0,
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0
+          },
+          "Branches": [
+            {
+              "Line": 26,
+              "Offset": 40,
+              "EndOffset": 42,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 26,
+              "Offset": 40,
+              "EndOffset": 50,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 246,
+              "EndOffset": 72,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 89,
+              "EndOffset": 91,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 100,
+              "EndOffset": 102,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 100,
+              "EndOffset": 130,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 89,
+              "EndOffset": 133,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 138,
+              "EndOffset": 140,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 0
+            },
+            {
+              "Line": 33,
+              "Offset": 138,
+              "EndOffset": 233,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 0
+            },
+            {
+              "Line": 31,
+              "Offset": 246,
+              "EndOffset": 251,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.Void ONEbook.UM.Api.Services.FakeUMControlAdapter::.ctor(Microsoft.Extensions.Options.IOptions`1<ONEbook.UM.Api.Configurations.FakeUMConfiguration>)": {
+          "Lines": {
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Services\\UMControlAdapter.cs": {
+      "ONEbook.UM.Api.Services.UMControlAdapter": {
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter::.ctor(Microsoft.Extensions.Options.IOptions`1<ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration>,ONEbook.UM.Api.Services.IFakeUMControlAdapter,System.Net.Http.HttpClient,Fanex.Logging.ILogger)": {
+          "Lines": {
+            "30": 0,
+            "31": 0,
+            "32": 0,
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "37": 0,
+            "38": 0,
+            "39": 0,
+            "40": 0
+          },
+          "Branches": []
+        },
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter::.cctor()": {
+          "Lines": {
+            "45": 0,
+            "46": 0,
+            "47": 0,
+            "48": 0,
+            "49": 0,
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "53": 0,
+            "54": 0,
+            "55": 0,
+            "56": 0,
+            "57": 0,
+            "58": 0,
+            "59": 0
+          },
+          "Branches": []
+        }
+      },
+      "ONEbook.UM.Api.Services.UMControlAdapter/<>c": {
+        "System.Int32 ONEbook.UM.Api.Services.UMControlAdapter/<>c::<GetScheduledUnderMaintenanceInformation>b__11_0(System.Int32)": {
+          "Lines": {
+            "102": 0
+          },
+          "Branches": []
+        }
+      },
+      "ONEbook.UM.Api.Services.UMControlAdapter/<FetchUMInformation>d__13": {
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter/<FetchUMInformation>d__13::MoveNext()": {
+          "Lines": {
+            "137": 0,
+            "138": 0,
+            "139": 0,
+            "140": 0,
+            "142": 0,
+            "143": 0,
+            "144": 0,
+            "146": 0,
+            "147": 0,
+            "148": 0,
+            "149": 0,
+            "150": 0,
+            "151": 0,
+            "152": 0,
+            "153": 0,
+            "154": 0,
+            "155": 0,
+            "156": 0,
+            "157": 0,
+            "158": 0,
+            "160": 0,
+            "162": 0,
+            "163": 0,
+            "164": 0,
+            "165": 0,
+            "166": 0,
+            "167": 0,
+            "168": 0,
+            "169": 0,
+            "170": 0,
+            "171": 0,
+            "172": 0,
+            "174": 0,
+            "175": 0,
+            "176": 0,
+            "179": 0,
+            "180": 0,
+            "181": 0,
+            "182": 0,
+            "183": 0,
+            "184": 0,
+            "185": 0,
+            "186": 0,
+            "187": 0,
+            "190": 0,
+            "191": 0
+          },
+          "Branches": [
+            {
+              "Line": 142,
+              "Offset": 984,
+              "EndOffset": 91,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            },
+            {
+              "Line": 150,
+              "Offset": 369,
+              "EndOffset": 374,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 155,
+              "Offset": 572,
+              "EndOffset": 574,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 155,
+              "Offset": 572,
+              "EndOffset": 587,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 150,
+              "Offset": 369,
+              "EndOffset": 624,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 142,
+              "Offset": 984,
+              "EndOffset": 989,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 174,
+              "Offset": 1009,
+              "EndOffset": 1011,
+              "Path": 0,
+              "Ordinal": 6,
+              "Hits": 0
+            },
+            {
+              "Line": 176,
+              "Offset": 1045,
+              "EndOffset": 1047,
+              "Path": 0,
+              "Ordinal": 8,
+              "Hits": 0
+            },
+            {
+              "Line": 176,
+              "Offset": 1045,
+              "EndOffset": 1050,
+              "Path": 1,
+              "Ordinal": 9,
+              "Hits": 0
+            },
+            {
+              "Line": 174,
+              "Offset": 1009,
+              "EndOffset": 1062,
+              "Path": 1,
+              "Ordinal": 7,
+              "Hits": 0
+            },
+            {
+              "Line": 185,
+              "Offset": 1215,
+              "EndOffset": 1217,
+              "Path": 0,
+              "Ordinal": 10,
+              "Hits": 0
+            },
+            {
+              "Line": 185,
+              "Offset": 1215,
+              "EndOffset": 1259,
+              "Path": 1,
+              "Ordinal": 11,
+              "Hits": 0
+            },
+            {
+              "Line": 185,
+              "Offset": 1264,
+              "EndOffset": 1266,
+              "Path": 0,
+              "Ordinal": 12,
+              "Hits": 0
+            },
+            {
+              "Line": 185,
+              "Offset": 1264,
+              "EndOffset": 1317,
+              "Path": 1,
+              "Ordinal": 13,
+              "Hits": 0
+            }
+          ]
+        }
+      },
+      "ONEbook.UM.Api.Services.UMControlAdapter/<GetAllUnderMaintenanceTime>d__10": {
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter/<GetAllUnderMaintenanceTime>d__10::MoveNext()": {
+          "Lines": {
+            "85": 0,
+            "86": 0,
+            "87": 0,
+            "88": 0,
+            "89": 0,
+            "90": 0,
+            "91": 0,
+            "92": 0
+          },
+          "Branches": [
+            {
+              "Line": 87,
+              "Offset": 265,
+              "EndOffset": 61,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 87,
+              "Offset": 265,
+              "EndOffset": 270,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            }
+          ]
+        }
+      },
+      "ONEbook.UM.Api.Services.UMControlAdapter/<GetScheduledUnderMaintenance>d__12": {
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter/<GetScheduledUnderMaintenance>d__12::MoveNext()": {
+          "Lines": {
+            "115": 0,
+            "116": 0,
+            "117": 0,
+            "118": 0,
+            "122": 0,
+            "124": 0,
+            "125": 0,
+            "126": 0,
+            "127": 0,
+            "128": 0,
+            "129": 0,
+            "130": 0,
+            "133": 0,
+            "134": 0
+          },
+          "Branches": [
+            {
+              "Line": 116,
+              "Offset": 36,
+              "EndOffset": 38,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 116,
+              "Offset": 36,
+              "EndOffset": 84,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 124,
+              "Offset": 340,
+              "EndOffset": 342,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 124,
+              "Offset": 340,
+              "EndOffset": 395,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            }
+          ]
+        }
+      },
+      "ONEbook.UM.Api.Services.UMControlAdapter/<GetScheduledUnderMaintenanceInformation>d__11": {
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter/<GetScheduledUnderMaintenanceInformation>d__11::MoveNext()": {
+          "Lines": {
+            "95": 0,
+            "96": 0,
+            "98": 0,
+            "100": 0,
+            "101": 0,
+            "105": 0,
+            "106": 0,
+            "107": 0,
+            "108": 0,
+            "109": 0,
+            "111": 0,
+            "112": 0
+          },
+          "Branches": [
+            {
+              "Line": 100,
+              "Offset": 88,
+              "EndOffset": 90,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 100,
+              "Offset": 88,
+              "EndOffset": 156,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 106,
+              "Offset": 403,
+              "EndOffset": 198,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 106,
+              "Offset": 403,
+              "EndOffset": 408,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            }
+          ]
+        }
+      },
+      "ONEbook.UM.Api.Services.UMControlAdapter/<GetUnderMaintenanceTime>d__9": {
+        "System.Void ONEbook.UM.Api.Services.UMControlAdapter/<GetUnderMaintenanceTime>d__9::MoveNext()": {
+          "Lines": {
+            "62": 0,
+            "63": 0,
+            "65": 0,
+            "66": 0,
+            "67": 0,
+            "70": 0,
+            "71": 0,
+            "72": 0,
+            "75": 0,
+            "76": 0,
+            "77": 0,
+            "78": 0,
+            "81": 0,
+            "82": 0
+          },
+          "Branches": [
+            {
+              "Line": 65,
+              "Offset": 51,
+              "EndOffset": 53,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 65,
+              "Offset": 51,
+              "EndOffset": 66,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 70,
+              "Offset": 84,
+              "EndOffset": 86,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 70,
+              "Offset": 84,
+              "EndOffset": 132,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            },
+            {
+              "Line": 75,
+              "Offset": 152,
+              "EndOffset": 157,
+              "Path": 0,
+              "Ordinal": 4,
+              "Hits": 0
+            },
+            {
+              "Line": 75,
+              "Offset": 152,
+              "EndOffset": 430,
+              "Path": 1,
+              "Ordinal": 5,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Services\\UMTokenService.cs": {
+      "ONEbook.UM.Api.Services.UMTokenService": {
+        "System.Boolean ONEbook.UM.Api.Services.UMTokenService::IsValidUMToken(ONEbook.UM.Api.Constants.Sites,System.String)": {
+          "Lines": {
+            "33": 0,
+            "34": 0,
+            "35": 0,
+            "36": 0,
+            "39": 0,
+            "40": 0,
+            "41": 0,
+            "44": 0,
+            "46": 0,
+            "47": 0
+          },
+          "Branches": [
+            {
+              "Line": 34,
+              "Offset": 9,
+              "EndOffset": 11,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 34,
+              "Offset": 9,
+              "EndOffset": 23,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 39,
+              "Offset": 32,
+              "EndOffset": 34,
+              "Path": 0,
+              "Ordinal": 2,
+              "Hits": 0
+            },
+            {
+              "Line": 39,
+              "Offset": 32,
+              "EndOffset": 46,
+              "Path": 1,
+              "Ordinal": 3,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.String ONEbook.UM.Api.Services.UMTokenService::GenerateToken(ONEbook.UM.Api.Constants.Sites)": {
+          "Lines": {
+            "50": 0,
+            "51": 0,
+            "52": 0,
+            "54": 0,
+            "55": 0,
+            "57": 0,
+            "58": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Services.UMTokenService::GetUMToken(ONEbook.UM.Api.Constants.Sites)": {
+          "Lines": {
+            "61": 0,
+            "62": 0,
+            "63": 0,
+            "64": 0,
+            "67": 0,
+            "68": 0
+          },
+          "Branches": [
+            {
+              "Line": 62,
+              "Offset": 10,
+              "EndOffset": 12,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 62,
+              "Offset": 10,
+              "EndOffset": 24,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.Collections.Generic.IDictionary`2<ONEbook.UM.Api.Constants.Sites,ONEbook.UM.Api.Models.SiteToken> ONEbook.UM.Api.Services.UMTokenService::GetAllUMTokens()": {
+          "Lines": {
+            "71": 0,
+            "72": 0,
+            "73": 0,
+            "75": 0,
+            "76": 0,
+            "77": 0,
+            "78": 0,
+            "79": 0,
+            "80": 0,
+            "81": 0,
+            "82": 0,
+            "83": 0,
+            "84": 0,
+            "86": 0,
+            "87": 0
+          },
+          "Branches": [
+            {
+              "Line": 75,
+              "Offset": 88,
+              "EndOffset": 38,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            },
+            {
+              "Line": 75,
+              "Offset": 88,
+              "EndOffset": 90,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            }
+          ]
+        },
+        "System.Void ONEbook.UM.Api.Services.UMTokenService::.ctor(ONEbook.UM.Api.Helpers.IDateTimeHelper,Microsoft.Extensions.Options.IOptions`1<ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration>)": {
+          "Lines": {
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0,
+            "30": 0
+          },
+          "Branches": [
+            {
+              "Line": 28,
+              "Offset": 11,
+              "EndOffset": 13,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 28,
+              "Offset": 11,
+              "EndOffset": 19,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Models\\MessageSite.cs": {
+      "ONEbook.UM.Api.Models.MessageSite": {
+        "System.Int32 ONEbook.UM.Api.Models.MessageSite::get_SiteId()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Models.MessageSite::get_SiteName()": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        },
+        "System.DateTime ONEbook.UM.Api.Models.MessageSite::get_StartTime()": {
+          "Lines": {
+            "15": 0
+          },
+          "Branches": []
+        },
+        "System.DateTime ONEbook.UM.Api.Models.MessageSite::get_EndTime()": {
+          "Lines": {
+            "18": 0
+          },
+          "Branches": []
+        },
+        "ONEbook.UM.Api.Constants.UMStage ONEbook.UM.Api.Models.MessageSite::get_Stage()": {
+          "Lines": {
+            "21": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Models\\SiteToken.cs": {
+      "ONEbook.UM.Api.Models.SiteToken": {
+        "System.Int32 ONEbook.UM.Api.Models.SiteToken::get_SiteId()": {
+          "Lines": {
+            "5": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Models.SiteToken::get_Token()": {
+          "Lines": {
+            "7": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Models\\TokenValidationRequest.cs": {
+      "ONEbook.UM.Api.Models.TokenValidationRequest": {
+        "ONEbook.UM.Api.Constants.Sites ONEbook.UM.Api.Models.TokenValidationRequest::get_SiteId()": {
+          "Lines": {
+            "7": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Models.TokenValidationRequest::get_Token()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Models\\UMStageMessageSite.cs": {
+      "ONEbook.UM.Api.Models.UMStageMessageSite": {
+        "System.String ONEbook.UM.Api.Models.UMStageMessageSite::get_VersionChkMessage()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        },
+        "ONEbook.UM.Api.Models.MessageSite[] ONEbook.UM.Api.Models.UMStageMessageSite::get_MessageSites()": {
+          "Lines": {
+            "13": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Models\\UnderMaintenanceTime.cs": {
+      "ONEbook.UM.Api.Models.UnderMaintenanceTime": {
+        "System.String ONEbook.UM.Api.Models.UnderMaintenanceTime::get_From()": {
+          "Lines": {
+            "17": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Models.UnderMaintenanceTime::get_To()": {
+          "Lines": {
+            "19": 0
+          },
+          "Branches": []
+        },
+        "System.Boolean ONEbook.UM.Api.Models.UnderMaintenanceTime::get_IsUnderMaintenanceTime()": {
+          "Lines": {
+            "21": 0
+          },
+          "Branches": []
+        },
+        "System.Int32 ONEbook.UM.Api.Models.UnderMaintenanceTime::get_ErrorCode()": {
+          "Lines": {
+            "23": 0
+          },
+          "Branches": []
+        },
+        "System.Void ONEbook.UM.Api.Models.UnderMaintenanceTime::.ctor(System.Boolean,System.String,System.String,System.Int32)": {
+          "Lines": {
+            "5": 0,
+            "6": 0,
+            "7": 0,
+            "8": 0,
+            "9": 0,
+            "10": 0,
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Helpers\\DateTimeHelper.cs": {
+      "ONEbook.UM.Api.Helpers.DateTimeHelper": {
+        "System.String ONEbook.UM.Api.Helpers.DateTimeHelper::GetUtcNowShortDateString()": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Extensions\\ExceptionMiddlewareExtensions.cs": {
+      "ONEbook.UM.Api.Extensions.ExceptionMiddlewareExtensions": {
+        "System.Void ONEbook.UM.Api.Extensions.ExceptionMiddlewareExtensions::ConfigureExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder)": {
+          "Lines": {
+            "10": 0,
+            "11": 0,
+            "12": 0,
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0,
+            "18": 0,
+            "19": 0,
+            "20": 0,
+            "21": 0,
+            "22": 0,
+            "23": 0,
+            "24": 0,
+            "25": 0,
+            "26": 0,
+            "27": 0,
+            "28": 0,
+            "29": 0
+          },
+          "Branches": []
+        }
+      },
+      "ONEbook.UM.Api.Extensions.ExceptionMiddlewareExtensions/<>c/<<ConfigureExceptionHandler>b__0_1>d": {
+        "System.Void ONEbook.UM.Api.Extensions.ExceptionMiddlewareExtensions/<>c/<<ConfigureExceptionHandler>b__0_1>d::MoveNext()": {
+          "Lines": {},
+          "Branches": [
+            {
+              "Line": 18,
+              "Offset": 106,
+              "EndOffset": 111,
+              "Path": 0,
+              "Ordinal": 0,
+              "Hits": 0
+            },
+            {
+              "Line": 18,
+              "Offset": 106,
+              "EndOffset": 383,
+              "Path": 1,
+              "Ordinal": 1,
+              "Hits": 0
+            }
+          ]
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Controllers\\TokenController.cs": {
+      "ONEbook.UM.Api.Controllers.TokenController": {
+        "Microsoft.AspNetCore.Mvc.IActionResult ONEbook.UM.Api.Controllers.TokenController::Validate(System.Int32,System.String)": {
+          "Lines": {
+            "20": 0,
+            "22": 0,
+            "24": 0,
+            "25": 0
+          },
+          "Branches": []
+        },
+        "Microsoft.AspNetCore.Mvc.IActionResult ONEbook.UM.Api.Controllers.TokenController::GetAll()": {
+          "Lines": {
+            "29": 0,
+            "30": 0,
+            "32": 0,
+            "33": 0
+          },
+          "Branches": []
+        },
+        "System.Void ONEbook.UM.Api.Controllers.TokenController::.ctor(ONEbook.UM.Api.Services.IUMTokenService)": {
+          "Lines": {
+            "13": 0,
+            "14": 0,
+            "15": 0,
+            "16": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Controllers\\UnderMaintenanceController.cs": {
+      "ONEbook.UM.Api.Controllers.UnderMaintenanceController": {
+        "System.Void ONEbook.UM.Api.Controllers.UnderMaintenanceController::.ctor(ONEbook.UM.Api.Services.IUMControlAdapter)": {
+          "Lines": {
+            "14": 0,
+            "15": 0,
+            "16": 0,
+            "17": 0
+          },
+          "Branches": []
+        }
+      },
+      "ONEbook.UM.Api.Controllers.UnderMaintenanceController/<Get>d__3": {
+        "System.Void ONEbook.UM.Api.Controllers.UnderMaintenanceController/<Get>d__3::MoveNext()": {
+          "Lines": {
+            "25": 0
+          },
+          "Branches": []
+        }
+      },
+      "ONEbook.UM.Api.Controllers.UnderMaintenanceController/<GetAll>d__2": {
+        "System.Void ONEbook.UM.Api.Controllers.UnderMaintenanceController/<GetAll>d__2::MoveNext()": {
+          "Lines": {
+            "21": 0
+          },
+          "Branches": []
+        }
+      },
+      "ONEbook.UM.Api.Controllers.UnderMaintenanceController/<GetScheduledUnderMaintenance>d__4": {
+        "System.Void ONEbook.UM.Api.Controllers.UnderMaintenanceController/<GetScheduledUnderMaintenance>d__4::MoveNext()": {
+          "Lines": {
+            "30": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Configurations\\FakeUMConfiguration.cs": {
+      "ONEbook.UM.Api.Configurations.FakeUMConfiguration": {
+        "System.Boolean ONEbook.UM.Api.Configurations.FakeUMConfiguration::get_Enable()": {
+          "Lines": {
+            "7": 0
+          },
+          "Branches": []
+        },
+        "System.Int32 ONEbook.UM.Api.Configurations.FakeUMConfiguration::get_Period()": {
+          "Lines": {
+            "8": 0
+          },
+          "Branches": []
+        },
+        "System.Int32[] ONEbook.UM.Api.Configurations.FakeUMConfiguration::get_MinutesCheck()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        }
+      }
+    },
+    "d:\\Git\\Infrastructure\\fanex-um\\src\\api\\ONEbook.UM.Api\\Configurations\\UnderMaintenanceApiConfiguration.cs": {
+      "ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration": {
+        "System.String ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration::get_SecretKey()": {
+          "Lines": {
+            "7": 0
+          },
+          "Branches": []
+        },
+        "System.Boolean ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration::get_EnableCheckUM()": {
+          "Lines": {
+            "8": 0
+          },
+          "Branches": []
+        },
+        "System.Boolean ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration::get_EnableUnscheduledUM()": {
+          "Lines": {
+            "9": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration::get_UMFrom()": {
+          "Lines": {
+            "10": 0
+          },
+          "Branches": []
+        },
+        "System.String ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration::get_UMTo()": {
+          "Lines": {
+            "11": 0
+          },
+          "Branches": []
+        },
+        "System.String[] ONEbook.UM.Api.Configurations.UnderMaintenanceApiConfiguration::get_UMServiceURL()": {
+          "Lines": {
+            "12": 0
+          },
+          "Branches": []
+        }
+      }
+    }
+  }
+}
