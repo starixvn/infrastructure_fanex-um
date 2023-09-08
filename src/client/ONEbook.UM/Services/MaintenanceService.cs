@@ -58,10 +58,7 @@
 
                 return !string.IsNullOrEmpty(isByPassUm) && isByPassUm == "1";
             }
-            set
-            {
-                httpContextHelper?.SetSession(ByPassUmSessionKey, value ? "1" : "0");
-            }
+            set => httpContextHelper?.SetSession(ByPassUmSessionKey, value ? "1" : "0");
         }
 
         public UnderMaintenanceTime GetUnderMaintenanceTime()
@@ -128,16 +125,16 @@
 
         public bool IsUnderMaintenance()
         {
-            if (ByPassUm)
-            {
-                return false;
-            }
-
             var token = httpContextHelper.GetValueFromQueryString(TokenName);
             var underMaintenanceTime = GetUnderMaintenanceTime();
             var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
 
             if (nowIsNotUnderMaintenance)
+            {
+                return false;
+            }
+
+            if (ByPassUm)
             {
                 return false;
             }
@@ -156,16 +153,16 @@
 
         public async Task<bool> IsUnderMaintenanceAsync()
         {
-            if (ByPassUm)
-            {
-                return false;
-            }
-
             var token = httpContextHelper.GetValueFromQueryString(TokenName);
             var underMaintenanceTime = await GetUnderMaintenanceTimeAsync().ConfigureAwait(false);
             var nowIsNotUnderMaintenance = !underMaintenanceTime.IsUnderMaintenanceTime;
 
             if (nowIsNotUnderMaintenance)
+            {
+                return false;
+            }
+
+            if (ByPassUm)
             {
                 return false;
             }
