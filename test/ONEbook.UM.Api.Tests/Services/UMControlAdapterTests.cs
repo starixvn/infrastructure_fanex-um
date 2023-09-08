@@ -1,136 +1,126 @@
-namespace ONEbook.UM.Api.Tests.Services
+namespace ONEbook.UM.Api.Tests.Services;
+
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Fanex.Logging;
+using Microsoft.Extensions.Options;
+using NSubstitute;
+using Configurations;
+using Constants;
+using Models;
+using ONEbook.UM.Api.Services;
+using Xunit;
+
+public class UMControlAdapterTests
 {
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-    using Fanex.Logging;
-    using Microsoft.Extensions.Options;
-    using NSubstitute;
-    using ONEbook.UM.Api.Configurations;
-    using ONEbook.UM.Api.Constants;
-    using ONEbook.UM.Api.Models;
-    using ONEbook.UM.Api.Services;
-    using Xunit;
-
-    public class UMControlAdapterTests
+    private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
     {
-        private static readonly IDictionary<int, int> OldNewSiteIdMappers = new Dictionary<int, int>
+        { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
+        { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
+        { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
+        { (int)Sites.AccountSite, (int)Sites.AccountSite },
+        { (int)Sites.LRF, (int)Sites.LRF },
+        { (int)Sites.OWA, (int)Sites.OWA },
+        { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
+        { (int)Sites.RMS, (int)Sites.RMS },
+        { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
+        { (int)Sites._789y, 4100300 },
+        { (int)Sites.Test, (int)Sites.Test }
+    };
+
+    private readonly IOptions<UnderMaintenanceApiConfiguration> options;
+    private readonly IFakeUMControlAdapter fakeUMControlAdapter;
+    private readonly HttpClient httpClient;
+    private readonly ILogger logger;
+
+    public UMControlAdapterTests()
+    {
+        options = Substitute.For<IOptions<UnderMaintenanceApiConfiguration>>();
+        fakeUMControlAdapter = Substitute.For<IFakeUMControlAdapter>();
+        httpClient = Substitute.For<HttpClient>();
+        logger = Substitute.For<ILogger>();
+    }
+
+    [Fact]
+    public async Task GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()
+    {
+           
+        // Arrange
+        fakeUMControlAdapter.GetUnderMaintenance().Returns(new UnderMaintenanceTime(true, "3:00", "4:00"));
+
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
+
+        // Act
+        var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
+
+        // Assert
+        Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
+    }
+
+    [Fact]
+    public async Task GetUnderMaintenanceTime_EnableUnscheduleUM_ReturnUnscheduleUM()
+    {
+        // Arrange
+        options.Value.Returns(new UnderMaintenanceApiConfiguration
         {
-            { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
-            { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
-            { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
-            { (int)Sites.AccountSite, (int)Sites.AccountSite },
-            { (int)Sites.LRF, (int)Sites.LRF },
-            { (int)Sites.OWA, (int)Sites.OWA },
-            { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
-            { (int)Sites.RMS, (int)Sites.RMS },
-            { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
-            { (int)Sites._789y, 4100300 },
-            { (int)Sites.Test, (int)Sites.Test },
-        };
+            EnableUnscheduledUM = true,
+            UMFrom = "3:00",
+            UMTo = "4:00"
+        });
 
-        private readonly IUMControlAdapter umControlAdapter;
-        private readonly IOptions<UnderMaintenanceApiConfiguration> options;
-        private readonly IFakeUMControlAdapter fakeUMControlAdapter;
-        private readonly HttpClient httpClient;
-        private readonly ILogger logger;
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
 
-        public UMControlAdapterTests()
+        // Act
+        var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
+
+        // Assert
+        Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
+        Assert.Equal("3:00", actualUnderMaintenance.From);
+        Assert.Equal("4:00", actualUnderMaintenance.To);
+    }
+
+    [Fact]
+    public async Task GetScheduledUnderMaintenanceInformation_EnableUnscheduleUM_ReturnUnscheduledUM()
+    {
+        // Arrange
+        options.Value.Returns(new UnderMaintenanceApiConfiguration
         {
-            options = Substitute.For<IOptions<UnderMaintenanceApiConfiguration>>();
-            fakeUMControlAdapter = Substitute.For<IFakeUMControlAdapter>();
-            httpClient = Substitute.For<HttpClient>();
-            logger = Substitute.For<ILogger>();
-            umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
-        }
+            EnableUnscheduledUM = true,
+            UMFrom = "3:00",
+            UMTo = "4:00"
+        });
 
-        [Fact]
-        public async Task GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
+        // Act
+        var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
+
+        // Assert
+        Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
+        Assert.True(actualUnderMaintenances.All(um => um.Value.IsUnderMaintenanceTime));
+        Assert.True(actualUnderMaintenances.All(um => um.Value.From == "3:00"));
+        Assert.True(actualUnderMaintenances.All(um => um.Value.To == "4:00"));
+    }
+
+    [Fact]
+    public async Task GetScheduledUnderMaintenanceInformation_EnableCheckUM_ReturnRealUM()
+    {
+        // Arrange
+        options.Value.Returns(new UnderMaintenanceApiConfiguration
         {
-            // Arrange
-            fakeUMControlAdapter.GetUnderMaintenance().Returns(new UnderMaintenanceTime(true, "3:00", "4:00"));
+            EnableCheckUM = true
+        });
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
 
-            // Act
-            var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
+        // Act
+        var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
 
-            // Assert
-            Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
-        }
-
-        [Fact]
-        public async Task GetUnderMaintenanceTime_EnableUnscheduleUM_ReturnUnscheduleUM()
-        {
-            // Arrange
-            options.Value.Returns(new UnderMaintenanceApiConfiguration
-            {
-                EnableUnscheduledUM = true,
-                UMFrom = "3:00",
-                UMTo = "4:00"
-            });
-
-            // Act
-            var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
-
-            // Assert
-            Assert.True(actualUnderMaintenance.IsUnderMaintenanceTime);
-            Assert.Equal("3:00", actualUnderMaintenance.From);
-            Assert.Equal("4:00", actualUnderMaintenance.To);
-        }
-
-        [Fact]
-        public async Task GetScheduledUnderMaintenanceInformation_HasFakeUMInfo_ReturnFakeUM()
-        {
-            // Arrange
-            ConfigurationManager.AppSettings["EnableFakeUM"] = "true";
-
-            // Act
-            var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
-
-            // Assert
-            Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
-            Assert.True(actualUnderMaintenances.All(um => um.Value.IsUnderMaintenanceTime));
-        }
-
-        [Fact]
-        public async Task GetScheduledUnderMaintenanceInformation_EnableUnscheduleUM_ReturnUnscheduledUM()
-        {
-            // Arrange
-            options.Value.Returns(new UnderMaintenanceApiConfiguration
-            {
-                EnableUnscheduledUM = true,
-                UMFrom = "3:00",
-                UMTo = "4:00"
-            });
-
-            // Act
-            var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
-
-            // Assert
-            Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
-            Assert.True(actualUnderMaintenances.All(um => um.Value.IsUnderMaintenanceTime));
-            Assert.True(actualUnderMaintenances.All(um => um.Value.From == "3:00"));
-            Assert.True(actualUnderMaintenances.All(um => um.Value.To == "4:00"));
-        }
-
-        [Fact]
-        public async Task GetScheduledUnderMaintenanceInformation_EnableCheckUM_ReturnRealUM()
-        {
-            // Arrange
-            options.Value.Returns(new UnderMaintenanceApiConfiguration
-            {
-                EnableCheckUM = true
-            });
-
-            // Act
-            var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
-
-            // Assert
-            Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
-            Assert.True(actualUnderMaintenances.All(um => !um.Value.IsUnderMaintenanceTime));
-            Assert.True(actualUnderMaintenances.All(um => um.Value.From == "0:00"));
-            Assert.True(actualUnderMaintenances.All(um => um.Value.To == "0:00"));
-        }
+        // Assert
+        Assert.True(OldNewSiteIdMappers.All(kv => actualUnderMaintenances.ContainsKey(kv.Key)));
+        Assert.True(actualUnderMaintenances.All(um => !um.Value.IsUnderMaintenanceTime));
+        Assert.True(actualUnderMaintenances.All(um => um.Value.From == "0:00"));
+        Assert.True(actualUnderMaintenances.All(um => um.Value.To == "0:00"));
     }
 }

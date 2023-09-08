@@ -10,27 +10,27 @@
         public static string GenerateAuthorizationHeader(UMClientConfiguration config, string requestUri, string requestMethod, string machineIP)
         {
             // Calculate UNIX time
-            DateTime epochStart = new DateTime(1970, 01, 01, 0, 0, 0, 0, DateTimeKind.Utc);
-            TimeSpan timeSpan = DateTime.UtcNow - epochStart;
-            string requestTimeStamp = Convert.ToUInt64(timeSpan.TotalSeconds).ToString();
+            var epochStart = new DateTime(1970, 01, 01, 0, 0, 0, 0, DateTimeKind.Utc);
+            var timeSpan = DateTime.UtcNow - epochStart;
+            var requestTimeStamp = Convert.ToUInt64(timeSpan.TotalSeconds).ToString();
 
             // create random nonce for each request
-            string nonce = Guid.NewGuid().ToString("N");
+            var nonce = Guid.NewGuid().ToString("N");
 
             // Creating the raw signature string
-            string signatureRawData = string.Format("{0}{1}{2}{3}{4}", machineIP, requestMethod, requestUri, requestTimeStamp, nonce);
+            var signatureRawData = $"{machineIP}{requestMethod}{requestUri}{requestTimeStamp}{nonce}";
 
             var secretKeyByteArray = Convert.FromBase64String(config.SecretKey);
 
-            byte[] signature = Encoding.UTF8.GetBytes(signatureRawData);
+            var signature = Encoding.UTF8.GetBytes(signatureRawData);
 
-            using (HMACSHA256 hmac = new HMACSHA256(secretKeyByteArray))
+            using (var hmac = new HMACSHA256(secretKeyByteArray))
             {
-                byte[] signatureBytes = hmac.ComputeHash(signature);
-                string requestSignatureBase64String = Convert.ToBase64String(signatureBytes);
+                var signatureBytes = hmac.ComputeHash(signature);
+                var requestSignatureBase64String = Convert.ToBase64String(signatureBytes);
 
                 // Setting the values in the Authorization header using custom scheme (amx)
-                string authHeader = string.Format("{0}", string.Format("{0}:{1}:{2}:{3}", machineIP, requestSignatureBase64String, nonce, requestTimeStamp));
+                var authHeader = $"{machineIP}:{requestSignatureBase64String}:{nonce}:{requestTimeStamp}";
 
                 return authHeader;
             }

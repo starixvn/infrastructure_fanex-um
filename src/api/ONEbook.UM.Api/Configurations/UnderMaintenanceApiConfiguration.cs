@@ -1,14 +1,13 @@
-﻿namespace ONEbook.UM.Api.Configurations
-{
-    public class UnderMaintenanceApiConfiguration
-    {
-        public const string UnderMaintenanceApi = "ONEbook.UM.Api";
+﻿namespace ONEbook.UM.Api.Configurations;
 
-        public string SecretKey { get; set; } = string.Empty;
-        public bool EnableCheckUM { get; set; } = true;
-        public bool EnableUnscheduledUM { get; set; } = false;
-        public string UMFrom { get; set; } = string.Empty;
-        public string UMTo { get; set; } = string.Empty;
-        public string[] UMServiceURL { get; set; } = Array.Empty<string>();
-    }
+public class UnderMaintenanceApiConfiguration
+{
+    public const string UnderMaintenanceApi = "ONEbook.UM.Api";
+
+    public string SecretKey { get; set; } = string.Empty;
+    public bool EnableCheckUM { get; set; } = true;
+    public bool EnableUnscheduledUM { get; set; } = false;
+    public string UMFrom { get; set; } = string.Empty;
+    public string UMTo { get; set; } = string.Empty;
+    public string[] UMServiceURL { get; set; } = Array.Empty<string>();
 }

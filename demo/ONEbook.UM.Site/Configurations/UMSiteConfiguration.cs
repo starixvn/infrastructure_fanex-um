@@ -10,18 +10,9 @@
         private const string AllowedLoginAccountsConfigName = "AllowedLoginAccounts";
         private const string ServiceUriName = "ServiceUri";
 
-        private static UMSiteConfiguration settings
-            = ConfigurationManager.GetSection("ONEbook.UM.Site") as UMSiteConfiguration;
-
         private static IList<string> _allowedLoginAccounts;
 
-        public static UMSiteConfiguration Settings
-        {
-            get
-            {
-                return settings;
-            }
-        }
+        public static UMSiteConfiguration Settings { get; } = ConfigurationManager.GetSection("ONEbook.UM.Site") as UMSiteConfiguration;
 
         public static IList<string> AllowedLoginAccounts
         {
@@ -29,8 +20,8 @@
             {
                 if (_allowedLoginAccounts == null)
                 {
-                    var allowedAccount = UMSiteConfiguration.Settings.AllowedLoginAccountsConfig;
-                    _allowedLoginAccounts = allowedAccount.Split(',').ToList<string>();
+                    var allowedAccount = Settings.AllowedLoginAccountsConfig;
+                    _allowedLoginAccounts = allowedAccount.Split(',').ToList();
                 }
 
                 return _allowedLoginAccounts;
@@ -40,16 +31,16 @@
         [ConfigurationProperty(AllowedLoginAccountsConfigName, IsRequired = true)]
         public string AllowedLoginAccountsConfig
         {
-            get { return (string)this[AllowedLoginAccountsConfigName]; }
-            set { this[AllowedLoginAccountsConfigName] = value; }
+            get => (string)this[AllowedLoginAccountsConfigName];
+            set => this[AllowedLoginAccountsConfigName] = value;
         }
 
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Reviewed!"),
             ConfigurationProperty(ServiceUriName, IsRequired = true)]
         public string ServiceUri
         {
-            get { return (string)this[ServiceUriName]; }
-            set { this[ServiceUriName] = value; }
+            get => (string)this[ServiceUriName];
+            set => this[ServiceUriName] = value;
         }
     }
 }

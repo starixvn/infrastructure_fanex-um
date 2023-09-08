@@ -2,7 +2,7 @@
 {
     using System.Net;
     using System.Net.Sockets;
-    using ONEbook.UM.Models;
+    using Models;
 
     public interface IPHelper
     {

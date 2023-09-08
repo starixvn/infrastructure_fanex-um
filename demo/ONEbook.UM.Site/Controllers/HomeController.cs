@@ -32,12 +32,12 @@ namespace ONEbook.UM.Site.Controllers
             if (isUM)
             {
                 var underMaintenanceInfo = await _maintenanceService.GetUnderMaintenanceTimeAsync();
-                contentResult.Content = $"Site is in under maintenance "
+                contentResult.Content = "Site is in under maintenance "
                     + $" from {underMaintenanceInfo.From} to {underMaintenanceInfo.To} GMT+8.";
             }
             else
             {
-                contentResult.Content = $"Site is not in under maintenance.";
+                contentResult.Content = "Site is not in under maintenance.";
             }
 
             return contentResult;
@@ -46,24 +46,30 @@ namespace ONEbook.UM.Site.Controllers
         [CheckUMFilter]
         public ActionResult LoginWithFilter()
         {
-            var contentResult = new ContentResult();
-            contentResult.Content = "Login OK";
+            var contentResult = new ContentResult
+            {
+                Content = "Login OK"
+            };
             return contentResult;
         }
 
         [CheckUMFilter]
         public ActionResult RecheckInWithAttribute()
         {
-            var contentResult = new ContentResult();
-            contentResult.Content = "Recheck in OK";
+            var contentResult = new ContentResult
+            {
+                Content = "Recheck in OK"
+            };
             return contentResult;
         }
 
         [HttpPost, CheckUMFilter]
         public JsonResult RecheckInWithAttributeAndPostAction()
         {
-            var contentResult = new ContentResult();
-            contentResult.Content = "Recheck in OK";
+            var contentResult = new ContentResult
+            {
+                Content = "Recheck in OK"
+            };
             return Json(contentResult);
         }
 
@@ -72,20 +78,21 @@ namespace ONEbook.UM.Site.Controllers
             Session.Clear();
             Session.Abandon();
 
-            var contentResult = new ContentResult();
-            contentResult.Content = "Clear session done";
+            var contentResult = new ContentResult
+            {
+                Content = "Clear session done"
+            };
             return contentResult;
         }
 
         public async Task<ActionResult> RecheckIn()
         {
-            var isPassUM = !(await _maintenanceService.IsUnderMaintenanceAsync());
+            var isPassUM = !await _maintenanceService.IsUnderMaintenanceAsync();
 
-            var contentResult = new ContentResult();
-            contentResult.Content = string.Format(
-                "Site {0} {1} under maintenance on recheckin.",
-                UMClientManager.UMClientConfigs.SiteId,
-                isPassUM ? "passes" : "does not pass");
+            var contentResult = new ContentResult
+            {
+                Content = $"Site {UMClientManager.UMClientConfigs.SiteId} {(isPassUM ? "passes" : "does not pass")} under maintenance on recheckin."
+            };
 
             return contentResult;
         }
@@ -105,16 +112,20 @@ namespace ONEbook.UM.Site.Controllers
         [CheckUMFilter]
         public ActionResult UMPage()
         {
-            var contentResult = new ContentResult();
-            contentResult.Content = "UM PAGE";
+            var contentResult = new ContentResult
+            {
+                Content = "UM PAGE"
+            };
             return contentResult;
         }
 
         [CheckUMFilter]
         public ActionResult ErrorUMPage()
         {
-            var contentResult = new ContentResult();
-            contentResult.Content = "Error UM Page";
+            var contentResult = new ContentResult
+            {
+                Content = "Error UM Page"
+            };
             return contentResult;
         }
     }

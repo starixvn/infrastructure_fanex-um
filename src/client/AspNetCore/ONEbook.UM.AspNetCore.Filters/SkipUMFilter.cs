@@ -3,7 +3,7 @@ using System;
 
 namespace ONEbook.UM.AspNetCore.Filters
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class SkipUMFilterAttribute: ActionFilterAttribute
     {
     }

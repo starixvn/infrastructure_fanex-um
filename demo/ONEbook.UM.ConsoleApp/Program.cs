@@ -1,12 +1,13 @@
-﻿namespace ONEbook.UM.Console
+﻿namespace ONEbook.UM.ConsoleApp
 {
-    using Fanex.Caching;
-    using ONEbook.UM.Configurations;
-    using ONEbook.UM.Helpers;
-    using ONEbook.UM.NETFramework;
-    using ONEbook.UM.Services;
-    using ONEbook.UM.Transport;
     using System;
+    using Fanex.Caching;
+    using Configurations;
+    using Helpers;
+    using NETFramework;
+    using Services;
+    using Transport;
+
     /*using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;

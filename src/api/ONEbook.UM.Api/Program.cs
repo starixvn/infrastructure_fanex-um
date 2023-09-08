@@ -25,7 +25,7 @@ public class Program
         }
     }
 
-    static IHostBuilder CreateHostBuilder(IConfiguration configuration, string[] args) =>
+    private static IHostBuilder CreateHostBuilder(IConfiguration configuration, string[] args) =>
         Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration(x => x.AddConfiguration(configuration))
             .ConfigureWebHostDefaults(webBuilder =>
@@ -34,7 +34,7 @@ public class Program
                 webBuilder.UseUrls("http://0.0.0.0:5000");
             });
 
-    static void InitFanexLogger(IConfiguration configuration)
+    private static void InitFanexLogger(IConfiguration configuration)
     {
         LogManager
             .SetDefaultLogCategory(configuration["Fanex.Logging:DefaultCategory"])
@@ -44,7 +44,7 @@ public class Program
             .UseConfig(new LoggingConfiguration().GetHttpHeaderInfo());
     }
 
-    static IConfiguration GetConfiguration()
+    private static IConfiguration GetConfiguration()
     {
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())

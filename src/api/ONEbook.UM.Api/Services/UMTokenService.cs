@@ -49,9 +49,9 @@ public class UMTokenService : IUMTokenService
     private string GenerateToken(Sites siteId)
     {
         var today = dateTimeHelper.GetUtcNowShortDateString();
-        var key = string.Format("{0}_{1}_{2}", siteId, today, options.SecretKey);
+        var key = $"{siteId}_{today}_{options.SecretKey}";
 
-        using MD5 md5 = MD5.Create();
+        using var md5 = MD5.Create();
         var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(key));
 
         return WebEncoders.Base64UrlEncode(hash);
@@ -72,7 +72,7 @@ public class UMTokenService : IUMTokenService
         var siteIds = Enum.GetValues(typeof(Sites)).Cast<Sites>();
         var siteTokens = new Dictionary<Sites, SiteToken>();
 
-        foreach (Sites siteId in siteIds)
+        foreach (var siteId in siteIds)
         {
             siteTokens.Add(
                 siteId,

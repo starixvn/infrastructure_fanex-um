@@ -3,9 +3,9 @@
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using ONEbook.UM.Site.Configurations;
+    using Configurations;
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class UMSiteAuthorization : AuthorizeAttribute
     {
         public override void OnAuthorization(AuthorizationContext filterContext)
@@ -14,7 +14,7 @@
 
             if (filterContext == null)
             {
-                throw new ArgumentNullException("filterContext", "Filter context cannot be null!");
+                throw new ArgumentNullException(nameof(filterContext), "Filter context cannot be null!");
             }
 
             var currentUser = filterContext.HttpContext.User;
@@ -34,9 +34,11 @@
 
         private void ShowUnauthorizedMessage(AuthorizationContext filterContext)
         {
-            var unauthorizedResult = new ContentResult();
-            unauthorizedResult.Content = "<center><b>You are not authorized!</b></center>";
-            unauthorizedResult.ContentType = "text/html";
+            var unauthorizedResult = new ContentResult
+            {
+                Content = "<center><b>You are not authorized!</b></center>",
+                ContentType = "text/html"
+            };
             filterContext.Result = unauthorizedResult;
         }
     }
