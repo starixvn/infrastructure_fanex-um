@@ -33,6 +33,7 @@ namespace ONEbook.UM.AspNetCore.Filters
             if (attributes.Any(a => a.AttributeType == typeof(SkipUMFilterAttribute)))
             {
                 await base.OnActionExecutionAsync(context, next);
+                return;
             }
 
             var isUnderMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
