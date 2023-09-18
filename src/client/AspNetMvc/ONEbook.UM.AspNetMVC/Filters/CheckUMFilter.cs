@@ -2,6 +2,7 @@
 namespace ONEbook.UM.AspNetMVC.Filters
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Web;
     using System.Web.Mvc;
@@ -31,6 +32,14 @@ namespace ONEbook.UM.AspNetMVC.Filters
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            var actionDescriptor = filterContext.ActionDescriptor;
+            var attributes = actionDescriptor.ControllerDescriptor.GetFilterAttributes(false);
+            if (attributes.Any(a => a.GetType() == typeof(SkipUMFilterAttribute)))
+            {
+                base.OnActionExecuting(filterContext);
+                return;
+            }
+
             var isUnderMaintenance = maintenanceService.IsUnderMaintenance();
 
             if (isUnderMaintenance)

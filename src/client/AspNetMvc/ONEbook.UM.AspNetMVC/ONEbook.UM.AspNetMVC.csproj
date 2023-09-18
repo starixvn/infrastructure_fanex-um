@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-    <Version>3.1.2</Version>
+    <Version>3.1.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Handle error if Session is null</Description>
   </PropertyGroup>
@@ -24,6 +24,7 @@
   <ItemGroup>
     <Reference Include="System.Web"/>
   </ItemGroup>
-    <PropertyGroup Label="sonarqube-rules-synchronizer">
+  <PropertyGroup Label="sonarqube-rules-synchronizer">
     <CodeAnalysisRuleSet>../../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup></Project>
+  </PropertyGroup>
+</Project>
