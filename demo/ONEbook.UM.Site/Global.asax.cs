@@ -1,16 +1,13 @@
-﻿using ONEbook.UM.AspNetMVC;
-
-namespace ONEbook.UM.Site
+﻿namespace ONEbook.UM.Site
 {
     using System.Reflection;
     using System.Web.Mvc;
     using System.Web.Routing;
     using Fanex.Caching;
     using Helpers;
-    using ONEbook.UM.AspNetMVC.Filters;
     using ONEbook.UM.AspNetMVC.SimpleInjector;
     using ONEbook.UM.Configurations;
-    using ONEbook.UM.NETFramework;
+    using NETFramework;
     using SimpleInjector;
     using SimpleInjector.Integration.Web.Mvc;
     using Transport;

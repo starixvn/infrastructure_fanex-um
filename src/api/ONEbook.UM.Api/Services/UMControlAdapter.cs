@@ -55,7 +55,7 @@ public class UMControlAdapter : IUMControlAdapter
             { (int)Sites.RMS, (int)Sites.RMS },
             { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
             { (int)Sites._789y, 4100300 },
-            { (int)Sites.Test, (int)Sites.Test },
+            { (int)Sites.Test, (int)Sites.Test }
         };
 
     public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime(int siteId)
@@ -150,8 +150,8 @@ public class UMControlAdapter : IUMControlAdapter
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     serviceHealth.Add(url, true);
-                    using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-                    responseString = new StreamReader(contentStream, Encoding.UTF8).ReadToEnd();
+                    await using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
+                    responseString = await new StreamReader(contentStream, Encoding.UTF8).ReadToEndAsync();
                     if (!string.IsNullOrEmpty(responseString))
                     {
                         isUM = true;
@@ -181,7 +181,7 @@ public class UMControlAdapter : IUMControlAdapter
         var messageSite = stageMessageSite.MessageSites[0];
         var startTime = messageSite.StartTime;
         var endTime = messageSite.EndTime;
-        DateTime utcNow = DateTime.UtcNow;
+        var utcNow = DateTime.UtcNow;
         if (utcNow.Subtract(startTime).TotalSeconds >= 0.0 && endTime.Subtract(utcNow).TotalSeconds >= 0.0)
         {
             return (true, startTime.AddHours(8.0), endTime.AddHours(8.0), SUCCESS_ECODE);

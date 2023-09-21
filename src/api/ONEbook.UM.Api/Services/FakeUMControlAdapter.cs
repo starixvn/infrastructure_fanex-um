@@ -30,7 +30,7 @@ public class FakeUMControlAdapter : IFakeUMControlAdapter
 
         foreach (var minute in options.MinutesCheck)
         {
-            if (minute == now.Minute || (now.Minute > minute && ((now.Minute - minute) * 60 < options.Period)))
+            if (minute == now.Minute || (now.Minute > minute && (now.Minute - minute) * 60 < options.Period))
             {
                 var startFakeTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, minute, 0);
                 return new UnderMaintenanceTime(

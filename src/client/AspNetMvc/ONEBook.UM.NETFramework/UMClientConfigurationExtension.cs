@@ -31,19 +31,14 @@
         {
             var value = ConfigurationManager.AppSettings[key];
 
-            if (string.IsNullOrEmpty(value))
-            {
-                return defaultValue;
-            }
-
-            return GetValue<T>(key);
+            return string.IsNullOrEmpty(value) ? defaultValue : GetValue<T>(key);
         }
 
         private static T GetValue<T>(string key)
         {
             var value = ConfigurationManager.AppSettings[key];
 
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(typeof(T));
+            var typeConverter = TypeDescriptor.GetConverter(typeof(T));
 
             return (T)typeConverter.ConvertFromString(value);
         }

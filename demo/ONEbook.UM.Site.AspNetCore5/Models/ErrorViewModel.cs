@@ -1,5 +1,3 @@
-using System;
-
 namespace ONEbook.UM.Site.AspNetCore5.Models
 {
     public class ErrorViewModel

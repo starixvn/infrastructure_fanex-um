@@ -139,7 +139,7 @@
                 return false;
             }
 
-            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
+            var isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
 
             if (isValidToken)
             {
@@ -167,7 +167,7 @@
                 return false;
             }
 
-            bool isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
+            var isValidToken = !string.IsNullOrEmpty(token) && IsTokenValid(token);
 
             if (isValidToken)
             {

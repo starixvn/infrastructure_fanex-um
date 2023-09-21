@@ -1,9 +1,8 @@
-﻿namespace ONEbook.UM.Api.Models
-{
-    public class SiteToken
-    {
-        public int SiteId { get; set; }
+﻿namespace ONEbook.UM.Api.Models;
 
-        public string Token { get; set; }
-    }
+public class SiteToken
+{
+    public int SiteId { get; set; }
+
+    public string Token { get; set; }
 }

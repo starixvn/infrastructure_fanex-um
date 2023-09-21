@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0;net7.0</TargetFrameworks>
     <Version>3.1.1</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -14,12 +14,17 @@
     <CodeAnalysisRuleSet>ONEbook.UM.AspNetCore.Filters.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5"/>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
   </ItemGroup>
-
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0' Or '$(TargetFramework)' == 'net7.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ONEbook.UM\ONEbook.UM.csproj"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ONEbook.UM\ONEbook.UM.csproj" />
   </ItemGroup>
   <PropertyGroup Label="sonarqube-rules-synchronizer">
     <CodeAnalysisRuleSet>../../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>

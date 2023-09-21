@@ -5,8 +5,8 @@
     using System.Net.Http;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using ONEbook.UM.Site.Configurations;
-    using ONEbook.UM.Site.Filters;
+    using Configurations;
+    using Filters;
 
     [UMSiteAuthorization]
     public class TokenController : Controller
@@ -16,16 +16,16 @@
 
         private static HttpClient CreateHttpClient()
         {
-            var httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(UMSiteConfiguration.Settings.ServiceUri + Splash);
-            httpClient.Timeout = TimeSpan.FromMinutes(10);
-            return httpClient;
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(UMSiteConfiguration.Settings.ServiceUri + Splash);
+            client.Timeout = TimeSpan.FromMinutes(10);
+            return client;
         }
 
         // GET: Token
         public async Task<ActionResult> Index()
         {
-            var endPoint = "token/GetAll";
+            const string endPoint = "token/GetAll";
             var method = HttpMethod.Get;
             using (var request = new HttpRequestMessage(method, new Uri(endPoint, UriKind.Relative)))
             {
