@@ -48,6 +48,7 @@ public class UMControlAdapter : IUMControlAdapter
             { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
             { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
             { (int)Sites.Chatbot, (int)Sites.Chatbot },
+            { (int)Sites._777AgencySite, (int)Sites._777AgencySite },
             { (int)Sites.AccountSite, (int)Sites.AccountSite },
             { (int)Sites.LRF, (int)Sites.LRF },
             { (int)Sites.OWA, (int)Sites.OWA },

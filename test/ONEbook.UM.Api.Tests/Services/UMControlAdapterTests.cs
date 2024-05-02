@@ -21,6 +21,8 @@ public class UMControlAdapterTests
         { (int)Sites.MBCAgencySite, (int)Sites.MBCAgencySite },
         { (int)Sites.IndoAgencySite, (int)Sites.IndoAgencySite },
         { (int)Sites._789yAgencySite, (int)Sites._789yAgencySite },
+        { (int)Sites.Chatbot, (int)Sites.Chatbot },
+        { (int)Sites._777AgencySite, (int)Sites._777AgencySite },
         { (int)Sites.AccountSite, (int)Sites.AccountSite },
         { (int)Sites.LRF, (int)Sites.LRF },
         { (int)Sites.OWA, (int)Sites.OWA },
@@ -47,7 +49,7 @@ public class UMControlAdapterTests
     [Fact]
     public async Task GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()
     {
-           
+
         // Arrange
         fakeUMControlAdapter.GetUnderMaintenance().Returns(new UnderMaintenanceTime(true, "3:00", "4:00"));
 
