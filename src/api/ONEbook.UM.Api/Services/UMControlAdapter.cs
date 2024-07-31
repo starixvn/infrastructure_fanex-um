@@ -54,7 +54,10 @@ public class UMControlAdapter : IUMControlAdapter
             { (int)Sites.OWA, (int)Sites.OWA },
             { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
             { (int)Sites.RMS, (int)Sites.RMS },
+            { (int)Sites.DW, (int)Sites.DW },
             { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
+            { (int)Sites.CRM, (int)Sites.CRM },
+            { (int)Sites.LicenseeAccountsAPI, (int)Sites.LicenseeAccountsAPI },
             { (int)Sites._789y, 4100300 },
             { (int)Sites.Test, (int)Sites.Test }
         };

@@ -16,6 +16,7 @@ public enum Sites
     DW = 2000006,
     OddsFeed = 2000007,
     CRM = 2000008,
+    LicenseeAccountsAPI = 2000010,
     _789y = 4100100,
     Test = 9999999
 }
