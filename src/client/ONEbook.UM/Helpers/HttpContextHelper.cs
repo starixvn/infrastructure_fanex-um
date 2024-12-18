@@ -1,11 +1,10 @@
-﻿namespace ONEbook.UM.Helpers
+﻿namespace ONEbook.UM.Helpers;
+
+public interface IHttpContextHelper
 {
-    public interface IHttpContextHelper
-    {
-        string GetSession(string key);
+    string GetSession(string key);
 
-        void SetSession(string key, string value);
+    void SetSession(string key, string value);
 
-        string GetValueFromQueryString(string queryKey);
-    }
+    string GetValueFromQueryString(string queryKey);
 }

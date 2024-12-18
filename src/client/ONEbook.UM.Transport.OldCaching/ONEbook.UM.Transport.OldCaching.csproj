@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fanex.Caching" Version="1.0.404.95" />
-    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>

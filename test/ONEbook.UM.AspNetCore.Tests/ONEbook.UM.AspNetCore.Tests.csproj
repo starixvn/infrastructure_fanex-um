@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\client\AspNetCore\ONEbook.UM.AspNetCore\ONEbook.UM.AspNetCore.csproj" />
     <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj" />
   </ItemGroup>
 </Project>

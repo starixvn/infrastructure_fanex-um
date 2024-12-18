@@ -1,23 +1,21 @@
-﻿namespace ONEbook.UM.Transport
+﻿#if NET461 || NETSTANDARD2_0
+
+namespace ONEbook.UM.Transport;
+
+using System;
+using Fanex.Caching;
+using Helpers;
+
+public class UMCacheService(ICacheService cacheService = null) : IUMCacheService
 {
-    using System;
-    using Fanex.Caching;
-    using Helpers;
+    private readonly ICacheService cacheService = cacheService ?? new CacheService();
 
-    public class UMCacheService : IUMCacheService
-    {
-        private readonly ICacheService cacheService;
+    public T Get<T>(string key) => cacheService.Get<T>(key);
 
-        public UMCacheService(ICacheService cacheService = null)
-        {
-            this.cacheService = cacheService ?? new CacheService();
-        }
+    public void Remove(string key) => cacheService.Remove(key);
 
-        public T Get<T>(string key) => cacheService.Get<T>(key);
-
-        public void Remove(string key) => cacheService.Remove(key);
-
-        public void Set<T>(string key, T value, TimeSpan absoluteExpiration)
-           => cacheService.Set(key, value, new CacheItemOptions().SetAbsoluteExpiration(absoluteExpiration));
-    }
+    public void Set<T>(string key, T value, TimeSpan absoluteExpiration)
+        => cacheService.Set(key, value, new CacheItemOptions().SetAbsoluteExpiration(absoluteExpiration));
 }
+
+#endif
