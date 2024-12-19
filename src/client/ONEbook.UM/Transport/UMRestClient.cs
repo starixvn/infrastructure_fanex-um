@@ -11,15 +11,13 @@ using Configurations;
 using Helpers;
 using Newtonsoft.Json;
 
-public class UMRestClient : IUMRestClient, IDisposable
+public class UMRestClient : IUMRestClient
 {
     private const int DefaultTimeOut = 10;
     private const string Splash = "/";
     private static readonly HttpClient httpClient = new();
     private readonly UMClientConfiguration configuration;
     private readonly IPHelper ipHelper;
-
-    private bool disposedValue;
 
     public UMRestClient(UMClientConfiguration configuration = null, IPHelper ipHelper = null)
     {
@@ -90,23 +88,5 @@ public class UMRestClient : IUMRestClient, IDisposable
         var authHeader = HttpClientHelper.GenerateAuthorizationHeader(configuration, requestUri, requestHttpMethod, ipHelper.GetMachineIP());
 
         return new AuthenticationHeaderValue("amx", authHeader);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposedValue)
-        {
-            return;
-        }
-
-        httpClient.Dispose();
-        disposedValue = true;
-    }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 }
