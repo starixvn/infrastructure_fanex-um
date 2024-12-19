@@ -1,13 +1,12 @@
-﻿namespace ONEbook.UM.Helpers
+﻿namespace ONEbook.UM.Helpers;
+
+using System;
+
+public interface IUMCacheService
 {
-    using System;
+    T Get<T>(string key);
 
-    public interface IUMCacheService
-    {
-        T Get<T>(string key);
+    void Set<T>(string key, T value, TimeSpan absoluteExpiration);
 
-        void Set<T>(string key, T value, TimeSpan absoluteExpiration);
-
-        void Remove(string key);
-    }
+    void Remove(string key);
 }

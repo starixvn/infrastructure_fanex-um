@@ -1,41 +1,40 @@
-﻿namespace ONEbook.UM.Helpers
-{
-    using System.Net;
-    using System.Net.Sockets;
-    using Models;
+﻿namespace ONEbook.UM.Helpers;
 
-    public interface IPHelper
+using System.Net;
+using System.Net.Sockets;
+using Models;
+
+public interface IPHelper
+{
+    string GetMachineIP();
+}
+
+public class IPHelperImpl : IPHelper
+{
+    private static string machineIP;
+
+    public string GetMachineIP()
     {
-        string GetMachineIP();
+        if (string.IsNullOrEmpty(machineIP))
+        {
+            machineIP = InternalGetMachineIP();
+        }
+
+        return machineIP;
     }
 
-    public class IPHelperImpl : IPHelper
+    private static string InternalGetMachineIP()
     {
-        private static string machineIP;
+        var host = Dns.GetHostEntry(Dns.GetHostName());
 
-        public string GetMachineIP()
+        foreach (var ip in host.AddressList)
         {
-            if (string.IsNullOrEmpty(machineIP))
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
             {
-                machineIP = InternalGetMachineIP();
+                return ip.ToString();
             }
-
-            return machineIP;
         }
 
-        private static string InternalGetMachineIP()
-        {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ip.ToString();
-                }
-            }
-
-            throw new UMClientException("No network adapters with an IPv4 address in the system!");
-        }
+        throw new UMClientException("No network adapters with an IPv4 address in the system!");
     }
 }

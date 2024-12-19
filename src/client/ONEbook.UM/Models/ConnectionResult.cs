@@ -1,21 +1,14 @@
-﻿namespace ONEbook.UM.Models
+﻿namespace ONEbook.UM.Models;
+
+public class ConnectionResult(bool isOk, string message)
 {
-    public class ConnectionResult
+    public ConnectionResult() : this(true, string.Empty)
     {
-        public ConnectionResult() : this(true, string.Empty)
-        {
-        }
-
-        public ConnectionResult(bool isOk, string message)
-        {
-            IsOk = isOk;
-            Message = message;
-        }
-
-        public bool IsOk { get; }
-
-        public bool IsNotOk => !IsOk;
-
-        public string Message { get; }
     }
+
+    public bool IsOk { get; } = isOk;
+
+    public bool IsNotOk => !IsOk;
+
+    public string Message { get; } = message;
 }

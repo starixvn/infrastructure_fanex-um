@@ -1,35 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard2.0;net5.0</TargetFrameworks>
-    <Version>3.1.4-beta0</Version>
+    <TargetFrameworks>net461;net5.0;net6.0;net8.0;net9.0</TargetFrameworks>
+    <Version>3.1.8</Version>
+    <LangVersion>13.0</LangVersion>
+    <IsPackage>true</IsPackage>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Support clear cache</PackageReleaseNotes>
     <PackageProjectUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</PackageProjectUrl>
     <RepositoryUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</RepositoryUrl>
     <RepositoryType>Core Libs</RepositoryType>
     <Copyright>@nexcel.vn</Copyright>
-    <AssemblyVersion>3.1.4.0</AssemblyVersion>
-    <FileVersion>3.1.4.0</FileVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <CodeAnalysisRuleSet>ONEbook.UM.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <CodeAnalysisRuleSet>ONEbook.UM.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
-    <CodeAnalysisRuleSet>ONEbook.UM.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net461|AnyCPU'">
-    <CodeAnalysisRuleSet>ONEbook.UM.ruleset</CodeAnalysisRuleSet>
+    <AssemblyVersion>3.1.5</AssemblyVersion>
+    
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-    <PropertyGroup Label="sonarqube-rules-synchronizer">
-    <CodeAnalysisRuleSet>../../../.sonarlint/onebook.umcsharp.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup></Project>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <Reference Include="System.Net" />
+    <Reference Include="System.Web" />
+    <PackageReference Include="Fanex.Caching" Version="2.2.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
+</Project>
