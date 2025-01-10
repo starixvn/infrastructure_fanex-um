@@ -15,9 +15,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\client\AspNetMvc\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj" />
-    <ProjectReference Include="..\..\src\client\AspNetMvc\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj" />
-  </ItemGroup>
 </Project>

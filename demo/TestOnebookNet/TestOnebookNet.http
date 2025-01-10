@@ -1,0 +1,6 @@
+@TestOnebookNet_HostAddress = http://localhost:5221
+
+GET {{TestOnebookNet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

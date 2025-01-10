@@ -28,8 +28,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\client\ONEbook.UM\ONEbook.UM.csproj" />
-  </ItemGroup>
 </Project>
