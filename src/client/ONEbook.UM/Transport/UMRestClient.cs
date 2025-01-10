@@ -15,7 +15,7 @@ public class UMRestClient : IUMRestClient
 {
     private const int DefaultTimeOut = 10;
     private const string Splash = "/";
-    private static readonly HttpClient httpClient = new();
+    private readonly HttpClient httpClient = new();
     private readonly UMClientConfiguration configuration;
     private readonly IPHelper ipHelper;
 
