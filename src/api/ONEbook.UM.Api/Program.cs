@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddInternalServices();
 services.AddFanexLogger(configuration);
+services.AddInternalServices();
 services.AddHttpClient<IUMControlAdapter, UMControlAdapter>();
 services.Configure<FakeUMConfiguration>(configuration.GetSection(FakeUMConfiguration.FakeUM));
 services.Configure<UnderMaintenanceApiConfiguration>(configuration.GetSection(UnderMaintenanceApiConfiguration.UnderMaintenanceApi));
