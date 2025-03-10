@@ -9,5 +9,5 @@ public class UnderMaintenanceApiConfiguration
     public bool EnableUnscheduledUM { get; set; } = false;
     public string UMFrom { get; set; } = string.Empty;
     public string UMTo { get; set; } = string.Empty;
-    public string[] UMServiceURL { get; set; } = Array.Empty<string>();
+    public string[] UMServiceURL { get; set; } = [];
 }

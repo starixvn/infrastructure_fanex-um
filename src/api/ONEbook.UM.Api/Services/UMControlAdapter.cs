@@ -17,27 +17,17 @@ public interface IUMControlAdapter
     Task<IDictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime();
 }
 
-public class UMControlAdapter : IUMControlAdapter
+public class UMControlAdapter(
+    IOptions<UnderMaintenanceApiConfiguration> options,
+    IFakeUMControlAdapter fakeUmControlAdapter,
+    HttpClient httpClient,
+    Fanex.Logging.ILogger logger)
+    : IUMControlAdapter
 {
-    private readonly UnderMaintenanceApiConfiguration options;
-    private readonly IFakeUMControlAdapter fakeUMControlAdapter;
-    private readonly HttpClient httpClient;
-    private readonly Fanex.Logging.ILogger logger;
+    private readonly UnderMaintenanceApiConfiguration options = options.Value;
     public const int SUCCESS_ECODE = 0;
     public const int NO_FOUND_ECODE = 1;
     public const int NO_CONNECTION_ECODE = 2;
-
-    public UMControlAdapter(
-        IOptions<UnderMaintenanceApiConfiguration> options,
-        IFakeUMControlAdapter fakeUMControlAdapter,
-        HttpClient httpClient,
-        Fanex.Logging.ILogger logger)
-    {
-        this.options = options.Value;
-        this.fakeUMControlAdapter = fakeUMControlAdapter;
-        this.httpClient = httpClient;
-        this.logger = logger;
-    }
 
     /// <summary>
     /// Old and New SiteID for UM Tool
@@ -64,7 +54,7 @@ public class UMControlAdapter : IUMControlAdapter
 
     public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime(int siteId)
     {
-        var fakeUMInfo = fakeUMControlAdapter.GetUnderMaintenance();
+        var fakeUMInfo = fakeUmControlAdapter.GetUnderMaintenance();
 
         if (fakeUMInfo != null)
         {
@@ -99,7 +89,7 @@ public class UMControlAdapter : IUMControlAdapter
     {
         var siteIds = OldNewSiteIdMappers.Keys;
 
-        var fakeUMInfo = fakeUMControlAdapter.GetUnderMaintenance();
+        var fakeUMInfo = fakeUmControlAdapter.GetUnderMaintenance();
 
         if (fakeUMInfo != null)
         {

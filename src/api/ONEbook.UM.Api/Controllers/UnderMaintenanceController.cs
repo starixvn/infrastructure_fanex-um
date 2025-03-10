@@ -7,15 +7,8 @@ namespace ONEbook.UM.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UnderMaintenanceController : ControllerBase
+public class UnderMaintenanceController(IUMControlAdapter underMaintenanceControlAdapter) : ControllerBase
 {
-    private readonly IUMControlAdapter underMaintenanceControlAdapter;
-
-    public UnderMaintenanceController(IUMControlAdapter underMaintenanceControlAdapter)
-    {
-        this.underMaintenanceControlAdapter = underMaintenanceControlAdapter;
-    }
-
     [HttpGet("GetAll")]
     public async Task<IDictionary<int, UnderMaintenanceTime>> GetAll()
         => await underMaintenanceControlAdapter.GetAllUnderMaintenanceTime();

@@ -2,7 +2,6 @@
 
 namespace ONEbook.UM.DependencyInjection
 {
-    using System.Linq.Expressions;
     using Helpers;
     using Microsoft.AspNetCore.Http;
 

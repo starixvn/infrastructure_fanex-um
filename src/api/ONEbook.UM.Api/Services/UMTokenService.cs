@@ -18,16 +18,11 @@ public interface IUMTokenService
     IDictionary<Sites, SiteToken> GetAllUMTokens();
 }
 
-public class UMTokenService : IUMTokenService
+public class UMTokenService(IDateTimeHelper dateTimeHelper, IOptions<UnderMaintenanceApiConfiguration> options)
+    : IUMTokenService
 {
-    private readonly IDateTimeHelper dateTimeHelper;
-    private readonly UnderMaintenanceApiConfiguration options;
-
-    public UMTokenService(IDateTimeHelper dateTimeHelper, IOptions<UnderMaintenanceApiConfiguration> options)
-    {
-        this.dateTimeHelper = dateTimeHelper ?? new DateTimeHelper();
-        this.options = options.Value;
-    }
+    private readonly IDateTimeHelper dateTimeHelper = dateTimeHelper ?? new DateTimeHelper();
+    private readonly UnderMaintenanceApiConfiguration options = options.Value;
 
     public bool IsValidUMToken(Sites siteId, string token)
     {

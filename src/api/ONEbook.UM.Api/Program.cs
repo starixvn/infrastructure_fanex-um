@@ -1,57 +1,51 @@
 ﻿using Fanex.Logging;
-using Fanex.Logging.Extensions;
-using Fanex.Logging.Extensions.AspNetCore;
-using Fanex.Logging.RabbitMQ;
+using Microsoft.OpenApi.Models;
+using ONEbook.UM.Api.Configurations;
+using ONEbook.UM.Api.Services;
+using ONEbook.UM.Api;
+using ONEbook.UM.Api.Extensions;
 
-namespace ONEbook.UM.Api;
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
-public class Program
+services.AddInternalServices();
+services.AddFanexLogger(configuration);
+services.AddHttpClient<IUMControlAdapter, UMControlAdapter>();
+services.Configure<FakeUMConfiguration>(configuration.GetSection(FakeUMConfiguration.FakeUM));
+services.Configure<UnderMaintenanceApiConfiguration>(configuration.GetSection(UnderMaintenanceApiConfiguration.UnderMaintenanceApi));
+services.AddControllers();
+services.AddEndpointsApiExplorer();
+
+services.AddSwaggerGen(options =>
 {
-    public static void Main(string[] args)
-    {
-        var configuration = GetConfiguration();
-        InitFanexLogger(configuration);
-        var appName = typeof(Program).Assembly.GetName().Name;
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ONEBookUM", Version = "v1" });
+    options.CustomSchemaIds(type => type.FullName);
+    var xmlFilename = $"{typeof(Program).Assembly.GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
-        try
-        {
-            Logger.Log.Info($"Starting {appName}");
-            CreateHostBuilder(configuration, args).Build().Run();
-            Logger.Log.Info($"{appName} has been started up.");
-        }
-        catch (Exception ex)
-        {
-            Logger.Log.Error($"Program terminated unexpectedly {appName}", ex);
-        }
-    }
-
-    private static IHostBuilder CreateHostBuilder(IConfiguration configuration, string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration(x => x.AddConfiguration(configuration))
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-                webBuilder.UseUrls("http://0.0.0.0:5000");
-            });
-
-    private static void InitFanexLogger(IConfiguration configuration)
-    {
-        LogManager
-            .SetDefaultLogCategory(configuration["Fanex.Logging:DefaultCategory"])
-            .Use(new RabbitMQLogging(configuration["Fanex.Logging:RabbitMQConnectionStrings"]));
-
-        ExceptionHandler
-            .UseConfig(new LoggingConfiguration().GetHttpHeaderInfo());
-    }
-
-    private static IConfiguration GetConfiguration()
-    {
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddEnvironmentVariables();
-
-        return builder.Build();
-    }
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.ConfigureExceptionHandler();
+    app.UseHsts();
 }
 
+app.UseRouting();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
+app.MapGet("/", () => "ONEbook UM API!!!");
+
+app.UseSwagger();
+app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "ONEBookUM v1"));
+
+var appName = typeof(Program).Assembly.GetName().Name;
+await Logger.Log.InfoAsync($"{appName} has been started up.");
+await app.RunAsync();

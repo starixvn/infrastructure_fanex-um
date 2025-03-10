@@ -6,5 +6,5 @@ public class FakeUMConfiguration
 
     public bool Enable { get; set; } = false;
     public int Period { get; set; } = 300;
-    public int[] MinutesCheck { get; set; } = { 15, 45 };
+    public int[] MinutesCheck { get; set; } = [15, 45];
 }

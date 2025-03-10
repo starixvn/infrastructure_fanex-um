@@ -6,15 +6,8 @@ namespace ONEbook.UM.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TokenController : ControllerBase
+public class TokenController(IUMTokenService underMaintenanceTokenService) : ControllerBase
 {
-    private readonly IUMTokenService underMaintenanceTokenService;
-
-    public TokenController(IUMTokenService underMaintenanceTokenService)
-    {
-        this.underMaintenanceTokenService = underMaintenanceTokenService;
-    }
-
     [HttpGet("validate")]
     public IActionResult Validate(int siteId, string token)
     {

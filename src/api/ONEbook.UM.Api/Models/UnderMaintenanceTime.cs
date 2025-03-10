@@ -1,24 +1,16 @@
 ﻿namespace ONEbook.UM.Api.Models;
 
-public class UnderMaintenanceTime
+public class UnderMaintenanceTime(
+    bool isUnderMaintenanceTime,
+    string from,
+    string to,
+    int errorCode = 0)
 {
-    public UnderMaintenanceTime(
-        bool isUnderMaintenanceTime,
-        string from,
-        string to,
-        int errorCode = 0)
-    {
-        IsUnderMaintenanceTime = isUnderMaintenanceTime;
-        From = from;
-        To = to;
-        ErrorCode = errorCode;
-    }
+    public string From { get; } = from;
 
-    public string From { get; }
+    public string To { get; } = to;
 
-    public string To { get; }
+    public bool IsUnderMaintenanceTime { get; } = isUnderMaintenanceTime;
 
-    public bool IsUnderMaintenanceTime { get; }
-
-    public int ErrorCode { get; }
+    public int ErrorCode { get; } = errorCode;
 }

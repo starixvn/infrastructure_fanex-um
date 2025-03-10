@@ -10,14 +10,9 @@ public interface IFakeUMControlAdapter
     UnderMaintenanceTime GetUnderMaintenance();
 }
 
-public class FakeUMControlAdapter : IFakeUMControlAdapter
+public class FakeUMControlAdapter(IOptions<FakeUMConfiguration> options) : IFakeUMControlAdapter
 {
-    private readonly FakeUMConfiguration options;
-
-    public FakeUMControlAdapter(IOptions<FakeUMConfiguration> options)
-    {
-        this.options = options.Value;
-    }
+    private readonly FakeUMConfiguration options = options.Value;
 
     public UnderMaintenanceTime GetUnderMaintenance()
     {
@@ -36,8 +31,7 @@ public class FakeUMControlAdapter : IFakeUMControlAdapter
                 return new UnderMaintenanceTime(
                     true,
                     startFakeTime.ToString(CultureInfo.InvariantCulture),
-                    startFakeTime.AddSeconds(options.Period).ToString(CultureInfo.InvariantCulture),
-                    0);
+                    startFakeTime.AddSeconds(options.Period).ToString(CultureInfo.InvariantCulture));
             }
         }
 
