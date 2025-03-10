@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <Version>3.2.4</Version>
+    <LangVersion>13.0</LangVersion>
+    <IsPackage>true</IsPackage>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReleaseNotes>Support clear cache</PackageReleaseNotes>
+    <PackageProjectUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.nexdev.net/infrastructure/fanex-um</RepositoryUrl>
+    <RepositoryType>Core Libs</RepositoryType>
+    <Copyright>@nexcel.vn</Copyright>
+    <AssemblyVersion>3.1.5</AssemblyVersion>
+    
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+</Project>
