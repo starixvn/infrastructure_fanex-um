@@ -8,11 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fanex.Logging" Version="2.0.1"/>
-    <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.0"/>
-    <PackageReference Include="Fanex.Logging.Extensions.Database" Version="1.0.8"/>
-    <PackageReference Include="Fanex.Logging.RabbitMQ" Version="1.0.1"/>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0"/>
+    <PackageReference Include="Fanex.Logging" Version="2.0.1" />
+    <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="Fanex.Logging.RabbitMQ" Version="1.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
     <!-- <PackageReference Include="ONELab.UMService" Version="1.0.21151.1321" /> -->
   </ItemGroup>
     <PropertyGroup Label="sonarqube-rules-synchronizer">

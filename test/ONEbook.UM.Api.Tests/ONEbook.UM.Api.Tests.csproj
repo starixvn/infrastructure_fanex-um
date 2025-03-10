@@ -23,4 +23,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\api\ONEbook.UM.Api\ONEbook.UM.Api.csproj" />
+  </ItemGroup>
 </Project>

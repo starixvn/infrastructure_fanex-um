@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35521.163 d17.12
+VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F574615C-3A3D-4CFC-8682-BCE9E6246F21}"
 EndProject
@@ -22,23 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.AspNetCore.Tests", "test\ONEbook.UM.AspNetCore.Tests\ONEbook.UM.AspNetCore.Tests.csproj", "{FC333F87-09A0-4240-A779-E7B53D8A700E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.AspNetMVC.Tests", "test\ONEbook.UM.AspNetMVC.Tests\ONEbook.UM.AspNetMVC.Tests.csproj", "{6AD7A8A0-D94D-42AA-B746-594AF65D002A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.Api.Tests", "test\ONEbook.UM.Api.Tests\ONEbook.UM.Api.Tests.csproj", "{C6807272-3AB2-42ED-BD4F-866A1EF70859}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETCore", "NETCore", "{A6CFBF1A-77F8-4347-BEDE-F5CF07570236}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFramework", "NETFramework", "{9605470F-E073-4CC3-9867-F68A1CB0FE2D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.AspNetMVC", "src\client\AspNetMvc\ONEbook.UM.AspNetMVC\ONEbook.UM.AspNetMVC.csproj", "{24C888DB-8859-401E-AB53-D28BCC9CA943}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.AspNetMVC.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.AspNetMVC.SimpleInjector\ONEbook.UM.AspNetMVC.SimpleInjector.csproj", "{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEBook.UM.NETFramework", "src\client\AspNetMvc\ONEBook.UM.NETFramework\ONEBook.UM.NETFramework.csproj", "{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONEbook.UM.NETFramework.SimpleInjector", "src\client\AspNetMvc\ONEbook.UM.NETFramework.SimpleInjector\ONEbook.UM.NETFramework.SimpleInjector.csproj", "{A0D04789-3726-4645-AAD2-009E6F58A8C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,34 +42,10 @@ Global
 		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8CFE235-0F39-4F02-A49A-21643921EC3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FC333F87-09A0-4240-A779-E7B53D8A700E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FC333F87-09A0-4240-A779-E7B53D8A700E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FC333F87-09A0-4240-A779-E7B53D8A700E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FC333F87-09A0-4240-A779-E7B53D8A700E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AD7A8A0-D94D-42AA-B746-594AF65D002A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AD7A8A0-D94D-42AA-B746-594AF65D002A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AD7A8A0-D94D-42AA-B746-594AF65D002A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AD7A8A0-D94D-42AA-B746-594AF65D002A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6807272-3AB2-42ED-BD4F-866A1EF70859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6807272-3AB2-42ED-BD4F-866A1EF70859}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6807272-3AB2-42ED-BD4F-866A1EF70859}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6807272-3AB2-42ED-BD4F-866A1EF70859}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24C888DB-8859-401E-AB53-D28BCC9CA943}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24C888DB-8859-401E-AB53-D28BCC9CA943}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24C888DB-8859-401E-AB53-D28BCC9CA943}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24C888DB-8859-401E-AB53-D28BCC9CA943}.Release|Any CPU.Build.0 = Release|Any CPU
-		{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0D04789-3726-4645-AAD2-009E6F58A8C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,19 +56,11 @@ Global
 		{38C7544E-D774-4162-A809-5BBE281CE5D5} = {6B6BA5C2-DF73-4994-90FB-871E185FEA59}
 		{63C48884-D79F-458A-8B26-66ED6D9BEE31} = {6570AC60-D386-4D67-BD08-37016EE729FA}
 		{E8CFE235-0F39-4F02-A49A-21643921EC3B} = {F574615C-3A3D-4CFC-8682-BCE9E6246F21}
-		{FC333F87-09A0-4240-A779-E7B53D8A700E} = {F574615C-3A3D-4CFC-8682-BCE9E6246F21}
-		{6AD7A8A0-D94D-42AA-B746-594AF65D002A} = {F574615C-3A3D-4CFC-8682-BCE9E6246F21}
 		{C6807272-3AB2-42ED-BD4F-866A1EF70859} = {F574615C-3A3D-4CFC-8682-BCE9E6246F21}
-		{A6CFBF1A-77F8-4347-BEDE-F5CF07570236} = {6570AC60-D386-4D67-BD08-37016EE729FA}
-		{9605470F-E073-4CC3-9867-F68A1CB0FE2D} = {6570AC60-D386-4D67-BD08-37016EE729FA}
-		{24C888DB-8859-401E-AB53-D28BCC9CA943} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
-		{43912BC8-5EB9-4BFA-8EB7-C02073F2E70F} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
-		{2F9BC5EA-38AC-40B3-AEF4-521DAB077F65} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
-		{A0D04789-3726-4645-AAD2-009E6F58A8C3} = {9605470F-E073-4CC3-9867-F68A1CB0FE2D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
-		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		SolutionGuid = {E8D0AC63-E51B-4D11-9943-D9AC3937DD17}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 	EndGlobalSection
 EndGlobal
