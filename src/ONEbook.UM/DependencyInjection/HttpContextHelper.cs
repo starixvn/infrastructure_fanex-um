@@ -7,37 +7,17 @@ public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttp
 {
     public string GetSession(string key)
     {
-        try
-        {
-            return httpContextAccessor?.HttpContext?.Session?.GetString(key);
-        }
-        catch
-        {
-            return string.Empty;
-        }
+        return httpContextAccessor?.HttpContext?.Session?.GetString(key);
     }
 
     public void SetSession(string key, string value)
     {
-        try
-        {
-            httpContextAccessor?.HttpContext?.Session?.SetString(key, value);
-        }
-        catch
-        {
-        }
+        httpContextAccessor?.HttpContext?.Session?.SetString(key, value);
     }
 
     public string GetValueFromQueryString(string queryKey)
     {
-        try
-        {
-            var request = httpContextAccessor?.HttpContext?.Request;
-            return request?.Query[queryKey].ToString();
-        }
-        catch
-        {
-            return string.Empty;
-        }
+        var request = httpContextAccessor?.HttpContext?.Request;
+        return request?.Query[queryKey].ToString();
     }
 }

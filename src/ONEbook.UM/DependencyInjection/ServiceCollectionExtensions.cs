@@ -11,7 +11,7 @@ using Filters;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddOneBookUm(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddOneBookUmForWeb(this IServiceCollection services, IConfiguration configuration)
     {
         var umConfig = new UMClientConfiguration();
         configuration.Bind("ONEbook.UM", umConfig);
@@ -26,6 +26,23 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
         services.AddSingleton<IMaintenanceService, MaintenanceService>();
         
+        return services;
+    }
+
+    public static IServiceCollection AddOneBookUmForService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var umConfig = new UMClientConfiguration();
+        configuration.Bind("ONEbook.UM", umConfig);
+
+        services.AddMemoryCache();
+        services.AddSingleton(umConfig);
+        services.AddScoped<CheckUMFilterAttribute>();
+        services.AddSingleton<IUMCacheService, MemoryUmCacheService>();
+        services.AddSingleton<IUMRestClient, UMRestClient>();
+        services.AddSingleton<IPHelper, IPHelperImpl>();
+        services.AddSingleton<IHttpContextHelper, EmptyHttpContextHelper>();
+        services.AddSingleton<IMaintenanceService, MaintenanceService>();
+
         return services;
     }
 }
