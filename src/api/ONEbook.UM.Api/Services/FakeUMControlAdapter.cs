@@ -16,7 +16,7 @@ public class FakeUMControlAdapter(IOptions<FakeUMConfiguration> options) : IFake
 
     public UnderMaintenanceTime GetUnderMaintenance()
     {
-        var now = DateTime.UtcNow.AddHours(8);
+        var now = DateTimeOffset.UtcNow.AddHours(8);
 
         if (!options.Enable)
         {
@@ -27,7 +27,7 @@ public class FakeUMControlAdapter(IOptions<FakeUMConfiguration> options) : IFake
         {
             if (minute == now.Minute || (now.Minute > minute && (now.Minute - minute) * 60 < options.Period))
             {
-                var startFakeTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, minute, 0);
+                var startFakeTime = new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, minute, 0, TimeSpan.Zero);
                 return new UnderMaintenanceTime(
                     true,
                     startFakeTime.ToString(CultureInfo.InvariantCulture),
@@ -37,7 +37,7 @@ public class FakeUMControlAdapter(IOptions<FakeUMConfiguration> options) : IFake
 
         return new UnderMaintenanceTime(
             false,
-            DateTime.MinValue.ToString(CultureInfo.InvariantCulture),
-            DateTime.MinValue.ToString(CultureInfo.InvariantCulture));
+            DateTimeOffset.MinValue.Date.ToString(CultureInfo.InvariantCulture),
+            DateTimeOffset.MinValue.Date.ToString(CultureInfo.InvariantCulture));
     }
 }

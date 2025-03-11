@@ -26,6 +26,7 @@ public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttp
         }
         catch
         {
+            // ignored
         }
     }
 

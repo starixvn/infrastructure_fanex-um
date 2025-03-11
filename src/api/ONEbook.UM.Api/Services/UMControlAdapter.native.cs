@@ -48,7 +48,7 @@ public class UMControlAdapter(
             { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
             { (int)Sites.CRM, (int)Sites.CRM },
             { (int)Sites.LicenseeAccountsAPI, (int)Sites.LicenseeAccountsAPI },
-            { (int)Sites._789y, 4100300 },
+            { (int)Sites._789y, 4_100_300 },
             { (int)Sites.Test, (int)Sites.Test }
         };
 
@@ -115,7 +115,7 @@ public class UMControlAdapter(
 
         var (isUnderUM, startTime, endTime, errorCode) = await FetchUMInformation(siteId);
 
-        if (startTime.Date.Year != DateTime.MinValue.Year)
+        if (startTime.Date.Year != DateTimeOffset.MinValue.Year)
         {
             return new UnderMaintenanceTime(
                isUnderUM,
@@ -167,7 +167,7 @@ public class UMControlAdapter(
 
         if (!isUM)
         {
-            return (false, new DateTime(), new DateTime(), serviceHealth.ContainsValue(true) ? NO_FOUND_ECODE : NO_CONNECTION_ECODE);
+            return (false, DateTimeOffset.MinValue.DateTime, DateTimeOffset.MinValue.DateTime, serviceHealth.ContainsValue(true) ? NO_FOUND_ECODE : NO_CONNECTION_ECODE);
         }
 
         var serializer = new XmlSerializer(typeof(UMStageMessageSite));
@@ -175,7 +175,7 @@ public class UMControlAdapter(
         var messageSite = stageMessageSite.MessageSites[0];
         var startTime = messageSite.StartTime;
         var endTime = messageSite.EndTime;
-        var utcNow = DateTime.UtcNow;
+        var utcNow = DateTimeOffset.UtcNow.DateTime;
         if (utcNow.Subtract(startTime).TotalSeconds >= 0.0 && endTime.Subtract(utcNow).TotalSeconds >= 0.0)
         {
             return (true, startTime.AddHours(8.0), endTime.AddHours(8.0), SUCCESS_ECODE);

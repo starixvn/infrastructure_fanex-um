@@ -9,5 +9,5 @@ public interface IDateTimeHelper
 
 public class DateTimeHelper : IDateTimeHelper
 {
-    public string GetUtcNowShortDateString() => DateTime.UtcNow.ToShortDateString();
+    public string GetUtcNowShortDateString() => DateTimeOffset.UtcNow.DateTime.ToShortDateString();
 }

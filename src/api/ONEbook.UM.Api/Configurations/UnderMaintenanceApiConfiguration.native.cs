@@ -6,7 +6,7 @@ public class UnderMaintenanceApiConfiguration
 
     public string SecretKey { get; set; } = string.Empty;
     public bool EnableCheckUM { get; set; } = true;
-    public bool EnableUnscheduledUM { get; set; } = false;
+    public bool EnableUnscheduledUM { get; set; }
     public string UMFrom { get; set; } = string.Empty;
     public string UMTo { get; set; } = string.Empty;
     public string[] UMServiceURL { get; set; } = [];
