@@ -6,11 +6,13 @@ COPY src/api/ONEbook.UM.Api/ONEbook.UM.Api.csproj ./ONEbook.UM.Api/ONEbook.UM.Ap
 
 WORKDIR /src/ONEbook.UM.Api
 RUN dotnet nuget add source http://nuget.nexdev.net/api/v2
-RUN dotnet restore -v n -r linux-x64  ONEbook.UM.Api.csproj
+RUN --mount=type=cache,target=/root/.nuget/packages \
+	dotnet restore -v n -r linux-x64  ONEbook.UM.Api.csproj
 
 COPY /src/api/ONEbook.UM.Api .
 
-RUN dotnet publish -r linux-x64 --self-contained false -o /app
+RUN --mount=type=cache,target=/root/.nuget/packages \
+	dotnet publish -r linux-x64 --self-contained false -o /app
 
 FROM hub.nexdev.net/base/dotnet/core/aspnet:9.0-alpine AS base
 
@@ -24,6 +26,5 @@ USER dotnetuser
 WORKDIR /app
 COPY --from=builder /app .
 ENV TZ="America/La_Paz"
-
 
 ENTRYPOINT ["dotnet", "ONEbook.UM.Api.dll"]
