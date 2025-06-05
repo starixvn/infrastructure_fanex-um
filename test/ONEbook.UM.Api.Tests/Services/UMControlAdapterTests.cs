@@ -1,17 +1,16 @@
 namespace ONEbook.UM.Api.Tests.Services;
 
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Fanex.Logging;
-using Microsoft.Extensions.Options;
-using NSubstitute;
+using Api.Services;
 using Configurations;
 using Constants;
+using Fanex.Logging;
+using Microsoft.Extensions.Options;
 using Models;
-using ONEbook.UM.Api.Services;
+using NSubstitute;
 using Xunit;
 
 public class UMControlAdapterTests
@@ -29,22 +28,14 @@ public class UMControlAdapterTests
         { (int)Sites.Aff12Bet, (int)Sites.Aff12Bet },
         { (int)Sites.RMS, (int)Sites.RMS },
         { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
-        { (int)Sites._789y, 4100300 },
+        { (int)Sites._789y, 4_100_300 },
         { (int)Sites.Test, (int)Sites.Test }
     };
 
-    private readonly IOptions<UnderMaintenanceApiConfiguration> options;
-    private readonly IFakeUMControlAdapter fakeUMControlAdapter;
-    private readonly HttpClient httpClient;
-    private readonly ILogger logger;
-
-    public UMControlAdapterTests()
-    {
-        options = Substitute.For<IOptions<UnderMaintenanceApiConfiguration>>();
-        fakeUMControlAdapter = Substitute.For<IFakeUMControlAdapter>();
-        httpClient = Substitute.For<HttpClient>();
-        logger = Substitute.For<ILogger>();
-    }
+    private readonly IOptions<UnderMaintenanceApiConfiguration> options = Substitute.For<IOptions<UnderMaintenanceApiConfiguration>>();
+    private readonly IFakeUMControlAdapter fakeUMControlAdapter = Substitute.For<IFakeUMControlAdapter>();
+    private readonly HttpClient httpClient = Substitute.For<HttpClient>();
+    private readonly ILogger logger = Substitute.For<ILogger>();
 
     [Fact]
     public async Task GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()

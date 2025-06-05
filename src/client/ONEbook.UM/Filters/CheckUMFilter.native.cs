@@ -40,7 +40,7 @@ public sealed class CheckUMFilterAttribute(IMaintenanceService maintenanceServic
                 var response = context.HttpContext.Response;
                 response.ContentType = "application/json";
                 response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
-                var result = JsonConvert.SerializeObject(new { code = 999999, message = "Under maintenance time." });
+                var result = JsonConvert.SerializeObject(new { code = 999_999, message = "Under maintenance time." });
                 await response.WriteAsync(result);
                 return;
             }

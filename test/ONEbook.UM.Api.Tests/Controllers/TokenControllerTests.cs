@@ -36,7 +36,7 @@ public class TokenControllerTests
     public void GetAll_Always_GetAllUMTokens()
     {
         // Arrange
-        var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.Test, new SiteToken { SiteId = 9999999, Token = "1234" } } };
+        var siteTokens = new Dictionary<Sites, SiteToken> { { Sites.Test, new SiteToken { SiteId = 9_999_999, Token = "1234" } } };
         tokenService.GetAllUMTokens().Returns(siteTokens);
 
         // Act

@@ -82,5 +82,5 @@ public sealed class CheckUMFilterAttribute(IMaintenanceService maintenanceServic
     }
 
     private static bool IsAjax(HttpRequest request)
-        => request.Headers != null && request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        => request.Headers["X-Requested-With"] == "XMLHttpRequest";
 }

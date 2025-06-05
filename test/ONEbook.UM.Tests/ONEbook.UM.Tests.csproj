@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="CompareNETObjects" Version="4.57.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.8.0.7320">

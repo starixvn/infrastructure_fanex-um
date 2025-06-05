@@ -1,5 +1,6 @@
 namespace ONEbook.UM.Api.Tests.Services;
 
+using Api.Helpers;
 using Api.Services;
 using Configurations;
 using Constants;
@@ -38,7 +39,7 @@ public class UMTokenServiceTests
     public void IsValidUMToken_TokenIsValid_ReturnTrue()
     {
         // Act
-        var isValid = umTokenService.IsValidUMToken(Sites.Test, "x3TsFOPGGunDZ8zlaCe--g2");
+        var isValid = umTokenService.IsValidUMToken(Sites.Test, "x3TsFOPGGunDZ8zlaCe--g");
 
         // Assert
         Assert.True(isValid);
@@ -51,7 +52,7 @@ public class UMTokenServiceTests
         var actualToken = umTokenService.GetUMToken(Sites.Test);
 
         // Assert
-        Assert.Equal("x3TsFOPGGunDZ8zlaCe--g2", actualToken);
+        Assert.Equal("x3TsFOPGGunDZ8zlaCe--g", actualToken);
     }
 
     [Fact]
@@ -61,7 +62,7 @@ public class UMTokenServiceTests
         var actualTokens = umTokenService.GetAllUMTokens();
 
         // Assert
-        Assert.Equal("x3TsFOPGGunDZ8zlaCe--g2", actualTokens[Sites.Test].Token);
-        Assert.Equal(14, actualTokens.Count);
+        Assert.Equal("x3TsFOPGGunDZ8zlaCe--g", actualTokens[Sites.Test].Token);
+        Assert.Equal(17, actualTokens.Count);
     }
 }

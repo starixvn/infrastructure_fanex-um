@@ -17,7 +17,9 @@ public class IPHelperImpl : IPHelper
     {
         if (string.IsNullOrEmpty(machineIP))
         {
+#pragma warning disable S2696
             machineIP = InternalGetMachineIP();
+#pragma warning restore S2696
         }
 
         return machineIP;

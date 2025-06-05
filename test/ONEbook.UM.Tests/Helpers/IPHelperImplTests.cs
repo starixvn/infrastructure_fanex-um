@@ -1,32 +1,26 @@
-namespace ONEbook.UM.Tests.Helpers
+namespace ONEbook.UM.Tests.Helpers;
+
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using ONEbook.UM.Helpers;
+using Xunit;
+
+public class IPHelperImplTests
 {
-    using System.Linq;
-    using System.Net;
-    using System.Net.Sockets;
-    using ONEbook.UM.Helpers;
-    using Xunit;
+    private readonly IPHelper ipHelper = new IPHelperImpl();
 
-    public class IPHelperImplTests
+    [Fact]
+    public void GetMachineIP_IpAddressFamilyEqualsInterNetwork_ReturnIp()
     {
-        private readonly IPHelper ipHelper;
+        // Arrange
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        var expectedIP = host.AddressList.FirstOrDefault(address => address.AddressFamily == AddressFamily.InterNetwork).ToString();
 
-        public IPHelperImplTests()
-        {
-            ipHelper = new IPHelperImpl();
-        }
+        // Act
+        var ip = ipHelper.GetMachineIP();
 
-        [Fact]
-        public void GetMachineIP_IpAddressFamilyEqualsInterNetwork_ReturnIp()
-        {
-            // Arrange
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            var expectedIP = host.AddressList.FirstOrDefault(address => address.AddressFamily == AddressFamily.InterNetwork).ToString();
-
-            // Act
-            var ip = ipHelper.GetMachineIP();
-
-            // Assert
-            Assert.Equal(expectedIP, ip);
-        }
+        // Assert
+        Assert.Equal(expectedIP, ip);
     }
 }

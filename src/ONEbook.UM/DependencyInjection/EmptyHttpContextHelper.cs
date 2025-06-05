@@ -2,7 +2,7 @@
 
 using Helpers;
 
-public class EmptyHttpContextHelper() : IHttpContextHelper
+public class EmptyHttpContextHelper : IHttpContextHelper
 {
     public string GetSession(string key)
     {

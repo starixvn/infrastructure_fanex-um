@@ -1,47 +1,45 @@
 ﻿#if NET5_0_OR_GREATER
+namespace ONEbook.UM.DependencyInjection;
 
-namespace ONEbook.UM.DependencyInjection
+using Helpers;
+using Microsoft.AspNetCore.Http;
+
+public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttpContextHelper
 {
-    using System.Linq.Expressions;
-    using Helpers;
-    using Microsoft.AspNetCore.Http;
-
-    public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttpContextHelper
+    public string GetSession(string key)
     {
-        public string GetSession(string key)
+        try
         {
-            try
-            {
-                return httpContextAccessor?.HttpContext?.Session?.GetString(key);
-            }
-            catch
-            {
-                return string.Empty;
-            }
+            return httpContextAccessor?.HttpContext?.Session?.GetString(key);
         }
-
-        public void SetSession(string key, string value)
+        catch
         {
-            try
-            {
-                httpContextAccessor?.HttpContext?.Session?.SetString(key, value);
-            }
-            catch
-            {
-            }
+            return string.Empty;
         }
+    }
 
-        public string GetValueFromQueryString(string queryKey)
+    public void SetSession(string key, string value)
+    {
+        try
         {
-            try
-            {
-                var request = httpContextAccessor?.HttpContext?.Request;
-                return request?.Query[queryKey].ToString();
-            }
-            catch
-            {
-                return string.Empty;
-            }
+            httpContextAccessor?.HttpContext?.Session?.SetString(key, value);
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    public string GetValueFromQueryString(string queryKey)
+    {
+        try
+        {
+            var request = httpContextAccessor?.HttpContext?.Request;
+            return request?.Query[queryKey].ToString();
+        }
+        catch
+        {
+            return string.Empty;
         }
     }
 }

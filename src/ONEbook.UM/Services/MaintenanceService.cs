@@ -188,8 +188,6 @@ public class MaintenanceService(
             Console.WriteLine(ex.Message);
             throw;
         }
-
-        return false;
     }
 
     internal UnderMaintenanceTime GetUnderMaintenance()

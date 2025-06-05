@@ -17,27 +17,17 @@ public interface IUMControlAdapter
     Task<IDictionary<int, UnderMaintenanceTime>> GetAllUnderMaintenanceTime();
 }
 
-public class UMControlAdapter : IUMControlAdapter
+public class UMControlAdapter(
+    IOptions<UnderMaintenanceApiConfiguration> options,
+    IFakeUMControlAdapter fakeUmControlAdapter,
+    HttpClient httpClient,
+    Fanex.Logging.ILogger logger)
+    : IUMControlAdapter
 {
-    private readonly UnderMaintenanceApiConfiguration options;
-    private readonly IFakeUMControlAdapter fakeUMControlAdapter;
-    private readonly HttpClient httpClient;
-    private readonly Fanex.Logging.ILogger logger;
+    private readonly UnderMaintenanceApiConfiguration options = options.Value;
     public const int SUCCESS_ECODE = 0;
     public const int NO_FOUND_ECODE = 1;
     public const int NO_CONNECTION_ECODE = 2;
-
-    public UMControlAdapter(
-        IOptions<UnderMaintenanceApiConfiguration> options,
-        IFakeUMControlAdapter fakeUMControlAdapter,
-        HttpClient httpClient,
-        Fanex.Logging.ILogger logger)
-    {
-        this.options = options.Value;
-        this.fakeUMControlAdapter = fakeUMControlAdapter;
-        this.httpClient = httpClient;
-        this.logger = logger;
-    }
 
     /// <summary>
     /// Old and New SiteID for UM Tool
@@ -58,13 +48,13 @@ public class UMControlAdapter : IUMControlAdapter
             { (int)Sites.OddsFeed, (int)Sites.OddsFeed },
             { (int)Sites.CRM, (int)Sites.CRM },
             { (int)Sites.LicenseeAccountsAPI, (int)Sites.LicenseeAccountsAPI },
-            { (int)Sites._789y, 4100300 },
+            { (int)Sites._789y, 4_100_300 },
             { (int)Sites.Test, (int)Sites.Test }
         };
 
     public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime(int siteId)
     {
-        var fakeUMInfo = fakeUMControlAdapter.GetUnderMaintenance();
+        var fakeUMInfo = fakeUmControlAdapter.GetUnderMaintenance();
 
         if (fakeUMInfo != null)
         {
@@ -99,7 +89,7 @@ public class UMControlAdapter : IUMControlAdapter
     {
         var siteIds = OldNewSiteIdMappers.Keys;
 
-        var fakeUMInfo = fakeUMControlAdapter.GetUnderMaintenance();
+        var fakeUMInfo = fakeUmControlAdapter.GetUnderMaintenance();
 
         if (fakeUMInfo != null)
         {
@@ -125,7 +115,7 @@ public class UMControlAdapter : IUMControlAdapter
 
         var (isUnderUM, startTime, endTime, errorCode) = await FetchUMInformation(siteId);
 
-        if (startTime.Date.Year != DateTime.MinValue.Year)
+        if (startTime.Date.Year != DateTimeOffset.MinValue.Year)
         {
             return new UnderMaintenanceTime(
                isUnderUM,
@@ -177,7 +167,7 @@ public class UMControlAdapter : IUMControlAdapter
 
         if (!isUM)
         {
-            return (false, new DateTime(), new DateTime(), serviceHealth.ContainsValue(true) ? NO_FOUND_ECODE : NO_CONNECTION_ECODE);
+            return (false, DateTimeOffset.MinValue.DateTime, DateTimeOffset.MinValue.DateTime, serviceHealth.ContainsValue(true) ? NO_FOUND_ECODE : NO_CONNECTION_ECODE);
         }
 
         var serializer = new XmlSerializer(typeof(UMStageMessageSite));
@@ -185,7 +175,7 @@ public class UMControlAdapter : IUMControlAdapter
         var messageSite = stageMessageSite.MessageSites[0];
         var startTime = messageSite.StartTime;
         var endTime = messageSite.EndTime;
-        var utcNow = DateTime.UtcNow;
+        var utcNow = DateTimeOffset.UtcNow.DateTime;
         if (utcNow.Subtract(startTime).TotalSeconds >= 0.0 && endTime.Subtract(utcNow).TotalSeconds >= 0.0)
         {
             return (true, startTime.AddHours(8.0), endTime.AddHours(8.0), SUCCESS_ECODE);
