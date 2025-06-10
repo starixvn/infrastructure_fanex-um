@@ -1,6 +1,6 @@
 using System.Net;
-using Fanex.Logging.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
+using Newtonsoft.Json;
 
 namespace ONEbook.UM.Api.Extensions;
 
@@ -17,12 +17,14 @@ public static class ExceptionMiddlewareExtensions
                 var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                 if (contextFeature != null)
                 {
-                    await ExceptionHandler.HandleAsync(contextFeature.Error, context).ConfigureAwait(false);
-                    await context.Response.WriteAsync(new
+                    Console.WriteLine(contextFeature.Error.Message);
+                    var error = new
                     {
                         context.Response.StatusCode,
                         Message = "Internal Server Error."
-                    }.ToString());
+                    };
+                    var message = JsonConvert.SerializeObject(error);
+                    await context.Response.WriteAsync(message);
                 }
             });
         });

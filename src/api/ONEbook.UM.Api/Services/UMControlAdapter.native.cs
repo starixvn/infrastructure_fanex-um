@@ -20,8 +20,7 @@ public interface IUMControlAdapter
 public class UMControlAdapter(
     IOptions<UnderMaintenanceApiConfiguration> options,
     IFakeUMControlAdapter fakeUmControlAdapter,
-    HttpClient httpClient,
-    Fanex.Logging.ILogger logger)
+    HttpClient httpClient)
     : IUMControlAdapter
 {
     private readonly UnderMaintenanceApiConfiguration options = options.Value;
@@ -161,7 +160,8 @@ public class UMControlAdapter(
             {
                 serviceHealth.Add(url, false);
                 var message = string.Join("\r\n", $"Checking {uriString} failed!", ex.Message);
-                await logger.ErrorAsync(message, ex);
+                Console.WriteLine(message);
+                Console.WriteLine(ex.Message);
             }
         }
 
