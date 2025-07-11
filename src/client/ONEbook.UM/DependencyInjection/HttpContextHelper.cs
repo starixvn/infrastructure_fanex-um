@@ -1,5 +1,4 @@
-﻿#if NET5_0_OR_GREATER
-namespace ONEbook.UM.DependencyInjection;
+﻿namespace ONEbook.UM.DependencyInjection;
 
 using Helpers;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +9,7 @@ public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttp
     {
         try
         {
-            return httpContextAccessor?.HttpContext?.Session?.GetString(key);
+            return httpContextAccessor?.HttpContext?.Session.GetString(key);
         }
         catch
         {
@@ -22,7 +21,7 @@ public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttp
     {
         try
         {
-            httpContextAccessor?.HttpContext?.Session?.SetString(key, value);
+            httpContextAccessor?.HttpContext?.Session.SetString(key, value);
         }
         catch
         {
@@ -43,5 +42,3 @@ public class HttpContextHelper(IHttpContextAccessor httpContextAccessor) : IHttp
         }
     }
 }
-
-#endif

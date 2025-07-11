@@ -10,6 +10,7 @@ public static class HttpClientHelper
     public static string GenerateAuthorizationHeader(UMClientConfiguration config, string requestUri, string requestMethod, string machineIP)
     {
         // Calculate UNIX time
+
         var epochStart = DateTimeOffset.UnixEpoch;
         var timeSpan = DateTimeOffset.UtcNow - epochStart;
         var requestTimeStamp = Convert.ToUInt64(timeSpan.TotalSeconds).ToString();

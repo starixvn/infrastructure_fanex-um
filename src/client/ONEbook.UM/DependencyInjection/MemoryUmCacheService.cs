@@ -1,6 +1,4 @@
-﻿#if NET5_0_OR_GREATER
-
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 
 namespace ONEbook.UM.DependencyInjection;
@@ -16,5 +14,3 @@ public class MemoryUmCacheService(IMemoryCache memoryCache) : IUMCacheService
 
     public void Remove(string key) => memoryCache.Remove(key);
 }
-
-#endif

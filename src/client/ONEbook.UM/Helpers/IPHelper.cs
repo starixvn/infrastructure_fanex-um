@@ -20,6 +20,7 @@ public class IPHelperImpl : IPHelper
 #pragma warning disable S2696
             machineIP = InternalGetMachineIP();
 #pragma warning restore S2696
+
         }
 
         return machineIP;
