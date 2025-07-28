@@ -1,5 +1,4 @@
-﻿#if NET5_0_OR_GREATER
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ONEbook.UM.Configurations;
@@ -12,7 +11,7 @@ using Filters;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddOneBookUm(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddOneBookUmForWeb(this IServiceCollection services, IConfiguration configuration)
     {
         var umConfig = new UMClientConfiguration();
         configuration.Bind("ONEbook.UM", umConfig);
@@ -22,12 +21,28 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CheckUMFilterAttribute>();
         services.AddSingleton<IUMCacheService, MemoryUmCacheService>();
         services.AddSingleton<IUMRestClient, UMRestClient>();
+        services.AddSingleton<IPHelper, IPHelperImpl>();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IHttpContextHelper, HttpContextHelper>();
         services.AddSingleton<IMaintenanceService, MaintenanceService>();
-        
+
+        return services;
+    }
+
+    public static IServiceCollection AddOneBookUmForService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var umConfig = new UMClientConfiguration();
+        configuration.Bind("ONEbook.UM", umConfig);
+
+        services.AddMemoryCache();
+        services.AddSingleton(umConfig);
+        services.AddScoped<CheckUMFilterAttribute>();
+        services.AddSingleton<IUMCacheService, MemoryUmCacheService>();
+        services.AddSingleton<IUMRestClient, UMRestClient>();
+        services.AddSingleton<IPHelper, IPHelperImpl>();
+        services.AddSingleton<IHttpContextHelper, EmptyHttpContextHelper>();
+        services.AddSingleton<IMaintenanceService, MaintenanceService>();
+
         return services;
     }
 }
-
-#endif

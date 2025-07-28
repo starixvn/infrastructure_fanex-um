@@ -38,9 +38,6 @@ public class MaintenanceService(
     private const string TokenName = "UMToken";
     private const string ByPassUmSessionKey = "ONEbook.UM.ByPassUM";
     private const string SiteUmCacheKey = "ONEbook.UM.Site.{0}";
-    private readonly IUMRestClient restClient = restClient ?? UMClientManager.RestClient;
-    private readonly IHttpContextHelper httpContextHelper = httpContextHelper ?? UMClientManager.HttpContext;
-    private readonly UMClientConfiguration configuration = configuration ?? UMClientManager.UMClientConfigs;
 
     public bool ByPassUm
     {
@@ -181,30 +178,15 @@ public class MaintenanceService(
 
     private bool IsTokenValid(string token)
     {
-        var isTokenValid = false;
-
         try
         {
-            isTokenValid = restClient
+            return restClient
                 .ExecuteGet<bool>($"token/validate?SiteId={configuration.SiteId}&Token={token}");
         }
         catch (Exception ex)
         {
-            HandleError(ex);
-        }
-
-        return isTokenValid;
-    }
-
-    private static void HandleError(Exception ex)
-    {
-        if (UMClientManager.ErrorHandler != null)
-        {
-            UMClientManager.ErrorHandler.Invoke(ex.Message);
-        }
-        else
-        {
-            throw ex;
+            Console.WriteLine(ex.Message);
+            throw;
         }
     }
 
@@ -216,8 +198,6 @@ public class MaintenanceService(
         }
         catch (Exception ex)
         {
-            UMClientManager.ErrorHandler?.Invoke(ex.Message);
-
             return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
         }
     }
@@ -232,8 +212,6 @@ public class MaintenanceService(
         }
         catch (Exception ex)
         {
-            UMClientManager.ErrorHandler?.Invoke(ex.Message);
-
             return UnderMaintenanceTime.CreateFailedConnection(ex.Message);
         }
     }

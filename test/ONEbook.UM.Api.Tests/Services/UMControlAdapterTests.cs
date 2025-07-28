@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Api.Services;
 using Configurations;
 using Constants;
-using Fanex.Logging;
 using Microsoft.Extensions.Options;
 using Models;
 using NSubstitute;
@@ -35,7 +34,6 @@ public class UMControlAdapterTests
     private readonly IOptions<UnderMaintenanceApiConfiguration> options = Substitute.For<IOptions<UnderMaintenanceApiConfiguration>>();
     private readonly IFakeUMControlAdapter fakeUMControlAdapter = Substitute.For<IFakeUMControlAdapter>();
     private readonly HttpClient httpClient = Substitute.For<HttpClient>();
-    private readonly ILogger logger = Substitute.For<ILogger>();
 
     [Fact]
     public async Task GetUnderMaintenanceTime_HasFakeUM_ReturnFakeUM()
@@ -44,7 +42,7 @@ public class UMControlAdapterTests
         // Arrange
         fakeUMControlAdapter.GetUnderMaintenance().Returns(new UnderMaintenanceTime(true, "3:00", "4:00"));
 
-        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient);
 
         // Act
         var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
@@ -64,7 +62,7 @@ public class UMControlAdapterTests
             UMTo = "4:00"
         });
 
-        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient);
 
         // Act
         var actualUnderMaintenance = await umControlAdapter.GetUnderMaintenanceTime(1);
@@ -86,7 +84,7 @@ public class UMControlAdapterTests
             UMTo = "4:00"
         });
 
-        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient);
         // Act
         var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();
 
@@ -105,7 +103,7 @@ public class UMControlAdapterTests
         {
             EnableCheckUM = true
         });
-        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient, logger);
+        var umControlAdapter = new UMControlAdapter(options, fakeUMControlAdapter, httpClient);
 
         // Act
         var actualUnderMaintenances = await umControlAdapter.GetScheduledUnderMaintenanceInformation();

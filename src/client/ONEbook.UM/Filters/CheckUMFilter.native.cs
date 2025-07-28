@@ -23,6 +23,13 @@ public sealed class CheckUMFilterAttribute(IMaintenanceService maintenanceServic
 
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
+        var requestPath = context.HttpContext.Request.Path.Value ?? string.Empty;
+        if(requestPath.Contains("healthz", StringComparison.OrdinalIgnoreCase))
+        {
+            await base.OnActionExecutionAsync(context, next);
+            return;
+        }
+
         var actionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
         var attributes = actionDescriptor.MethodInfo.CustomAttributes;
         if (attributes.Any(a => a.AttributeType == typeof(SkipUMFilterAttribute)))

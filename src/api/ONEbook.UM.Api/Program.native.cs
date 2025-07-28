@@ -1,5 +1,4 @@
-﻿using Fanex.Logging;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using ONEbook.UM.Api.Configurations;
 using ONEbook.UM.Api.Services;
 using ONEbook.UM.Api;
@@ -9,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddFanexLogger(configuration);
 services.AddInternalServices();
 services.AddHttpClient<IUMControlAdapter, UMControlAdapter>();
 services.Configure<FakeUMConfiguration>(configuration.GetSection(FakeUMConfiguration.FakeUM));
@@ -46,6 +44,4 @@ app.MapGet("/", () => "ONEbook UM API!!!");
 app.UseSwagger();
 app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "ONEBookUM v1"));
 
-var appName = typeof(Program).Assembly.GetName().Name;
-await Logger.Log.InfoAsync($"{appName} has been started up.");
 await app.RunAsync();
