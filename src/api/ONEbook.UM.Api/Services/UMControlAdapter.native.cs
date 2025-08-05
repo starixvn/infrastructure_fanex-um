@@ -53,6 +53,16 @@ public class UMControlAdapter(
 
     public async Task<UnderMaintenanceTime> GetUnderMaintenanceTime(int siteId)
     {
+        if (siteId == 2000003)
+        {
+            var now = DateTimeOffset.UtcNow.AddHours(8);
+            var startFakeTime = now.AddMinutes(-5);
+            return new UnderMaintenanceTime(
+                true,
+                startFakeTime.ToString(CultureInfo.InvariantCulture),
+                startFakeTime.AddMinutes(10).ToString(CultureInfo.InvariantCulture));
+        }
+
         var fakeUMInfo = fakeUmControlAdapter.GetUnderMaintenance();
 
         if (fakeUMInfo != null)
