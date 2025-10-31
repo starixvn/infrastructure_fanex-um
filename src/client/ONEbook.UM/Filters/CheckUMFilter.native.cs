@@ -75,7 +75,7 @@ public sealed class CheckUMFilterAttribute(IMaintenanceService maintenanceServic
 
         if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
         {
-            filterContext.Result = new RedirectResult(configuration.UMPageUrl, true);
+            filterContext.Result = new RedirectResult(configuration.UMPageUrl, false);
         }
     }
 
@@ -88,7 +88,7 @@ public sealed class CheckUMFilterAttribute(IMaintenanceService maintenanceServic
 
         if (underMaintenancePageAbsoluteUrl != currentPageAbsoluteUrl)
         {
-            filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl, true);
+            filterContext.Result = new RedirectResult(configuration.ErrorUMPageUrl, false);
         }
     }
 
